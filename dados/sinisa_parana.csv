@@ -1,0 +1,400 @@
+cod_ibge,municipio,estrato,IES0001,IES0007,IES3001,IES3003,IAG0001
+4117701,Palmeira,cobertura alta,65.13,60.02,0.01,0.0,69.32
+4121406,Realeza,cobertura alta,65.51,60.52,0.0,0.0,80.08
+4108601,Goioerê,cobertura alta,66.06,58.12,0.0,0.0,93.69
+4106555,Corumbataí do Sul,cobertura alta,66.3,,0.0,0.0,66.24
+4110102,Imbituva,cobertura alta,66.45,58.73,0.0,0.0,79.15
+4128500,Wenceslau Braz,cobertura alta,66.55,56.49,0.03,0.03,83.32
+4125803,São Pedro do Ivaí,cobertura alta,66.69,55.92,0.0,0.0,93.1
+4118907,Pérola,cobertura alta,67.54,53.64,0.0,0.0,93.66
+4126256,Sarandi,cobertura alta,68.31,,1.02,0.95,99.51
+4105508,Cianorte,cobertura alta,68.65,60.24,0.51,0.22,93.09
+4123402,Santa Fé,cobertura alta,68.77,56.67,0.07,0.24,91.26
+4102703,Barra do Jacaré,cobertura alta,69.05,55.95,0.95,2.44,81.54
+4125001,São João do Ivaí,cobertura alta,70.96,,0.0,0.0,87.8
+4107108,Diamante do Norte,cobertura alta,71.22,61.77,0.0,0.0,86.54
+4101705,Araruna,cobertura alta,71.24,59.61,0.0,0.0,93.58
+4114807,Marialva,cobertura alta,71.62,84.39,0.06,0.9,78.76
+4100608,Alto Paraná,cobertura alta,71.81,62.27,0.0,0.0,87.46
+4104204,Campo Largo,cobertura alta,72.08,61.61,0.17,0.05,81.86
+4121802,Ribeirão Claro,cobertura alta,72.11,,0.78,0.69,82.62
+4100400,Almirante Tamandaré,cobertura alta,72.6,64.35,0.11,0.02,88.75
+4115606,Matelândia,cobertura alta,72.88,65.7,0.0,0.0,80.56
+4112405,Japurá,cobertura alta,72.89,,0.26,1.0,93.36
+4126306,Sengés,cobertura alta,73.07,58.86,0.0,0.0,83.55
+4106605,Cruzeiro do Oeste,cobertura alta,73.09,62.11,0.0,0.0,87.75
+4122602,Rondon,cobertura alta,73.13,,0.08,0.16,87.15
+4104709,Carlópolis,cobertura alta,73.23,63.15,0.08,0.05,75.5
+4101002,Ampére,cobertura alta,74.26,66.6,0.0,0.0,81.05
+4106100,Conselheiro Mairinck,cobertura alta,74.47,72.08,2.08,2.47,82.13
+4123204,Santa Cecília do Pavão,cobertura alta,75.17,,0.0,,88.86
+4119400,Piraí do Sul,cobertura alta,75.18,64.56,0.0,0.0,77.27
+4123709,Santa Isabel do Ivaí,cobertura alta,75.21,79.47,0.37,1.0,86.8
+4108403,Francisco Beltrão,cobertura alta,75.43,68.45,0.0,0.0,87.13
+4127205,Terra Boa,cobertura alta,75.8,66.51,0.0,0.0,96.19
+4108809,Guaíra,cobertura alta,76.03,65.54,0.09,0.11,89.45
+4117909,Palotina,cobertura alta,76.65,64.69,0.0,0.0,92.05
+4116901,Nova Esperança,cobertura alta,76.69,66.19,0.0,0.0,93.36
+4121901,Ribeirão do Pinhal,cobertura alta,76.78,63.09,0.0,0.0,93.55
+4105102,Centenário do Sul,cobertura alta,76.92,62.67,0.0,0.0,91.42
+4117602,Palmas,cobertura alta,77.16,72.71,0.03,0.03,86.4
+4111902,Jaguapitã,cobertura alta,77.55,,59.57,1.0,100.0
+4109005,Guapirama,cobertura alta,77.73,72.93,0.16,0.35,82.83
+4101101,Andirá,cobertura alta,77.76,,0.08,1.0,96.2
+4108007,Florestópolis,cobertura alta,77.94,64.75,0.26,0.14,100.0
+4104907,Castro,cobertura alta,78.82,66.53,0.0,0.0,80.59
+4114005,Mamborê,cobertura alta,78.98,68.88,0.0,0.0,81.73
+4128559,Vera Cruz do Oeste,cobertura alta,79.25,74.91,0.09,0.28,80.59
+4112801,Joaquim Távora,cobertura alta,79.26,80.28,0.36,0.18,87.74
+4126603,Siqueira Campos,cobertura alta,79.89,67.61,0.03,0.03,82.34
+4112009,Jaguariaíva,cobertura alta,80.19,79.81,1.61,0.92,96.41
+4104659,Carambeí,cobertura alta,80.52,69.93,0.15,0.07,81.29
+4108320,Francisco Alves,cobertura alta,80.81,68.51,0.0,0.0,85.3
+4106308,Corbélia,cobertura alta,81.86,,0.03,0.05,87.9
+4105300,Céu Azul,cobertura alta,81.87,73.37,0.0,0.0,82.37
+4114203,Mandaguari,cobertura alta,81.9,71.8,0.0,0.0,95.52
+4110706,Irati,cobertura alta,82.48,77.92,0.0,0.0,83.39
+4118105,Paranacity,cobertura alta,82.53,61.18,0.0,0.0,96.44
+4105904,Colorado,cobertura alta,82.58,,4.62,1.0,100.0
+4101606,Arapoti,cobertura alta,82.66,71.15,0.0,0.0,89.27
+4123907,Santa Mariana,cobertura alta,83.06,68.58,0.0,0.0,88.83
+4105805,Colombo,cobertura alta,84.0,74.9,0.81,0.14,98.02
+4118204,Paranaguá,cobertura alta,84.0,48.53,3.48,1.0,83.11
+4125308,São Jorge do Ivaí,cobertura alta,84.46,86.02,1.65,1.0,88.58
+4126801,Tapejara,cobertura alta,84.62,97.05,1.63,1.0,90.02
+4101804,Araucária,cobertura alta,84.68,72.08,0.12,0.04,89.78
+4111001,Itambaracá,cobertura alta,84.9,59.91,0.48,1.0,100.0
+4112108,Jandaia do Sul,cobertura alta,84.94,71.51,0.0,0.0,93.26
+4101903,Assaí,cobertura alta,85.91,66.67,0.0,0.0,90.56
+4120507,Primeiro de Maio,cobertura alta,86.05,62.77,0.0,0.0,92.98
+4125506,São José dos Pinhais,cobertura alta,87.16,75.06,0.05,0.01,91.38
+4104006,Campina Grande do Sul,cobertura alta,87.23,71.66,0.87,0.21,91.03
+4102109,Astorga,cobertura alta,87.4,,0.01,0.01,95.56
+4107306,Doutor Camargo,cobertura alta,87.85,67.57,0.06,0.11,90.62
+4120101,Porto Amazonas,cobertura alta,88.02,82.65,0.0,0.0,93.0
+4128401,Uraí,cobertura alta,89.19,80.83,0.02,0.01,89.59
+4120804,Quatro Barras,cobertura alta,89.21,77.12,0.47,0.17,90.22
+4119509,Piraquara,cobertura alta,89.58,78.91,0.01,0.0,86.31
+4105706,Clevelândia,cobertura alta,89.82,84.49,0.0,0.0,90.85
+4118006,Paraíso do Norte,cobertura alta,89.93,80.06,0.0,0.0,92.69
+4126504,Sertanópolis,cobertura alta,90.0,81.49,0.0,,100.0
+4103453,Cafelândia,cobertura alta,90.4,90.71,0.03,0.14,90.86
+4102406,Bandeirantes,cobertura alta,90.61,86.57,3.32,0.93,92.02
+4118501,Pato Branco,cobertura alta,90.62,80.52,0.7,0.3,95.47
+4113502,Loanda,cobertura alta,90.65,79.52,0.0,0.0,92.97
+4124905,São João do Caiuá,cobertura alta,90.91,93.75,0.0,0.0,91.89
+4124053,Santa Terezinha de Itaipu,cobertura alta,90.94,82.42,0.05,0.05,91.6
+4124103,Santo Antônio da Platina,cobertura alta,91.15,85.98,0.49,0.22,91.88
+4120200,Porto Rico,cobertura alta,91.16,81.8,0.0,0.0,90.35
+4127700,Toledo,cobertura alta,91.78,86.42,0.06,0.13,91.91
+4109609,Guaratuba,cobertura alta,92.21,71.08,0.2,0.08,92.23
+4113601,Lobato,cobertura alta,92.33,,0.05,1.0,92.33
+4112702,Jataizinho,cobertura alta,92.77,,6.01,1.0,96.52
+4101408,Apucarana,cobertura alta,93.58,80.83,0.0,0.0,96.81
+4109401,Guarapuava,cobertura alta,93.75,80.12,0.0,0.0,95.02
+4111100,Itambé,cobertura alta,94.09,77.02,0.0,0.0,96.54
+4120333,Prado Ferreira,cobertura alta,94.26,,1.93,1.0,94.26
+4117107,Nova Londrina,cobertura alta,94.46,97.45,0.0,0.0,92.38
+4111803,Jacarezinho,cobertura alta,94.99,87.44,0.28,0.09,95.93
+4103602,Cambará,cobertura alta,95.2,93.35,2.41,1.07,95.14
+4105607,Cidade Gaúcha,cobertura alta,95.8,88.7,0.0,0.0,95.98
+4101507,Arapongas,cobertura alta,96.12,83.3,0.08,0.06,98.14
+4104808,Cascavel,cobertura alta,96.25,97.91,0.21,0.09,91.85
+4108304,Foz do Iguaçu,cobertura alta,96.33,83.42,0.12,0.04,99.45
+4106407,Cornélio Procópio,cobertura alta,96.77,91.8,0.01,0.0,96.98
+4113700,Londrina,cobertura alta,97.26,97.14,0.05,0.02,97.57
+4118402,Paranavaí,cobertura alta,97.52,85.2,0.0,0.0,98.54
+4103701,Cambé,cobertura alta,97.68,99.99,0.0,0.0,97.7
+4104303,Campo Mourão,cobertura alta,97.81,94.98,0.0,0.0,98.06
+4128104,Umuarama,cobertura alta,98.01,91.9,0.0,0.0,98.02
+4109807,Ibiporã,cobertura alta,98.13,94.1,3.03,1.0,100.0
+4119905,Ponta Grossa,cobertura alta,98.32,97.18,0.0,0.0,98.64
+4119954,Pontal do Paraná,cobertura alta,98.55,66.77,0.05,0.03,98.68
+4127106,Telêmaco Borba,cobertura alta,98.61,88.35,0.0,0.0,99.24
+4107652,Fazenda Rio Grande,cobertura alta,98.84,88.13,0.24,0.11,98.53
+4117503,Paiçandu,cobertura alta,99.26,86.71,0.12,0.05,100.0
+4115200,Maringá,cobertura alta,99.47,,0.21,0.12,93.14
+4115705,Matinhos,cobertura alta,99.6,83.55,0.03,0.01,99.99
+4106902,Curitiba,cobertura alta,100.0,99.72,0.15,0.03,100.0
+4108106,Flórida,cobertura alta,100.0,,0.13,0.29,91.94
+4113007,Jussara,cobertura alta,100.0,100.0,0.06,1.0,100.0
+4119152,Pinhais,cobertura alta,100.0,98.39,0.12,0.02,100.0
+4120002,Porecatu,cobertura alta,100.0,97.45,0.25,0.1,100.0
+4105201,Cerro Azul,cobertura baixa,1.14,0.84,0.0,0.0,50.21
+4110805,Iretama,cobertura baixa,2.43,2.11,0.0,0.0,69.59
+4119202,Pinhalão,cobertura baixa,2.97,,1.43,0.33,70.87
+4106803,Cruz Machado,cobertura baixa,3.48,2.81,0.0,0.0,37.71
+4109906,Icaraíma,cobertura baixa,9.43,7.2,0.0,0.0,83.29
+4121208,Quitandinha,cobertura baixa,9.55,7.1,0.48,0.09,38.32
+4107751,Figueira,cobertura baixa,12.44,,0.0,0.0,87.89
+4127965,Turvo,cobertura baixa,13.18,10.89,0.06,0.17,57.56
+4101309,Antônio Olinto,cobertura baixa,13.75,9.8,0.0,0.0,24.88
+4121000,Querência do Norte,cobertura baixa,16.53,12.82,0.0,0.0,70.57
+4111704,Jaboti,cobertura baixa,19.06,15.31,0.28,0.15,73.28
+4125100,São João do Triunfo,cobertura baixa,19.19,15.92,0.0,0.0,32.95
+4117057,Nova Laranjeiras,cobertura baixa,19.57,17.97,0.0,0.0,22.58
+4116109,Moreira Sales,cobertura baixa,20.5,16.7,0.0,0.0,86.24
+4102307,Balsa Nova,cobertura baixa,21.94,17.19,0.2,0.1,96.89
+4107504,Engenheiro Beltrão,cobertura baixa,22.4,18.19,0.0,0.0,98.33
+4114302,Mandirituba,cobertura baixa,22.74,16.25,1.07,0.33,55.97
+4112900,Jundiaí do Sul,cobertura baixa,23.08,,0.11,0.25,76.05
+4100103,Abatiá,cobertura baixa,23.11,16.48,0.0,,75.9
+4100459,Altamira do Paraná,cobertura baixa,23.43,18.2,0.0,0.0,59.47
+4128625,Alto Paraíso,cobertura baixa,23.72,15.95,0.0,0.0,63.6
+4103503,Califórnia,cobertura baixa,24.46,19.86,0.0,0.0,89.69
+4104402,Cândido de Abreu,cobertura baixa,29.32,24.09,0.0,0.0,38.64
+4114708,Maria Helena,cobertura baixa,29.86,24.16,0.0,0.0,82.04
+4112504,Jardim Alegre,cobertura baixa,30.34,26.17,0.0,0.0,70.4
+4107801,Floraí,cobertura baixa,30.92,25.19,0.0,0.0,100.0
+4100301,Agudos do Sul,cobertura baixa,30.97,22.92,0.68,0.24,56.71
+4113908,Mallet,cobertura baixa,31.38,26.86,0.0,0.0,68.28
+4128534,Ventania,cobertura baixa,31.5,26.45,0.1,0.2,88.33
+4104105,Campo do Tenente,cobertura baixa,31.54,24.5,0.27,0.12,84.01
+4128708,Vitorino,cobertura baixa,32.74,28.98,0.35,0.28,78.63
+4114500,Manoel Ribas,cobertura baixa,32.96,31.2,0.0,0.0,59.7
+4127007,Teixeira Soares,cobertura baixa,33.17,27.33,0.0,0.0,60.17
+4114104,Mandaguaçu,cobertura baixa,35.03,30.3,0.04,0.01,95.95
+4110201,Inácio Martins,cobertura baixa,35.19,27.27,0.0,0.0,71.98
+4114609,Marechal Cândido Rondon,cobertura baixa,35.69,34.35,0.08,1.0,92.67
+4110508,Ipiranga,cobertura baixa,36.7,33.93,0.0,0.0,44.78
+4109500,Guaraqueçaba,cobertura baixa,37.04,,0.0,0.0,36.82
+4117800,Palmital,cobertura baixa,38.34,30.3,0.03,0.1,64.18
+4126678,Tamarana,cobertura baixa,40.04,32.37,0.0,0.0,61.78
+4104253,Campo Magro,cobertura baixa,40.28,34.99,0.82,0.17,67.55
+4104600,Capitão Leônidas Marques,cobertura baixa,40.59,33.65,0.0,0.0,83.42
+4119301,Pinhão,cobertura baixa,40.62,30.7,0.0,0.0,64.44
+4127304,Terra Rica,cobertura baixa,41.46,55.69,0.35,1.0,86.12
+4111258,Itaperuçu,cobertura baixa,41.65,37.02,0.0,0.0,73.61
+4125605,São Mateus do Sul,cobertura baixa,41.95,35.15,0.0,0.0,61.45
+4124004,Santana do Itararé,cobertura baixa,42.22,33.49,0.07,0.06,75.07
+4109302,Guaraniaçu,cobertura baixa,42.5,33.31,0.03,0.09,59.5
+4115804,Medianeira,cobertura baixa,42.69,38.96,0.01,0.01,92.83
+4103107,Bocaiúva do Sul,cobertura baixa,43.09,30.11,0.14,0.05,70.99
+4122008,Rio Azul,cobertura baixa,43.22,42.65,0.0,0.0,44.57
+4123006,Salto do Lontra,cobertura baixa,43.28,42.47,0.0,0.0,60.61
+4108502,General Carneiro,cobertura baixa,43.38,35.23,0.0,0.0,79.09
+4107009,Curiúva,cobertura baixa,43.65,35.37,0.02,0.02,76.07
+4126207,Sapopema,cobertura baixa,43.69,35.48,0.18,0.25,68.5
+4110953,Itaipulândia,cobertura baixa,43.78,39.78,0.02,0.07,74.25
+4123501,Santa Helena,cobertura baixa,43.95,39.23,0.03,0.01,50.69
+4115408,Marmeleiro,cobertura baixa,44.62,40.77,0.0,0.0,70.31
+4122651,Rosário do Ivaí,cobertura baixa,44.89,35.83,0.0,0.0,51.37
+4102505,Barbosa Ferraz,cobertura baixa,45.01,36.48,0.0,0.0,83.41
+4102901,Bituruna,cobertura baixa,45.38,35.49,0.0,0.0,66.53
+4123808,Santa Izabel do Oeste,cobertura baixa,45.62,45.22,0.0,0.0,64.37
+4109708,Ibaiti,cobertura baixa,45.91,38.68,1.49,0.71,84.44
+4104428,Candói,cobertura baixa,45.98,36.09,0.0,0.0,60.92
+4120903,Quedas do Iguaçu,cobertura baixa,46.07,40.4,0.0,0.0,72.35
+4110607,Iporã,cobertura baixa,46.29,39.68,0.0,0.0,85.52
+4104501,Capanema,cobertura baixa,46.39,43.99,0.0,0.0,69.41
+4113759,Lunardelli,cobertura baixa,46.51,38.68,0.0,0.0,78.8
+4124020,Santa Tereza do Oeste,cobertura baixa,46.69,41.4,0.04,0.17,90.7
+4128203,União da Vitória,cobertura baixa,48.14,41.35,0.0,0.0,94.3
+4102000,Assis Chateaubriand,cobertura baixa,48.17,42.79,0.05,0.04,90.73
+4116604,Nova América da Colina,cobertura baixa,48.8,39.68,0.0,0.0,87.12
+4124806,São João,cobertura baixa,48.86,43.89,0.0,0.0,70.58
+4123303,Santa Cruz de Monte Castelo,cobertura baixa,48.98,42.52,0.0,0.0,78.0
+4111407,Ivaí,cobertura baixa,49.27,40.87,0.0,0.0,61.41
+4127809,Tomazina,cobertura baixa,49.43,,0.28,0.31,51.6
+4114906,Marilândia do Sul,cobertura baixa,49.62,43.04,0.0,0.0,85.34
+4115101,Mariluz,cobertura baixa,49.81,53.4,1.33,1.0,91.13
+4107603,Faxinal,cobertura baixa,50.58,42.91,0.0,0.0,90.0
+4110078,Imbaú,cobertura baixa,50.6,45.29,0.0,0.0,78.94
+4120358,Pranchita,cobertura baixa,51.31,45.6,0.0,0.0,78.88
+4116208,Morretes,cobertura baixa,51.75,34.07,0.03,0.01,65.21
+4119608,Pitanga,cobertura baixa,51.98,45.26,0.0,0.0,68.83
+4113403,Leópolis,cobertura baixa,52.49,38.3,0.0,0.0,70.54
+4128807,Xambrê,cobertura baixa,52.52,40.84,0.0,0.0,83.76
+4102802,Bela Vista do Paraíso,cobertura baixa,52.85,43.61,0.0,0.0,96.9
+4125357,São Jorge do Patrocínio,cobertura baixa,53.15,44.82,0.0,0.0,76.17
+4117206,Nova Olímpia,cobertura baixa,53.34,45.34,0.0,0.0,97.0
+4122909,Salto do Itararé,cobertura baixa,53.35,40.14,0.36,0.63,77.14
+4113304,Laranjeiras do Sul,cobertura baixa,54.09,47.47,0.0,0.0,85.01
+4117305,Ortigueira,cobertura baixa,54.42,41.82,0.0,0.0,58.42
+4120606,Prudentópolis,cobertura baixa,54.73,48.74,0.0,0.0,57.15
+4121752,Reserva do Iguaçu,cobertura baixa,55.19,42.73,0.0,0.0,63.5
+4124400,Santo Antônio do Sudoeste,cobertura baixa,55.47,,0.0,0.0,66.38
+4104451,Cantagalo,cobertura baixa,55.86,46.89,0.0,0.0,83.42
+4118857,Perobal,cobertura baixa,56.47,45.42,0.0,0.0,80.98
+4128005,Ubiratã,cobertura baixa,56.77,50.58,0.0,0.0,90.21
+4111506,Ivaiporã,cobertura baixa,57.11,49.6,0.0,0.0,90.63
+4121505,Rebouças,cobertura baixa,58.05,49.64,0.0,0.0,64.06
+4106209,Contenda,cobertura baixa,58.1,47.41,0.08,0.01,72.28
+4121604,Renascença,cobertura baixa,58.22,51.24,0.0,0.0,62.97
+4116703,Nova Aurora,cobertura baixa,58.46,,0.0,0.0,83.32
+4125704,São Miguel do Iguaçu,cobertura baixa,58.47,52.63,0.0,0.0,74.63
+4111555,Ivaté,cobertura baixa,58.7,,0.0,0.0,93.37
+4127403,Terra Roxa,cobertura baixa,59.17,52.03,0.08,0.26,79.35
+4127858,Três Barras do Paraná,cobertura baixa,59.83,45.98,0.0,0.0,67.87
+4114401,Mangueirinha,cobertura baixa,60.01,52.4,0.0,0.0,62.93
+4122305,Rio Negro,cobertura baixa,60.02,52.03,0.04,0.06,83.61
+4100509,Altônia,cobertura baixa,60.62,49.89,0.0,0.0,81.14
+4127908,Tuneiras do Oeste,cobertura baixa,60.91,,0.0,0.0,63.74
+4122404,Rolândia,cobertura baixa,61.0,54.02,0.1,0.09,96.83
+4113205,Lapa,cobertura baixa,61.5,51.45,0.23,0.08,68.38
+4126108,São Tomé,cobertura baixa,62.0,49.3,0.73,0.47,91.51
+4124509,Santo Inácio,cobertura baixa,62.19,,0.03,0.05,90.48
+4107207,Dois Vizinhos,cobertura baixa,62.24,56.51,0.0,0.0,82.72
+4127502,Tibagi,cobertura baixa,62.7,48.33,0.0,0.0,69.41
+4106506,Coronel Vivida,cobertura baixa,62.74,54.5,0.03,0.06,77.36
+4120705,Quatiguá,cobertura baixa,62.92,54.72,0.11,0.21,99.05
+4100707,Alto Piquiri,cobertura baixa,63.8,54.37,0.0,0.0,90.99
+4105409,Chopinzinho,cobertura baixa,64.1,54.36,0.01,0.01,73.14
+4121703,Reserva,cobertura baixa,64.52,52.6,0.0,0.0,70.95
+4100202,Adrianópolis,sem rede,,,,,34.09
+4100806,Alvorada do Sul,sem rede,,,,,90.62
+4100905,Amaporã,sem rede,,90.88,0.0,0.0,86.72
+4101051,Anahy,sem rede,,,,,85.06
+4101200,Antonina,sem rede,,,,,87.69
+4101655,Arapuã,sem rede,,,,,57.4
+4101853,Ariranha do Ivaí,sem rede,,,,,45.04
+4102208,Atalaia,sem rede,,,,,84.45
+4102604,Barracão,sem rede,,,,,71.93
+4102752,Bela Vista da Caroba,sem rede,,,,,49.54
+4103008,Boa Esperança,sem rede,,,,,85.66
+4103024,Boa Esperança do Iguaçu,sem rede,,,,,51.72
+4103040,Boa Ventura de São Roque,sem rede,,,,,31.41
+4103057,Boa Vista da Aparecida,sem rede,,,,,82.2
+4103156,Bom Jesus do Sul,sem rede,,,,,36.89
+4103206,Bom Sucesso,sem rede,,,,,95.21
+4103222,Bom Sucesso do Sul,sem rede,,,,,54.27
+4103305,Borrazópolis,sem rede,,,,,86.4
+4103354,Braganey,sem rede,,,,,70.53
+4103370,Brasilândia do Sul,sem rede,,,,,90.23
+4103404,Cafeara,sem rede,,,,,82.98
+4103479,Cafezal do Sul,sem rede,,,,,91.82
+4103800,Cambira,sem rede,,,,,90.78
+4103909,Campina da Lagoa,sem rede,,,,,88.89
+4103958,Campina do Simão,sem rede,,,,,43.04
+4104055,Campo Bonito,sem rede,,,,,62.33
+4105003,Catanduvas,sem rede,,,,,63.05
+4106001,Congonhinhas,sem rede,,,,,61.47
+4106456,Coronel Domingos Soares,sem rede,,,,,56.96
+4106571,Cruzeiro do Iguaçu,sem rede,,,,,78.47
+4106704,Cruzeiro do Sul,sem rede,,,,,87.66
+4106852,Cruzmaltina,sem rede,,,,,68.16
+4107157,Diamante D'Oeste,sem rede,,,,,67.98
+4107124,Diamante do Sul,sem rede,,,,,52.11
+4107256,Douradina,sem rede,,,,,81.56
+4128633,Doutor Ulysses,sem rede,,,,,
+4107538,Entre Rios do Oeste,sem rede,,,,,100.0
+4107405,Enéas Marques,sem rede,,,,,37.2
+4107520,Esperança Nova,sem rede,,,,,67.12
+4107546,Espigão Alto do Iguaçu,sem rede,,,,,47.63
+4107553,Farol,sem rede,,,,,68.38
+4107736,Fernandes Pinheiro,sem rede,,,,,48.9
+4107850,Flor da Serra do Sul,sem rede,,,,,64.71
+4107900,Floresta,sem rede,,,,,100.0
+4108205,Formosa do Oeste,sem rede,,,,,81.9
+4108452,Foz do Jordão,sem rede,,,,,96.97
+4107702,Fênix,sem rede,,,,,89.56
+4108551,Godoy Moreira,sem rede,,,,,67.24
+4108650,Goioxim,sem rede,,,,,39.01
+4108700,Grandes Rios,sem rede,,,,,65.86
+4108908,Guairaçá,sem rede,,,,,89.25
+4108957,Guamiranga,sem rede,,,,,45.3
+4109104,Guaporema,sem rede,,,,,93.37
+4109203,Guaraci,sem rede,,,,,84.59
+4109658,Honório Serpa,sem rede,,,,,53.26
+4109757,Ibema,sem rede,,,,,86.52
+4110003,Iguaraçu,sem rede,,,,,82.43
+4110052,Iguatu,sem rede,,,,,74.33
+4110300,Inajá,sem rede,,,,,100.0
+4110409,Indianópolis,sem rede,,,,,82.26
+4110656,Iracema do Oeste,sem rede,,,,,83.62
+4110904,Itaguajé,sem rede,,,,,83.25
+4111209,Itapejara d'Oeste,sem rede,,,,,76.75
+4111308,Itaúna do Sul,sem rede,,,,,81.88
+4111605,Ivatuba,sem rede,,,,,84.25
+4112207,Janiópolis,sem rede,,,,,73.49
+4112306,Japira,sem rede,,,,,66.28
+4112603,Jardim Olinda,sem rede,,,,,69.25
+4112751,Jesuítas,sem rede,,,,,82.69
+4112959,Juranda,sem rede,,,,,86.86
+4113106,Kaloré,sem rede,,,,,70.97
+4113254,Laranjal,sem rede,,,,,47.34
+4113429,Lidianópolis,sem rede,,,,,71.9
+4113452,Lindoeste,sem rede,,,,,66.57
+4113734,Luiziana,sem rede,,,,,75.9
+4113809,Lupionópolis,sem rede,,,,,100.0
+4114351,Manfrinópolis,sem rede,,,,,32.31
+4115002,Marilena,sem rede,,,,,80.69
+4115358,Maripá,sem rede,,,,,69.17
+4115309,Mariópolis,sem rede,,,,,73.65
+4115457,Marquinho,sem rede,,,,,44.3
+4115507,Marumbi,sem rede,,,,,90.02
+4115739,Mato Rico,sem rede,,,,,34.23
+4115754,Mauá da Serra,sem rede,,,,,97.93
+4115853,Mercedes,sem rede,,,,,95.11
+4115903,Mirador,sem rede,,,,,70.28
+4116000,Miraselva,sem rede,,,,,84.96
+4116059,Missal,sem rede,,,,,65.34
+4116307,Munhoz de Melo,sem rede,,,,,87.42
+4116406,Nossa Senhora das Graças,sem rede,,,,,95.09
+4116505,Nova Aliança do Ivaí,sem rede,,,,,73.1
+4116802,Nova Cantu,sem rede,,,,,68.11
+4116950,Nova Esperança do Sudoeste,sem rede,,,,,45.47
+4117008,Nova Fátima,sem rede,,,,,89.29
+4117255,Nova Prata do Iguaçu,sem rede,,,,,69.29
+4117214,Nova Santa Bárbara,sem rede,,,,,91.85
+4117222,Nova Santa Rosa,sem rede,,,,,77.52
+4117271,Nova Tebas,sem rede,,,,,52.49
+4117297,Novo Itacolomi,sem rede,,,,,79.97
+4117404,Ourizona,sem rede,,,,,94.88
+4117453,Ouro Verde do Oeste,sem rede,,,,,74.6
+4118303,Paranapoema,sem rede,,,,,91.84
+4118451,Pato Bragado,sem rede,,,,,100.0
+4118600,Paula Freitas,sem rede,,,,,56.06
+4118709,Paulo Frontin,sem rede,,,,,37.64
+4118808,Peabiru,sem rede,,,,,89.02
+4119251,Pinhal de São Bento,sem rede,,,,,44.31
+4119657,Pitangueiras,sem rede,,,,,86.41
+4119103,Piên,sem rede,,,,,54.83
+4119707,Planaltina do Paraná,sem rede,,,,,71.09
+4119806,Planalto,sem rede,,,,,53.53
+4120150,Porto Barreiro,sem rede,,,,,59.1
+4120309,Porto Vitória,sem rede,,,,,56.86
+4120408,Presidente Castelo Branco,sem rede,,,,,
+4119004,Pérola d'Oeste,sem rede,,,,,58.51
+4120655,Quarto Centenário,sem rede,,,,,82.54
+4120853,Quatro Pontes,sem rede,,,,,76.21
+4121109,Quinta do Sol,sem rede,,,,,76.32
+4121257,Ramilândia,sem rede,,,,,60.45
+4121307,Rancho Alegre,sem rede,,,,,90.23
+4121356,Rancho Alegre D'Oeste,sem rede,,,,,87.3
+4122107,Rio Bom,sem rede,,,,,74.37
+4122156,Rio Bonito do Iguaçu,sem rede,,,,,38.66
+4122172,Rio Branco do Ivaí,sem rede,,,,,58.13
+4122206,Rio Branco do Sul,sem rede,,,,,67.79
+4122503,Roncador,sem rede,,,,,73.97
+4122701,Sabáudia,sem rede,,,,,91.67
+4122800,Salgado Filho,sem rede,,,,,63.39
+4123105,Santa Amélia,sem rede,,,,,77.58
+4123600,Santa Inês,sem rede,,,,,86.65
+4123824,Santa Lúcia,sem rede,,,,,74.19
+4123857,Santa Maria do Oeste,sem rede,,,,,37.26
+4123956,Santa Mônica,sem rede,,,,,75.42
+4124202,Santo Antônio do Caiuá,sem rede,,,,,97.04
+4124301,Santo Antônio do Paraíso,sem rede,,,,,93.38
+4126272,Saudade do Iguaçu,sem rede,,,,,66.68
+4126355,Serranópolis do Iguaçu,sem rede,,,,,64.11
+4126405,Sertaneja,sem rede,,,0.05,1.0,92.45
+4126652,Sulina,sem rede,,,,,51.87
+4124608,São Carlos do Ivaí,sem rede,,,,,96.9
+4124707,São Jerônimo da Serra,sem rede,,,,,90.07
+4125209,São Jorge d'Oeste,sem rede,,,,,67.25
+4125407,São José da Boa Vista,sem rede,,,,,65.4
+4125456,São José das Palmeiras,sem rede,,,,,75.68
+4125555,São Manoel do Paraná,sem rede,,,,,82.37
+4125753,São Pedro do Iguaçu,sem rede,,,,,70.74
+4125902,São Pedro do Paraná,sem rede,,,,,71.12
+4126009,São Sebastião da Amoreira,sem rede,,,,,93.11
+4126702,Tamboara,sem rede,,,,,91.34
+4126900,Tapira,sem rede,,,,,64.3
+4127601,Tijucas do Sul,sem rede,,,,,61.99
+4127882,Tunas do Paraná,sem rede,,,,,72.37
+4127957,Tupãssi,sem rede,,,,,88.9
+4128302,Uniflor,sem rede,,,,,86.23
+4128609,Verê,sem rede,,,,,59.19
+4128658,Virmond,sem rede,,,,,61.32
+4101150,Ângulo,sem rede,,,,,79.53

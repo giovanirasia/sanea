@@ -112,17 +112,23 @@ def monta() -> pd.DataFrame:
     casos = casos_anuais(mapa6)
     ctx = pd.read_csv(CONTEXTO)[["municipio", "ano", "populacao",
                                  "densidade", "pib_per_capita"]]
-    san = pd.read_csv(SINISA)[["municipio", "estrato", "IES0001"]]
+    san = pd.read_csv(SINISA)[["municipio", "estrato", "IES0001", "IAG0001"]]
 
     d = (casos.merge(ctx, on=["municipio", "ano"], how="inner")
               .merge(san, on="municipio", how="left"))
 
     # sem rede e cobertura zero, nao dado faltante
     d["esgoto_pct"] = d["IES0001"].fillna(0.0)
+    # agua entra como covariavel: no estado inteiro, cobertura de esgoto e de
+    # agua correlacionam 0,667, entao sem controlar agua o coeficiente do
+    # esgoto absorve o efeito de "ter qualquer infraestrutura de saneamento".
+    # Na BP3 a correlacao era 0,343, e por isso o problema so ficou visivel na
+    # escala estadual.
+    d["agua_pct"] = d["IAG0001"]
     d["log_pib"] = np.log(d["pib_per_capita"])
     d["log_dens"] = np.log(d["densidade"])
     d["ano_c"] = d["ano"] - d["ano"].min()
-    return d.dropna(subset=["populacao", "log_pib", "log_dens"])
+    return d.dropna(subset=["populacao", "log_pib", "log_dens", "agua_pct"])
 
 
 def roda(d: pd.DataFrame, termos: pd.DataFrame, rotulo: str) -> None:
@@ -163,12 +169,16 @@ def main() -> None:
         log_pib=d["log_pib"], log_dens=d["log_dens"], ano=d["ano_c"])
     roda(d, comp, "2) Estratos, controlando renda, densidade e tendencia")
 
-    # 3) dose-resposta continua
+    # 3) dose-resposta continua, sem controlar agua
     cont = pd.DataFrame({
         "esgoto_10pp": d["esgoto_pct"] / 10.0,
         "log_pib": d["log_pib"], "log_dens": d["log_dens"], "ano": d["ano_c"],
     }, index=d.index)
     roda(d, cont, "3) Dose-resposta: cobertura de esgoto, por 10 pontos")
+
+    # 4) o mesmo, controlando cobertura de agua
+    roda(d, cont.assign(agua_10pp=d["agua_pct"] / 10.0),
+         "4) Dose-resposta, controlando cobertura de agua")
 
     print("Razao > 1 = mais internacoes. EP agrupado por municipio.")
 
