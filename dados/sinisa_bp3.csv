@@ -1,0 +1,36 @@
+cod_ibge,municipio,estrato,IES0001,IES0007,IES3001,IES3003,IAG0001
+4115606,Matelandia,cobertura alta,72.88,65.7,0.0,0.0,80.56
+4108809,Guaira,cobertura alta,76.03,65.54,0.09,0.11,89.45
+4117909,Palotina,cobertura alta,76.65,64.69,0.0,0.0,92.05
+4128559,Vera Cruz do Oeste,cobertura alta,79.25,74.91,0.09,0.28,80.59
+4106308,Corbelia,cobertura alta,81.86,,0.03,0.05,87.9
+4105300,Ceu Azul,cobertura alta,81.87,73.37,0.0,0.0,82.37
+4103453,Cafelandia,cobertura alta,90.4,90.71,0.03,0.14,90.86
+4127700,Toledo,cobertura alta,91.78,86.42,0.06,0.13,91.91
+4104808,Cascavel,cobertura alta,96.25,97.91,0.21,0.09,91.85
+4108304,Foz do Iguacu,cobertura alta,96.33,83.42,0.12,0.04,99.45
+4114609,Marechal Candido Rondon,cobertura baixa,35.69,34.35,0.08,1.0,92.67
+4104600,Capitao Leonidas Marques,cobertura baixa,40.59,33.65,0.0,0.0,83.42
+4115804,Medianeira,cobertura baixa,42.69,38.96,0.01,0.01,92.83
+4123501,Santa Helena,cobertura baixa,43.95,39.23,0.03,0.01,50.69
+4124020,Santa Tereza do Oeste,cobertura baixa,46.69,41.4,0.04,0.17,90.7
+4102000,Assis Chateaubriand,cobertura baixa,48.17,42.79,0.05,0.04,90.73
+4116703,Nova Aurora,cobertura baixa,58.46,,0.0,0.0,83.32
+4125704,Sao Miguel do Iguacu,cobertura baixa,58.47,52.63,0.0,0.0,74.63
+4127403,Terra Roxa,cobertura baixa,59.17,52.03,0.08,0.26,79.35
+4127858,Tres Barras do Parana,cobertura baixa,59.83,45.98,0.0,0.0,67.87
+4103057,Boa Vista da Aparecida,sem rede,,,,,82.2
+4103354,Braganey,sem rede,,,,,70.53
+4107157,Diamante D'Oeste,sem rede,,,,,67.98
+4107538,Entre Rios do Oeste,sem rede,,,,,100.0
+4109757,Ibema,sem rede,,,,,86.52
+4110656,Iracema do Oeste,sem rede,,,,,83.62
+4112751,Jesuitas,sem rede,,,,,82.69
+4113452,Lindoeste,sem rede,,,,,66.57
+4115853,Mercedes,sem rede,,,,,95.11
+4117453,Ouro Verde do Oeste,sem rede,,,,,74.6
+4118451,Pato Bragado,sem rede,,,,,100.0
+4120853,Quatro Pontes,sem rede,,,,,76.21
+4121257,Ramilandia,sem rede,,,,,60.45
+4123824,Santa Lucia,sem rede,,,,,74.19
+4125456,Sao Jose das Palmeiras,sem rede,,,,,75.68
