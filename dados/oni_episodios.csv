@@ -1,0 +1,44 @@
+tipo,inicio,fim,temporadas,pico_temporada,pico_oni,intensidade,em_curso
+El Nino,SON 2014,MAM 2016,19,NDJ 2015,2.75,muito forte,False
+El Nino,AMJ 1997,MAM 1998,12,OND 1997,2.4,muito forte,False
+El Nino,AMJ 1982,MJJ 1983,14,NDJ 1982,2.23,muito forte,False
+El Nino,AMJ 1972,FMA 1973,11,NDJ 1972,2.12,muito forte,False
+El Nino,AMJ 2023,MAM 2024,12,NDJ 2023,2.06,muito forte,False
+La Nina,AMJ 1973,JJA 1974,15,NDJ 1973,-2.03,muito forte,False
+El Nino,MJJ 1965,MAM 1966,11,SON 1965,1.98,forte,False
+La Nina,AMJ 1988,AMJ 1989,13,NDJ 1988,-1.85,forte,False
+El Nino,MAM 1957,JJA 1958,16,DJF 1958,1.81,forte,False
+El Nino,MJJ 1991,MJJ 1992,13,DJF 1992,1.71,forte,False
+El Nino,ASO 1986,JFM 1988,18,JAS 1987,1.7,forte,False
+La Nina,AMJ 1954,JAS 1956,28,OND 1955,-1.67,forte,False
+La Nina,JJA 1998,JFM 2001,32,DJF 2000,-1.66,forte,False
+La Nina,SON 1974,FMA 1976,18,NDJ 1975,-1.65,forte,False
+La Nina,JJA 2007,MJJ 2008,12,DJF 2008,-1.64,forte,False
+La Nina,MJJ 2010,MAM 2011,11,SON 2010,-1.64,forte,False
+El Nino,JAS 2009,FMA 2010,8,NDJ 2009,1.56,forte,False
+La Nina,DJF 1950,JJA 1950,7,DJF 1950,-1.53,forte,False
+La Nina,JJA 1970,DJF 1972,19,JFM 1971,-1.38,moderado,False
+El Nino,MJJ 1963,JFM 1964,9,OND 1963,1.37,moderado,False
+El Nino,MJJ 2002,JFM 2003,9,OND 2002,1.31,moderado,False
+La Nina,JAS 2020,MAM 2021,9,OND 2020,-1.2,moderado,False
+El Nino,MJJ 1951,DJF 1952,8,SON 1951,1.15,moderado,False
+La Nina,SON 1984,MJJ 1985,9,NDJ 1984,-1.14,moderado,False
+El Nino,SON 1968,AMJ 1969,8,DJF 1969,1.13,moderado,False
+El Nino,ASO 1994,FMA 1995,7,NDJ 1994,1.09,moderado,False
+La Nina,JAS 2011,JFM 2012,7,OND 2011,-1.02,moderado,False
+La Nina,JAS 1995,FMA 1996,8,OND 1995,-1.0,moderado,False
+El Nino,MAM 2026,AMJ 2026,2,AMJ 2026,0.98,fraco,True
+El Nino,ASO 2018,MJJ 2019,10,OND 2018,0.97,fraco,False
+La Nina,ASO 2021,DJF 2023,17,ASO 2022,-0.97,fraco,False
+El Nino,ASO 2006,DJF 2007,5,OND 2006,0.94,fraco,False
+El Nino,ASO 1976,JFM 1977,6,OND 1976,0.86,fraco,False
+La Nina,SON 2017,FMA 2018,6,NDJ 2017,-0.86,fraco,False
+El Nino,JAS 1969,DJF 1970,6,SON 1969,0.86,fraco,False
+La Nina,OND 2008,FMA 2009,5,DJF 2009,-0.85,fraco,False
+La Nina,OND 2005,FMA 2006,5,DJF 2006,-0.85,fraco,False
+El Nino,JFM 1953,DJF 1954,12,SON 1953,0.84,fraco,False
+La Nina,AMJ 1964,DJF 1965,9,OND 1964,-0.82,fraco,False
+El Nino,ASO 1977,DJF 1978,5,OND 1977,0.81,fraco,False
+El Nino,JAS 2004,JFM 2005,7,ASO 2004,0.7,fraco,False
+El Nino,OND 2019,FMA 2020,5,NDJ 2019,0.66,fraco,False
+El Nino,OND 1958,FMA 1959,5,JFM 1959,0.62,fraco,False
