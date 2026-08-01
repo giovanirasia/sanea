@@ -53,6 +53,7 @@ from statsmodels.discrete.discrete_model import NegativeBinomial
 RAIZ = Path(__file__).resolve().parent.parent
 SINISA = RAIZ / "dados" / "sinisa_bp3.csv"
 MUNICIPIOS = RAIZ / "dados" / "bp3_municipios.csv"
+POPULACAO = RAIZ / "dados" / "populacao_bp3.csv"
 CACHE_SIH = RAIZ / "dados" / "bruto" / "sih"
 CACHE_CHUVA = RAIZ / "dados" / "bruto" / "chuva"
 CACHE_TEMP = RAIZ / "dados" / "bruto" / "extremos"
@@ -124,7 +125,8 @@ def chuva_por_municipio(mun: pd.DataFrame) -> pd.DataFrame:
     return m
 
 
-def ajusta(d: pd.DataFrame, coluna: str, divisor: float):
+def ajusta(d: pd.DataFrame, coluna: str, divisor: float,
+           denominador: str = "populacao"):
     dd = d.dropna(subset=[coluna, "temp_media"]).copy()
     if dd["casos"].sum() < 100:
         return None
@@ -136,7 +138,8 @@ def ajusta(d: pd.DataFrame, coluna: str, divisor: float):
         "temp": dd["temp_media"].to_numpy(),
         "exposicao": dd[coluna].to_numpy() / divisor,
     }, index=dd.index))
-    m = NegativeBinomial(dd["casos"], X, offset=np.log(dd["total"])).fit(disp=0)
+    m = NegativeBinomial(dd["casos"], X,
+                         offset=np.log(dd[denominador])).fit(disp=0)
     lo, hi = m.conf_int().loc["exposicao"]
     return (float(np.exp(m.params["exposicao"])), float(np.exp(lo)),
             float(np.exp(hi)), float(m.pvalues["exposicao"]))
@@ -150,21 +153,38 @@ def main() -> None:
     casos = casos_por_municipio(mapa6)
     chuva = chuva_por_municipio(mun)
 
+    pop = pd.read_csv(POPULACAO)[["municipio", "ano", "populacao"]]
+
     d = (casos.merge(chuva, on=["ano", "mes", "municipio"], how="inner")
-              .merge(est, on="municipio", how="left"))
+              .merge(est, on="municipio", how="left")
+              .merge(pop, on=["municipio", "ano"], how="left"))
 
     agg = (d.groupby(["estrato", "ano", "mes"], as_index=False)
            .agg(casos=("casos", "sum"), total=("total", "sum"),
+                populacao=("populacao", "sum"),
                 anomalia_mm=("anomalia_mm", "mean"),
                 dias_20mm=("dias_20mm", "mean"),
                 temp_media=("temp_media", "mean"))
            .sort_values(["estrato", "ano", "mes"]))
     agg.to_csv(SAIDA, index=False)
 
-    print("casos A00-A09 por estrato, no periodo inteiro:")
-    print(agg.groupby("estrato")[["casos", "total"]].sum()
-          .assign(por_mil=lambda x: (1000 * x["casos"] / x["total"]).round(1))
-          .to_string())
+    # A comparacao que motivou este passo: o gradiente sobrevive a troca de
+    # denominador? Proporcao infla onde falta acesso a alta complexidade;
+    # incidencia por habitante nao tem esse vies.
+    g = agg.groupby("estrato").agg(casos=("casos", "sum"),
+                                   total=("total", "sum"),
+                                   pop_mes=("populacao", "sum"))
+    g["por_mil_internacoes"] = (1000 * g["casos"] / g["total"]).round(1)
+    g["por_100mil_hab_ano"] = (100_000 * 12 * g["casos"] / g["pop_mes"]).round(1)
+    ordem = ["sem rede", "cobertura baixa", "cobertura alta"]
+    g = g.reindex(ordem)
+
+    print("Gradiente por estrato, nos dois denominadores:")
+    print(g[["casos", "por_mil_internacoes", "por_100mil_hab_ano"]].to_string())
+    print()
+    for col in ["por_mil_internacoes", "por_100mil_hab_ano"]:
+        raz = g.loc["sem rede", col] / g.loc["cobertura alta", col]
+        print(f"  razao sem rede / cobertura alta ({col}): {raz:.2f}x")
     print()
 
     for col, (rotulo, div) in EXPOSICOES.items():
