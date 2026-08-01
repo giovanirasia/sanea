@@ -14,8 +14,16 @@ Metodo
   - anomalia = total do mes menos a normal daquele mes
   - fase do ENSO no mes: ONI da temporada centrada nele
       (DJF centra em janeiro, JFM em fevereiro, ..., NDJ em dezembro)
-  - comparacao El Nino forte/muito forte contra neutro por Mann-Whitney, que
-    nao assume normalidade — chuva mensal e assimetrica
+  - comparacao por Mann-Whitney bilateral, que nao assume normalidade (chuva
+    mensal e assimetrica), contra meses neutros DOS MESMOS MESES DO CALENDARIO:
+    as classes intensas do ONI so ocorrem entre setembro e fevereiro, porque o
+    indice so cruza +-1.5 perto do pico do evento
+
+Resultado (serie 1950-2026)
+  - El Nino forte ou muito forte: +42.5 mm/mes acima do neutro, p = 0.0001
+  - La Nina forte: +34.6 mm/mes, p = 0.17 — nao distinguivel de neutro com
+    n = 25. A anomalia positiva aparente nao e sinal invertido, e ruido; ler
+    mediana contra zero em dado assimetrico e o que a fazia parecer achado.
 
 Limites
   - ERA5 e reanalise, nao pluviometro: e coerente no espaco e no tempo, mas nao
@@ -141,6 +149,41 @@ def fases_oni() -> pd.DataFrame:
     return oni
 
 
+def compara(bacia: pd.DataFrame, fases: list[str], rotulo: str) -> None:
+    """Compara fases contra meses neutros DOS MESMOS MESES DO CALENDARIO.
+
+    A restricao nao e refinamento: o ONI so cruza +-1.5 perto do pico do evento,
+    e o pico cai sempre entre setembro e fevereiro. As classes intensas, logo,
+    nao existem no outono nem no inverno. Comparar contra o conjunto neutro
+    inteiro seria comparar estacao chuvosa com o ano todo, e o resultado diria
+    mais sobre o calendario do que sobre o ENSO.
+
+    O teste e bilateral de proposito: para La Nina a direcao esperada e a
+    oposta, e escolher a cauda depois de ver o dado inflaria a significancia.
+    """
+    alvo = bacia[bacia["fase"].isin(fases)]
+    if alvo.empty:
+        print(f"{rotulo}: nenhum mes nessa classe")
+        return
+
+    meses = sorted(int(m) for m in alvo["mes"].unique())
+    neutro = bacia[(bacia["fase"] == "neutro") & (bacia["mes"].isin(meses))]
+
+    ma = alvo["anomalia_mm"].median()
+    mn = neutro["anomalia_mm"].median()
+    u, p = mannwhitneyu(alvo["anomalia_mm"], neutro["anomalia_mm"],
+                        alternative="two-sided")
+
+    print(f"{rotulo} contra neutro (Mann-Whitney bilateral, mesmos meses):")
+    print(f"  meses do calendario: {meses}")
+    print(f"  n = {len(alvo)} contra {len(neutro)} neutros")
+    print(f"  anomalia mediana: {ma:+.1f} mm/mes contra {mn:+.1f} mm/mes")
+    print(f"  efeito: {ma - mn:+.1f} mm/mes")
+    print(f"  U = {u:.0f}, p = {p:.4f}")
+    print("  " + ("sinal detectavel" if p < 0.05 else
+                  f"nao da para distinguir de neutro — n = {len(alvo)} e pouco"))
+
+
 def main() -> None:
     mensal_mun = serie_mensal()
 
@@ -186,34 +229,21 @@ def main() -> None:
     print()
     print(resumo.to_string(index=False))
 
-    # o teste que interessa: El Nino forte ou mais contra neutro
-    forte = bacia[bacia["fase"].isin(["El Nino forte", "El Nino muito forte"])]
-    neutro = bacia[bacia["fase"] == "neutro"]
-    u, p = mannwhitneyu(forte["anomalia_mm"], neutro["anomalia_mm"],
-                        alternative="greater")
-
-    # O efeito tem de ser medido na mesma grandeza em que o teste roda: a
-    # anomalia, que ja desconta o mes do calendario. A diferenca das medianas
-    # de chuva bruta seria maior, mas parte dela e so sazonalidade — El Nino
-    # tende a picar em DJF, que ali e estacao chuvosa.
-    dif = forte["anomalia_mm"].median() - neutro["anomalia_mm"].median()
+    print()
+    compara(bacia, ["El Nino forte", "El Nino muito forte"], "El Nino forte+")
+    print()
+    compara(bacia, ["La Nina forte"], "La Nina forte")
 
     print()
-    print("El Nino forte/muito forte contra neutro (Mann-Whitney, unilateral):")
-    print(f"  n = {len(forte)} meses de El Nino forte+, {len(neutro)} neutros")
-    print(f"  anomalia mediana: {forte['anomalia_mm'].median():+.1f} mm/mes "
-          f"contra {neutro['anomalia_mm'].median():+.1f} mm/mes")
-    print(f"  efeito: {dif:+.1f} mm/mes, ja descontado o mes do calendario")
-    print(f"  U = {u:.0f}, p = {p:.4f}")
-    print("  " + ("sinal detectavel" if p < 0.05 else
-                  "nao da para distinguir de neutro"))
-    print()
-    print("Duas ressalvas de leitura:")
+    print("Tres ressalvas de leitura:")
     print("  - compare as fases entre si, nao contra zero: a anomalia mediana e")
     print("    negativa em quase todas porque a normal e media e a chuva mensal")
     print("    e assimetrica a direita")
     print("  - a coluna de chuva bruta nao desconta sazonalidade; serve para dar")
     print("    ordem de grandeza, nao para medir efeito")
+    print("  - as classes intensas so existem em Set-Fev, porque o ONI so cruza")
+    print("    +-1.5 perto do pico do evento; por isso o grupo de comparacao e")
+    print("    restrito aos mesmos meses do calendario")
 
 
 if __name__ == "__main__":
