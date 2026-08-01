@@ -1,0 +1,12 @@
+# credenciais e tokens — nunca versionar
+.env
+.token_cache.json
+
+# dumps brutos da API (grandes, reprodutiveis)
+dados/bruto/
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/

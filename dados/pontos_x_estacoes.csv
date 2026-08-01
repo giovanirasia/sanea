@@ -1,0 +1,35 @@
+﻿municipio,ponto_rio,ponto_grupo,iqa,fluvio_mesmo_rio,fluvio_no_municipio,qa_mesmo_rio,qa_no_municipio,pluvio_no_municipio,vinculo
+Barueri,Rio Tiete,Tietetes / SOS Mata Atlantica,Pessima,,0,,1,3,so chuva
+Biritiba-Mirim,Rio Tiete,Observando os Rios - Biritiba,Boa,,0,62076000;62076100;62085200,3,2,qualidade no rio
+Guarulhos,Rio Tiete,Observando o Tiete - Guarulhos,Regular,62155150,1,62155100;62155150;62155200;62155300;62155400;62156000,8,5,rio medido
+Itapecerica da Serra,Rio Itaquaciara,BIPI,Regular,,0,,0,3,so chuva
+Itaquaquecetuba,Rio Tiete,Observando os Rios - Itaquaquecetuba,Ruim,,0,62153800,3,6,qualidade no rio
+Maua,Nascente do Rio Tamanduatei,E.M. Cora Coralina,Regular,,0,62224150,1,8,qualidade no rio
+Ribeirao Pires,Rio Taiacupeba-Mirim,Acao Ecologica - I,Regular,,1,,11,6,so chuva
+Ribeirao Pires,Ribeirao Pires,Acao Ecologica - II,Regular,62284900,1,62284900,11,6,rio medido
+Rio Grande da Serra,Afluente do Rio Pequeno,E.E. Poetisa Cora Coralina,Ruim,,0,,0,5,so chuva
+Santo Andre,Rio Comprido,Rio Comprido + UFABC,Regular,,0,,0,19,so chuva
+Sao Caetano do Sul,Ribeirao dos Meninos,Bigua / Projeto IPH,Pessima,,0,,2,4,so chuva
+Sao Paulo,Rio Pinheiros,A Voz dos Rios,Pessima,62300600;62300610;62300700,8,62300500;62300550;62300560;62300570;62300580;62300600;62300610;62300700,40,96,rio medido
+Sao Paulo,Rio Pinheiros,A Voz dos Rios 2,Pessima,62300600;62300610;62300700,8,62300500;62300550;62300560;62300570;62300580;62300600;62300610;62300700,40,96,rio medido
+Sao Paulo,Rio Pinheiros,A Voz dos Rios 3,Pessima,62300600;62300610;62300700,8,62300500;62300550;62300560;62300570;62300580;62300600;62300610;62300700,40,96,rio medido
+Sao Paulo,Riacho Congonhas,Colegio Magno,Regular,,8,,40,96,so chuva
+Sao Paulo,Corrego do Sapateiro,Colegio Mater Dei,Regular,,8,,40,96,so chuva
+Sao Paulo,Corrego do Sapateiro,Colegio Objetivo - Luis Gois,Boa,,8,,40,96,so chuva
+Sao Paulo,Corrego das Corujas,Ecobairros,Regular,,8,,40,96,so chuva
+Sao Paulo,Riacho do Ipiranga,E.T.E.C. Getulio Vargas,Ruim,,8,62237000,40,96,qualidade no rio
+Sao Paulo,Corrego do Sapateiro,Insper 1,Regular,,8,,40,96,so chuva
+Sao Paulo,Corrego Sao Jose,Missao Ambiental Ipiranga,Ruim,,8,,40,96,so chuva
+Sao Paulo,Riacho Agua Podre,Moradores do Riacho Agua Podre,Ruim,,8,,40,96,so chuva
+Sao Paulo,Corrego Agua Preta,Ocupe e Abrace,Regular,,8,,40,96,so chuva
+Sao Paulo,Corrego Agua Preta,Ocupe e Abrace 2,Regular,,8,,40,96,so chuva
+Sao Paulo,Riacho formador do lago,Parque M'Boi Mirim,Regular,,8,,40,96,so chuva
+Sao Paulo,Fazenda da Velha,PNM Fazenda do Carmo,Regular,,8,,40,96,so chuva
+Sao Paulo,Riacho do Parque Shangrila,Parque Shangrila,Regular,,8,,40,96,so chuva
+Sao Paulo,Represa Billings,SESC Interlagos,Regular,62222500,8,62222500;62222700,40,96,rio medido
+Sao Paulo,Rio Jacu,UNIFESP,Ruim,,8,,40,96,so chuva
+Sao Paulo,Corrego Sao Jose,UNISA,Ruim,,8,,40,96,so chuva
+Sao Paulo,Rio Tiete,UniSant'Anna,Ruim,,8,62223100,40,96,qualidade no rio
+Suzano,Rio Tiete,Observando os Rios - Suzano,Ruim,,1,,6,3,so chuva
+Suzano,Corrego do Balainho,Rotary Suzano e Amigos 1,Regular,,1,,6,3,so chuva
+Suzano,Corrego do Balainho,Rotary Suzano e Amigos 2,Regular,,1,,6,3,so chuva

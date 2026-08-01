@@ -1,0 +1,13 @@
+﻿municipio,mun_sinisa,prestador,pontos_n,pior,pessima,ruim,atend_pop_rede,coletado_s_agua,tratado_s_agua,tratado_s_coletado,extrav_por_km,extrav_por_recl
+Santo Andre,Santo André,Companhia de Saneamento Básico do Estado de São Paulo,1,Regular,0,0,100.0,79.15,63.01,79.6,0.35,0.07
+Sao Caetano do Sul,São Caetano do Sul,"Sistema de Água, Esgoto e Saneamento Ambiental",1,Pessima,1,0,100.0,85.0,85.0,100.0,0.0,
+Sao Paulo,São Paulo,Companhia de Saneamento Básico do Estado de São Paulo,20,Pessima,3,6,99.26,76.06,66.32,88.89,0.28,0.04
+Guarulhos,Guarulhos,Companhia de Saneamento Básico do Estado de São Paulo,1,Regular,0,0,99.22,66.98,15.35,22.92,0.33,0.05
+Barueri,Barueri,Companhia de Saneamento Básico do Estado de São Paulo,1,Pessima,1,0,98.27,67.97,44.35,98.69,0.27,0.04
+Suzano,Suzano,Companhia de Saneamento Básico do Estado de São Paulo,3,Ruim,0,1,94.37,75.38,52.87,85.62,0.25,0.04
+Maua,Mauá,BRK Ambiental - Mauá S.A.,1,Regular,0,0,91.29,89.78,82.74,92.17,0.74,0.23
+Ribeirao Pires,Ribeirão Pires,Companhia de Saneamento Básico do Estado de São Paulo,2,Regular,0,0,82.75,65.16,52.18,80.07,0.29,0.09
+Itaquaquecetuba,Itaquaquecetuba,Companhia de Saneamento Básico do Estado de São Paulo,1,Ruim,0,1,80.35,54.67,19.39,35.47,0.32,0.06
+Rio Grande da Serra,Rio Grande da Serra,Companhia de Saneamento Básico do Estado de São Paulo,1,Ruim,0,1,74.14,129.99,111.74,85.96,0.11,0.03
+Itapecerica da Serra,Itapecerica da Serra,Companhia de Saneamento Básico do Estado de São Paulo,1,Regular,0,0,65.27,45.46,44.55,98.0,0.17,0.05
+Biritiba-Mirim,Biritiba-Mirim,Companhia de Saneamento Básico do Estado de São Paulo,1,Boa,0,0,52.55,69.26,68.66,99.13,0.5,0.21

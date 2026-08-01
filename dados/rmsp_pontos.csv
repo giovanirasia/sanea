@@ -1,0 +1,35 @@
+﻿municipio,grupo,ponto,iqa,cod_ibge,cod_IBGE,mun_sinisa,UF,rm,prestador,atend_pop_rede,coletado_s_agua,tratado_s_agua,tratado_s_coletado,extrav_por_km,extrav_por_recl,iqa_num
+Barueri,Tietetes / SOS Mata Atlantica,Rio Tiete,Pessima,3505708,3505708,Barueri,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,98.27,67.97,44.35,98.69,0.27,0.04,0
+Biritiba-Mirim,Observando os Rios - Biritiba,Rio Tiete,Boa,3506607,3506607,Biritiba-Mirim,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,52.55,69.26,68.66,99.13,0.5,0.21,3
+Guarulhos,Observando o Tiete - Guarulhos,Rio Tiete,Regular,3518800,3518800,Guarulhos,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.22,66.98,15.35,22.92,0.33,0.05,2
+Itapecerica da Serra,BIPI,Rio Itaquaciara,Regular,3522208,3522208,Itapecerica da Serra,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,65.27,45.46,44.55,98.0,0.17,0.05,2
+Itaquaquecetuba,Observando os Rios - Itaquaquecetuba,Rio Tiete,Ruim,3523107,3523107,Itaquaquecetuba,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,80.35,54.67,19.39,35.47,0.32,0.06,1
+Maua,E.M. Cora Coralina,Nascente do Rio Tamanduatei,Regular,3529401,3529401,Mauá,SP,RM de São Paulo (SP),BRK Ambiental - Mauá S.A.,91.29,89.78,82.74,92.17,0.74,0.23,2
+Ribeirao Pires,Acao Ecologica - I,Rio Taiacupeba-Mirim,Regular,3543303,3543303,Ribeirão Pires,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,82.75,65.16,52.18,80.07,0.29,0.09,2
+Ribeirao Pires,Acao Ecologica - II,Ribeirao Pires,Regular,3543303,3543303,Ribeirão Pires,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,82.75,65.16,52.18,80.07,0.29,0.09,2
+Rio Grande da Serra,E.E. Poetisa Cora Coralina,Afluente do Rio Pequeno,Ruim,3544103,3544103,Rio Grande da Serra,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,74.14,129.99,111.74,85.96,0.11,0.03,1
+Santo Andre,Rio Comprido + UFABC,Rio Comprido,Regular,3547809,3547809,Santo André,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,100.0,79.15,63.01,79.6,0.35,0.07,2
+Sao Caetano do Sul,Bigua / Projeto IPH,Ribeirao dos Meninos,Pessima,3548807,3548807,São Caetano do Sul,SP,RM de São Paulo (SP),"Sistema de Água, Esgoto e Saneamento Ambiental",100.0,85.0,85.0,100.0,0.0,,0
+Sao Paulo,A Voz dos Rios,Rio Pinheiros,Pessima,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,0
+Sao Paulo,A Voz dos Rios 2,Rio Pinheiros,Pessima,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,0
+Sao Paulo,A Voz dos Rios 3,Rio Pinheiros,Pessima,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,0
+Sao Paulo,Colegio Magno,Riacho Congonhas,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,Colegio Mater Dei,Corrego do Sapateiro,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,Colegio Objetivo - Luis Gois,Corrego do Sapateiro,Boa,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,3
+Sao Paulo,Ecobairros,Corrego das Corujas,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,E.T.E.C. Getulio Vargas,Riacho do Ipiranga,Ruim,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,1
+Sao Paulo,Insper 1,Corrego do Sapateiro,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,Missao Ambiental Ipiranga,Corrego Sao Jose,Ruim,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,1
+Sao Paulo,Moradores do Riacho Agua Podre,Riacho Agua Podre,Ruim,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,1
+Sao Paulo,Ocupe e Abrace,Corrego Agua Preta,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,Ocupe e Abrace 2,Corrego Agua Preta,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,Parque M'Boi Mirim,Riacho formador do lago,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,PNM Fazenda do Carmo,Fazenda da Velha,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,Parque Shangrila,Riacho do Parque Shangrila,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,SESC Interlagos,Represa Billings,Regular,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,2
+Sao Paulo,UNIFESP,Rio Jacu,Ruim,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,1
+Sao Paulo,UNISA,Corrego Sao Jose,Ruim,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,1
+Sao Paulo,UniSant'Anna,Rio Tiete,Ruim,3550308,3550308,São Paulo,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,99.26,76.06,66.32,88.89,0.28,0.04,1
+Suzano,Observando os Rios - Suzano,Rio Tiete,Ruim,3552502,3552502,Suzano,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,94.37,75.38,52.87,85.62,0.25,0.04,1
+Suzano,Rotary Suzano e Amigos 1,Corrego do Balainho,Regular,3552502,3552502,Suzano,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,94.37,75.38,52.87,85.62,0.25,0.04,2
+Suzano,Rotary Suzano e Amigos 2,Corrego do Balainho,Regular,3552502,3552502,Suzano,SP,RM de São Paulo (SP),Companhia de Saneamento Básico do Estado de São Paulo,94.37,75.38,52.87,85.62,0.25,0.04,2

@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Observando os Rios × SINISA — RMSP</title>
+<style>
+  :root {
+    --paper:   #FAFBF9;
+    --ink:     #10201D;
+    --ink-2:   #3A4B47;
+    --ink-3:   #6E7C78;
+    --rule:    #D6DBD6;
+    --rule-2:  #EAEEE9;
+    --accent:  #0E6E63;
+    --deep:    #08201D;
+
+    --boa:     #12876B;
+    --regular: #96907F;
+    --ruim:    #D2451A;
+    --pessima: #8C1D2B;
+
+    --display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --body: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --data: "Cascadia Mono", Consolas, "SF Mono", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page { size: A4; margin: 0; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 9.6pt;
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 18mm 17mm 15mm;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.14; text-wrap: balance; }
+
+  .eyebrow {
+    font-family: var(--data); font-size: 6.6pt; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+
+  /* ============ CAPA ============ */
+  .capa {
+    background: var(--deep);
+    color: #EAF2EF;
+    padding: 22mm 17mm 15mm;
+    justify-content: space-between;
+  }
+  /* espinha cromática da escala de IQA */
+  .espinha { position: absolute; left: 0; top: 0; bottom: 0; width: 7mm; display: flex; flex-direction: column; }
+  .espinha i { flex: 1; display: block; }
+
+  .capa .marca { font-family: var(--data); font-size: 7pt; letter-spacing: 0.18em; text-transform: uppercase; color: #7FB3A6; }
+  .capa h1 { font-size: 33pt; letter-spacing: -0.02em; color: #fff; max-width: 15.5cm; }
+  .capa .sub { font-size: 11.5pt; color: #B9CFC9; max-width: 13cm; margin-top: 7mm; line-height: 1.5; }
+
+  .capa-num { display: flex; gap: 14mm; margin-top: 12mm; }
+  .capa-num div { display: flex; flex-direction: column; gap: 1mm; }
+  .capa-num .v { font-family: var(--data); font-size: 21pt; color: #4FBFA8; letter-spacing: -0.02em; }
+  .capa-num .l { font-size: 8pt; color: #8FA9A3; max-width: 34mm; line-height: 1.35; }
+
+  .capa-pe { display: flex; justify-content: space-between; align-items: flex-end; font-size: 8pt; color: #7E9993; border-top: 1px solid #1E3B35; padding-top: 5mm; }
+  .capa-pe b { color: #CFE0DB; font-weight: 600; }
+
+  /* ============ CABEÇALHO INTERNO ============ */
+  .cab { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.6pt solid var(--ink); padding-bottom: 3mm; margin-bottom: 8mm; }
+  .cab .t { font-family: var(--data); font-size: 6.6pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+  .cab .n { font-family: var(--display); font-size: 13pt; color: var(--accent); }
+
+  h2.sec { font-size: 17pt; margin-bottom: 4mm; max-width: 15cm; }
+  h3.sub { font-family: var(--body); font-size: 9.4pt; font-weight: 700; margin-bottom: 1.5mm; }
+  p { max-width: 16cm; }
+  p + p { margin-top: 3mm; }
+  .lead { font-size: 10.6pt; color: var(--ink-2); }
+
+  .bloco { display: flex; flex-direction: column; gap: 6mm; }
+  .espaco { flex: 1; }
+
+  /* ============ DESTAQUE ============ */
+  .destaque { background: #F1F4F1; border-left: 2.4pt solid var(--accent); padding: 6mm 7mm; }
+  .destaque h3 { font-family: var(--display); font-size: 13pt; font-weight: 600; max-width: 13cm; }
+  .destaque p { font-size: 9.2pt; color: var(--ink-2); margin-top: 3mm; }
+
+  .stats { display: flex; gap: 12mm; margin-top: 5mm; }
+  .stats .v { font-family: var(--data); font-size: 16pt; color: var(--accent); letter-spacing: -0.02em; }
+  .stats .l { font-size: 7.6pt; color: var(--ink-3); max-width: 42mm; line-height: 1.35; }
+
+  /* ============ BARRAS ============ */
+  .barras { display: flex; flex-direction: column; gap: 2.6mm; }
+  .barra { display: grid; grid-template-columns: 30mm 1fr; align-items: center; gap: 4mm; }
+  .barra .k { display: flex; align-items: baseline; gap: 2mm; justify-content: flex-end; }
+  .barra .k b { font-size: 9pt; }
+  .barra .k span { font-family: var(--data); font-size: 6.8pt; color: var(--ink-3); }
+  .trilho { height: 7mm; background: var(--rule-2); }
+  .preench { height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 2mm; }
+  .preench span { font-family: var(--data); font-size: 7.2pt; color: #fff; font-weight: 700; }
+  .eixo { display: flex; justify-content: space-between; font-family: var(--data); font-size: 6.4pt; color: var(--ink-3); border-top: 0.6pt solid var(--rule); padding-top: 1mm; margin-left: 34mm; }
+
+  /* ============ CASOS ============ */
+  .casos { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+  .caso { border: 0.6pt solid var(--rule); padding: 5mm; display: flex; flex-direction: column; gap: 2.5mm; }
+  .caso .lugar { font-family: var(--display); font-size: 12pt; }
+  .caso .rio { font-size: 7.6pt; color: var(--ink-3); }
+  .caso dl { display: grid; grid-template-columns: 1fr auto; gap: 1mm 3mm; font-size: 8.2pt; }
+  .caso dt { color: var(--ink-3); }
+  .caso dd { font-family: var(--data); text-align: right; }
+  .caso .vd { font-size: 8.2pt; color: var(--ink-2); border-top: 0.6pt solid var(--rule); padding-top: 2.5mm; }
+
+  .chip { display: inline-block; font-family: var(--data); font-size: 6.4pt; font-weight: 700; letter-spacing: 0.08em;
+          text-transform: uppercase; padding: 0.7mm 1.8mm; color: #fff; }
+  .c-boa { background: var(--boa); } .c-reg { background: var(--regular); }
+  .c-ruim { background: var(--ruim); } .c-pes { background: var(--pessima); }
+
+  /* ============ TABELA ============ */
+  table { border-collapse: collapse; width: 100%; font-size: 8.2pt; }
+  caption { text-align: left; font-size: 7.6pt; color: var(--ink-3); padding-bottom: 2.5mm; }
+  th, td { padding: 1.6mm 2mm; text-align: right; border-bottom: 0.6pt solid var(--rule-2); }
+  th { font-family: var(--data); font-size: 6.4pt; letter-spacing: 0.05em; text-transform: uppercase;
+       color: var(--ink-3); border-bottom: 0.9pt solid var(--ink); vertical-align: bottom; }
+  th:first-child, td:first-child { text-align: left; }
+  td.n { font-family: var(--data); font-variant-numeric: tabular-nums; }
+  .marca-ruim { color: var(--ruim); font-weight: 700; }
+
+  /* ============ NOTAS ============ */
+  .notas { display: flex; flex-direction: column; gap: 4mm; }
+  .nota { display: grid; grid-template-columns: 32mm 1fr; gap: 5mm; padding-bottom: 4mm; border-bottom: 0.6pt solid var(--rule-2); }
+  .nota:last-child { border-bottom: none; padding-bottom: 0; }
+  .nota .q { font-family: var(--data); font-size: 6.6pt; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
+  .nota p { font-size: 8.6pt; color: var(--ink-2); }
+
+  ul { padding-left: 4.5mm; display: flex; flex-direction: column; gap: 1.6mm; max-width: 16cm; }
+  li::marker { color: var(--accent); }
+
+  .ressalva { background: var(--rule-2); padding: 5mm 6mm; font-size: 8pt; color: var(--ink-2); }
+  .ressalva b { color: var(--ink); }
+  .ressalva p { max-width: none; }
+
+  .rodape { margin-top: auto; border-top: 0.9pt solid var(--ink); padding-top: 3mm;
+            display: flex; justify-content: space-between; font-size: 6.8pt; color: var(--ink-3); }
+</style>
+</head>
+<body>
+
+<!-- ============================ CAPA ============================ -->
+<section class="page capa">
+  <div class="espinha">
+    <i style="background:var(--pessima)"></i>
+    <i style="background:var(--ruim)"></i>
+    <i style="background:var(--regular)"></i>
+    <i style="background:var(--boa)"></i>
+  </div>
+
+  <div>
+    <div class="marca">Nota de análise · Região Metropolitana de São Paulo</div>
+    <h1 style="margin-top:9mm">A cobertura de esgoto do município não explica a qualidade do rio</h1>
+    <p class="sub">
+      Os 34 pontos monitorados pelo Observando os Rios na RMSP, cruzados com os indicadores
+      de esgotamento sanitário do SINISA e com as medições de qualidade de água da própria ANA.
+    </p>
+  </div>
+
+  <div>
+    <div class="capa-num">
+      <div><span class="v">−0,199</span><span class="l">correlação entre cobertura de esgoto e IQA do ponto</span></div>
+      <div><span class="v">99,2%</span><span class="l">cobertura média dos municípios com ponto <i>Péssima</i></span></div>
+      <div><span class="v">75,9%</span><span class="l">cobertura média dos municípios com ponto <i>Boa</i></span></div>
+    </div>
+  </div>
+
+  <div class="capa-pe">
+    <div>
+      <b>Giovani Rasia</b> · Palotina–PR · julho de 2026
+    </div>
+    <div style="text-align:right">
+      IQA ano-base <b>2023</b> · SINISA ref. <b>2024</b> · ANA <b>2022–2024</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 01 ============================ -->
+<section class="page">
+  <div class="cab"><span class="t">O achado</span><span class="n">01</span></div>
+
+  <div class="bloco">
+    <h2 class="sec">Não há relação positiva detectável entre cobertura municipal e IQA do ponto.</h2>
+    <p class="lead">
+      A expectativa razoável seria a de que municípios com mais rede de esgoto tivessem rios em
+      melhor estado. Nos 34 pontos da RMSP, isso não aparece — e o que aparece é o contrário.
+    </p>
+
+    <div class="destaque">
+      <h3>Os cinco piores pontos da região estão nos municípios de maior cobertura.</h3>
+      <div class="stats">
+        <div><div class="v">−0,199</div><div class="l">Spearman: atendimento com rede × classe de IQA</div></div>
+        <div><div class="v">−0,063</div><div class="l">Spearman: esgoto tratado / água consumida × IQA</div></div>
+        <div><div class="v">34</div><div class="l">pontos em 12 municípios da RMSP</div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="eyebrow" style="margin-bottom:3.5mm">Cobertura média de rede coletora, por classe de qualidade do ponto</div>
+      <div class="barras">
+        <div class="barra">
+          <div class="k"><b>Péssima</b><span>n=5</span></div>
+          <div class="trilho"><div class="preench" style="width:99.2%;background:var(--pessima)"><span>99,2%</span></div></div>
+        </div>
+        <div class="barra">
+          <div class="k"><b>Ruim</b><span>n=9</span></div>
+          <div class="trilho"><div class="preench" style="width:93.8%;background:var(--ruim)"><span>93,8%</span></div></div>
+        </div>
+        <div class="barra">
+          <div class="k"><b>Regular</b><span>n=18</span></div>
+          <div class="trilho"><div class="preench" style="width:94.6%;background:var(--regular)"><span>94,6%</span></div></div>
+        </div>
+        <div class="barra">
+          <div class="k"><b>Boa</b><span>n=2</span></div>
+          <div class="trilho"><div class="preench" style="width:75.9%;background:var(--boa)"><span>75,9%</span></div></div>
+        </div>
+      </div>
+      <div class="eixo"><span>0%</span><span>50%</span><span>100%</span></div>
+      <p style="font-size:8pt;color:var(--ink-3);margin-top:3.5mm">
+        A escada está invertida. Com n=2 na classe <i>Boa</i>, nenhuma dessas médias é estatisticamente
+        robusta — a leitura defensável não é “mais cobertura piora o rio”, e sim que o indicador
+        municipal não carrega informação sobre a condição do corpo d'água.
+      </p>
+    </div>
+
+    <div>
+      <div class="eyebrow" style="margin-bottom:3.5mm">Os dois extremos</div>
+      <div class="casos">
+        <div class="caso">
+          <span class="chip c-pes">Péssima</span>
+          <div class="lugar">São Caetano do Sul</div>
+          <div class="rio">Ribeirão dos Meninos · grupo Biguá / Projeto IPH</div>
+          <dl>
+            <dt>Atendimento com rede coletora</dt><dd>100,00%</dd>
+            <dt>Esgoto coletado / água consumida</dt><dd>85,00%</dd>
+            <dt>Esgoto tratado / esgoto coletado</dt><dd>100,00%</dd>
+          </dl>
+          <p class="vd">Saneamento praticamente universalizado, e ainda assim o pior grau da escala. O ribeirão chega ao município já carregado do ABC a montante.</p>
+        </div>
+        <div class="caso">
+          <span class="chip c-boa">Boa</span>
+          <div class="lugar">Biritiba-Mirim</div>
+          <div class="rio">Rio Tietê · Equipe Observando os Rios</div>
+          <dl>
+            <dt>Atendimento com rede coletora</dt><dd>52,55%</dd>
+            <dt>Esgoto coletado / água consumida</dt><dd>69,26%</dd>
+            <dt>Esgoto tratado / esgoto coletado</dt><dd>99,13%</dd>
+          </dl>
+          <p class="vd">A pior cobertura da amostra e o melhor ponto. É cabeceira: o rio ainda não recebeu a carga da mancha urbana. Posição na bacia vence infraestrutura municipal.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rodape"><span>Observando os Rios × SINISA — RMSP</span><span>01</span></div>
+</section>
+
+<!-- ============================ 02 ============================ -->
+<section class="page">
+  <div class="cab"><span class="t">Os doze municípios</span><span class="n">02</span></div>
+
+  <div class="bloco">
+    <table>
+      <caption>Ordenado por atendimento da população total com rede coletora. SINISA 2024, módulo esgotamento sanitário, base municipal. Valores em %.</caption>
+      <thead>
+        <tr>
+          <th>Município</th><th>Pontos</th><th>Pior classe</th>
+          <th>Atend.<br>rede</th><th>Coletado<br>/ água</th><th>Tratado<br>/ água</th><th>Tratado<br>/ coletado</th><th>Prestador</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Santo André</td><td class="n">1</td><td><span class="chip c-reg">Regular</span></td><td class="n">100,00</td><td class="n">79,15</td><td class="n">63,01</td><td class="n">79,60</td><td>SABESP</td></tr>
+        <tr><td>São Caetano do Sul</td><td class="n">1</td><td><span class="chip c-pes">Péssima</span></td><td class="n">100,00</td><td class="n">85,00</td><td class="n">85,00</td><td class="n">100,00</td><td>SAESA</td></tr>
+        <tr><td>São Paulo</td><td class="n">20</td><td><span class="chip c-pes">Péssima</span></td><td class="n">99,26</td><td class="n">76,06</td><td class="n">66,32</td><td class="n">88,89</td><td>SABESP</td></tr>
+        <tr><td>Guarulhos</td><td class="n">1</td><td><span class="chip c-reg">Regular</span></td><td class="n">99,22</td><td class="n">66,98</td><td class="n">15,35</td><td class="n marca-ruim">22,92</td><td>SABESP</td></tr>
+        <tr><td>Barueri</td><td class="n">1</td><td><span class="chip c-pes">Péssima</span></td><td class="n">98,27</td><td class="n">67,97</td><td class="n">44,35</td><td class="n">98,69</td><td>SABESP</td></tr>
+        <tr><td>Suzano</td><td class="n">3</td><td><span class="chip c-ruim">Ruim</span></td><td class="n">94,37</td><td class="n">75,38</td><td class="n">52,87</td><td class="n">85,62</td><td>SABESP</td></tr>
+        <tr><td>Mauá</td><td class="n">1</td><td><span class="chip c-reg">Regular</span></td><td class="n">91,29</td><td class="n">89,78</td><td class="n">82,74</td><td class="n">92,17</td><td>BRK Ambiental</td></tr>
+        <tr><td>Ribeirão Pires</td><td class="n">2</td><td><span class="chip c-reg">Regular</span></td><td class="n">82,75</td><td class="n">65,16</td><td class="n">52,18</td><td class="n">80,07</td><td>SABESP</td></tr>
+        <tr><td>Itaquaquecetuba</td><td class="n">1</td><td><span class="chip c-ruim">Ruim</span></td><td class="n">80,35</td><td class="n">54,67</td><td class="n">19,39</td><td class="n marca-ruim">35,47</td><td>SABESP</td></tr>
+        <tr><td>Rio Grande da Serra</td><td class="n">1</td><td><span class="chip c-ruim">Ruim</span></td><td class="n">74,14</td><td class="n marca-ruim">129,99</td><td class="n marca-ruim">111,74</td><td class="n">85,96</td><td>SABESP</td></tr>
+        <tr><td>Itapecerica da Serra</td><td class="n">1</td><td><span class="chip c-reg">Regular</span></td><td class="n">65,27</td><td class="n">45,46</td><td class="n">44,55</td><td class="n">98,00</td><td>SABESP</td></tr>
+        <tr><td>Biritiba-Mirim</td><td class="n">1</td><td><span class="chip c-boa">Boa</span></td><td class="n">52,55</td><td class="n">69,26</td><td class="n">68,66</td><td class="n">99,13</td><td>SABESP</td></tr>
+      </tbody>
+    </table>
+
+    <div>
+      <h2 class="sec" style="font-size:14pt">Três leituras que o número agregado esconde</h2>
+      <div class="notas">
+        <div class="nota">
+          <div><h3 class="sub">Guarulhos</h3><div class="q">coleta sem tratamento</div></div>
+          <p>99,22% da população com rede coletora — e apenas 22,92% do esgoto coletado recebe tratamento. É o padrão mais nocivo possível: a rede concentra a carga com eficiência e a entrega ao Tietê.</p>
+        </div>
+        <div class="nota">
+          <div><h3 class="sub">Barueri</h3><div class="q">tratamento exemplar, rio péssimo</div></div>
+          <p>98,69% do esgoto coletado é tratado, e o ponto no Tietê é <i>Péssima</i>. O município faz sua parte; o rio chega pronto. Nenhum indicador municipal captura isso — só a soma da bacia a montante.</p>
+        </div>
+        <div class="nota">
+          <div><h3 class="sub">Rio Grande da Serra</h3><div class="q">inconsistência no dado</div></div>
+          <p>Coletado/água em 129,99% e tratado/água em 111,74%. Valores acima de 100% indicam infiltração na rede ou erro de medição. Sinalizado, não corrigido: qualquer leitura desse município exige ressalva.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rodape"><span>Observando os Rios × SINISA — RMSP</span><span>02</span></div>
+</section>
+
+<!-- ============================ 03 ============================ -->
+<section class="page">
+  <div class="cab"><span class="t">A checagem com a ANA</span><span class="n">03</span></div>
+
+  <div class="bloco">
+    <h2 class="sec">Onde as duas redes medem o mesmo rio, elas discordam da ordem.</h2>
+    <p class="lead">
+      Se o indicador municipal não explica o ponto, a pergunta seguinte é se o próprio ponto se
+      sustenta. A ANA opera estações de qualidade de água nos mesmos doze municípios.
+    </p>
+    <p>
+      Antes do resultado, um achado sobre a base: das <b>75 estações registradas como “operando”</b>,
+      apenas <b>12 tinham alguma medição entre 2022 e 2024</b> — 60 medições ao todo. No cadastro da
+      ANA, <i>operando</i> significa cadastrado, não produzindo dado. O campo de IQA da própria ANA
+      veio vazio em 100% dos registros, então a comparação teve de ser parâmetro a parâmetro.
+    </p>
+
+    <table>
+      <caption>Os três pares em que as duas redes medem o mesmo rio no mesmo município. Medianas das medições da ANA, 2022–2024; classe do SOS, ano-base 2023.</caption>
+      <thead>
+        <tr>
+          <th>Rio / município</th><th>Classe<br>do SOS</th><th>OD<br>mg/L</th><th><i>E. coli</i><br>ufc/100mL</th>
+          <th>N-amon.<br>mg/L</th><th>P total<br>mg/L</th><th>Turbidez<br>NTU</th><th>Condut.<br>µS/cm</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Pinheiros — São Paulo</td><td><span class="chip c-pes">Péssima</span></td>
+            <td class="n">3,72</td><td class="n">125.000</td><td class="n">3,51</td><td class="n">0,46</td><td class="n">26,5</td><td class="n">232</td></tr>
+        <tr><td>Tietê — Guarulhos</td><td><span class="chip c-reg">Regular</span></td>
+            <td class="n marca-ruim">0,69</td><td class="n marca-ruim">1.900.000</td><td class="n marca-ruim">13,30</td>
+            <td class="n marca-ruim">1,57</td><td class="n marca-ruim">40,0</td><td class="n marca-ruim">624</td></tr>
+        <tr><td>Tietê — Biritiba-Mirim</td><td><span class="chip c-boa">Boa</span></td>
+            <td class="n">4,17</td><td class="n">124</td><td class="n">0,10</td><td class="n">0,03</td><td class="n">5,1</td><td class="n">33</td></tr>
+      </tbody>
+    </table>
+
+    <div class="destaque">
+      <h3>As duas redes invertem a ordem dos dois piores pontos.</h3>
+      <p>
+        Biritiba-Mirim confirma: é a melhor em todos os parâmetros e é o único <i>Boa</i>. Mas o ponto
+        de Guarulhos, classificado <i>Regular</i> pelos voluntários, é o pior da tabela nas
+        <b>seis variáveis</b>. Oxigênio dissolvido de 0,69 mg/L é praticamente anóxico — abaixo do
+        limite de classe 4 do CONAMA. O Pinheiros, classificado <i>Péssima</i>, mede melhor que
+        Guarulhos em cada uma delas.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="sub" style="margin-bottom:2.5mm">Isto não indica erro dos voluntários</h3>
+      <p style="margin-bottom:2.5mm">Há três explicações mais prováveis, e nenhuma é separável com os dados públicos disponíveis:</p>
+      <ul>
+        <li><b>Posição no rio.</b> As estações da ANA em Guarulhos podem estar a jusante de um lançamento que o ponto do voluntário não alcança.</li>
+        <li><b>Data.</b> A classe do SOS é média de coletas mensais ao longo do ano; as medições da ANA são pontuais.</li>
+        <li><b>Método.</b> O índice do kit de campo e a análise laboratorial não medem exatamente a mesma coisa.</li>
+      </ul>
+      <p style="margin-top:3mm">
+        As três se resolvem com a mesma informação: <b>as coordenadas dos pontos de monitoramento</b>.
+        Com elas, a comparação deixa de ser por município e passa a ser por distância — e a
+        divergência de Guarulhos vira uma pergunta respondível.
+      </p>
+    </div>
+  </div>
+
+  <div class="rodape"><span>Observando os Rios × SINISA — RMSP</span><span>03</span></div>
+</section>
+
+<!-- ============================ 04 ============================ -->
+<section class="page">
+  <div class="cab"><span class="t">O que isso sugere</span><span class="n">04</span></div>
+
+  <div class="bloco">
+    <h2 class="sec">A unidade de análise não é o município. É a sub-bacia a montante do ponto.</h2>
+    <p class="lead">
+      Se o indicador municipal não prevê a condição do ponto, um ponto de monitoramento deveria ser
+      descrito pela carga acumulada de todos os municípios que drenam para ele, ponderada pela
+      distância e pelo déficit de tratamento de cada um.
+    </p>
+    <p>
+      É exatamente o que o Observando os Rios não consegue dizer hoje com os próprios dados, e o que
+      uma camada de saneamento acoplada aos pontos passaria a dizer. O IQA da rede informa <i>o que</i>
+      está acontecendo no rio; a camada de saneamento por sub-bacia informa <i>de onde vem</i>.
+    </p>
+
+    <div>
+      <div class="eyebrow" style="margin-bottom:3mm">Caminho</div>
+      <ul>
+        <li><b>Coordenadas dos pontos.</b> É o insumo que destrava tudo — sem lat/lon, os dois cruzamentos deste relatório ficam presos ao limite municipal.</li>
+        <li>Delimitar a área de contribuição a montante de cada ponto (base ANA / Otto-bacias).</li>
+        <li>Ratear os indicadores SINISA por área drenada em vez de por limite municipal.</li>
+        <li>Produzir, para cada ponto, um “déficit de tratamento a montante” comparável entre pontos.</li>
+        <li>Testar esse índice contra a série histórica de IQA — que a rede já tem desde os anos 1990.</li>
+      </ul>
+    </div>
+
+    <div class="ressalva">
+      <p><b>Limites deste relatório — leia antes de citar.</b></p>
+      <p style="margin-top:2.5mm">
+        Os indicadores de saneamento estão atribuídos ao <i>município do ponto</i>, não à área de
+        contribuição a montante: é justamente a limitação que a análise identifica, reproduzida aqui
+        de propósito para torná-la visível. As correlações usam n=34 pontos em 12 municípios e não
+        sustentam inferência causal.
+      </p>
+      <p style="margin-top:2.5mm">
+        A comparação com a ANA tem <b>apenas 3 pares</b> — é checagem de consistência, não evidência
+        sobre a rede de monitoramento como um todo. Nenhuma correlação foi calculada sobre esses três
+        pares, porque qualquer coeficiente seria ruído. DBO estava presente em só um deles; DQO,
+        coliformes termotolerantes e nitrogênio total, em nenhum. Duas das 75 estações falharam no
+        download e não foram reprocessadas.
+      </p>
+      <p style="margin-top:2.5mm">
+        A camada de saúde — internações por doenças relacionadas ao saneamento ambiental inadequado,
+        via DATASUS — <b>não está incluída</b>. Os anos-base diferem: IQA 2023, SINISA 2024, medições
+        da ANA 2022–2024.
+      </p>
+    </div>
+
+    <div>
+      <div class="eyebrow" style="margin-bottom:2.5mm">Fontes</div>
+      <p style="font-size:8pt;color:var(--ink-2)">
+        Fundação SOS Mata Atlântica, <i>Observando os Rios 2024 — o retrato da qualidade da água</i>
+        (ano-base 2023): 174 pontos, 129 rios, 80 municípios, 16 estados, cerca de 2.700 voluntários.
+        &nbsp;·&nbsp; Ministério das Cidades / Secretaria Nacional de Saneamento, <i>SINISA — Módulo
+        Esgotamento Sanitário, Indicadores, Base Municipal</i>, ano de referência 2024, publicado em
+        18/12/2025. &nbsp;·&nbsp; ANA, <i>HidroWebService</i>, rotas HidroInventarioEstacoes/v1 e
+        HidroSerieQA/v1, consultadas em 27/07/2026.
+      </p>
+    </div>
+  </div>
+
+  <div class="rodape">
+    <span>Compilação e cruzamento: Giovani Rasia · Palotina–PR · julho de 2026</span><span>04</span>
+  </div>
+</section>
+
+</body>
+</html>
