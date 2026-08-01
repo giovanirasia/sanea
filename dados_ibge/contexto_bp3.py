@@ -36,6 +36,7 @@ Saida
 
 from __future__ import annotations
 
+import os
 import gzip
 import json
 import math
@@ -46,11 +47,17 @@ from pathlib import Path
 import pandas as pd
 
 RAIZ = Path(__file__).resolve().parent.parent
-MUNICIPIOS = RAIZ / "dados" / "bp3_municipios.csv"
-POPULACAO = RAIZ / "dados" / "populacao_bp3.csv"
+
+# escopo: "bp3" (35 municipios da bacia) ou "parana" (os 399 do estado)
+ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
+if ESCOPO not in ("bp3", "parana"):
+    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+
+MUNICIPIOS = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
+POPULACAO = RAIZ / "dados" / f"populacao_{ESCOPO}.csv"
 MALHAS = RAIZ / "dados" / "bruto" / "malhas"
 BRUTO = RAIZ / "dados" / "bruto" / "ibge"
-SAIDA = RAIZ / "dados" / "contexto_bp3.csv"
+SAIDA = RAIZ / "dados" / f"contexto_{ESCOPO}.csv"
 
 SIDRA_PIB = "https://apisidra.ibge.gov.br/values/t/5938/n6/{cod}/p/all/v/37"
 RAIO_TERRA_KM = 6371.0

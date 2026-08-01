@@ -17,14 +17,20 @@ Limites
   - a lista de municipios precisa ser confirmada com o comite antes de virar
     numero publicado: area de atuacao muda por resolucao
 
+Escopo
+  SANEA_ESCOPO=bp3 (padrao) da os 35 municipios da bacia; SANEA_ESCOPO=parana
+  da os 399 do estado, usado para dar poder ao modelo de dose-resposta do
+  saneamento, que na bacia se apoia em 35 municipios so.
+
 Saida
-  dados/bp3_municipios.csv
+  dados/{escopo}_municipios.csv
 """
 
 from __future__ import annotations
 
 import gzip
 import json
+import os
 import time
 import unicodedata
 import urllib.request
@@ -34,7 +40,15 @@ import pandas as pd
 
 RAIZ = Path(__file__).resolve().parent.parent
 BRUTO = RAIZ / "dados" / "bruto" / "malhas"
-SAIDA = RAIZ / "dados" / "bp3_municipios.csv"
+
+# escopo: "bp3" (35 municipios da bacia) ou "parana" (os 399 do estado).
+# O estadual existe para dar poder ao modelo de dose-resposta do saneamento,
+# que na bacia se apoia em 35 municipios so.
+ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
+if ESCOPO not in ("bp3", "parana"):
+    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+
+SAIDA = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
 
 UF_PARANA = 41
 IBGE_MUNICIPIOS = f"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{UF_PARANA}/municipios"
@@ -106,16 +120,22 @@ def centroide(cod: int) -> tuple[float, float]:
     return round(lat, 5), round(lon, 5)
 
 
-def main() -> None:
+def alvo() -> list[tuple[str, int]]:
+    """(nome, codigo IBGE) dos municipios do escopo."""
     mapa = codigos_ibge()
+    if ESCOPO == "parana":
+        dados = _baixa_json(IBGE_MUNICIPIOS, BRUTO / "pr_municipios.json")
+        return sorted((m["nome"], m["id"]) for m in dados)
 
     faltando = [m for m in BP3 if normaliza(m) not in mapa]
     if faltando:
         raise SystemExit(f"nao encontrados no IBGE (PR): {faltando}")
+    return [(nome, mapa[normaliza(nome)]) for nome in BP3]
 
+
+def main() -> None:
     linhas = []
-    for nome in BP3:
-        cod = mapa[normaliza(nome)]
+    for nome, cod in alvo():
         lat, lon = centroide(cod)
         linhas.append({"cod_ibge": cod, "municipio": nome, "lat": lat, "lon": lon})
         time.sleep(0.2)  # cortesia com a API do IBGE
@@ -124,11 +144,12 @@ def main() -> None:
     SAIDA.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(SAIDA, index=False)
 
-    print(f"BP3: {len(df)} municipios")
+    print(f"{ESCOPO}: {len(df)} municipios -> {SAIDA.name}")
     print(f"extensao: lat {df['lat'].min():.2f} a {df['lat'].max():.2f}, "
           f"lon {df['lon'].min():.2f} a {df['lon'].max():.2f}")
-    print()
-    print(df.to_string(index=False))
+    if len(df) <= 40:
+        print()
+        print(df.to_string(index=False))
 
 
 if __name__ == "__main__":

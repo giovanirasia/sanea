@@ -64,6 +64,7 @@ Saida
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import numpy as np
@@ -71,19 +72,25 @@ import pandas as pd
 import statsmodels.api as sm
 
 RAIZ = Path(__file__).resolve().parent.parent
-MUNICIPIOS = RAIZ / "dados" / "bp3_municipios.csv"
-SINISA = RAIZ / "dados" / "sinisa_bp3.csv"
-CONTEXTO = RAIZ / "dados" / "contexto_bp3.csv"
+
+# escopo: "bp3" (35 municipios da bacia) ou "parana" (os 399 do estado)
+ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
+if ESCOPO not in ("bp3", "parana"):
+    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+
+MUNICIPIOS = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
+SINISA = RAIZ / "dados" / f"sinisa_{ESCOPO}.csv"
+CONTEXTO = RAIZ / "dados" / f"contexto_{ESCOPO}.csv"
 CACHE_SIH = RAIZ / "dados" / "bruto" / "sih"
-SAIDA = RAIZ / "dados" / "gradiente_ajustado.csv"
+SAIDA = RAIZ / "dados" / f"gradiente_ajustado_{ESCOPO}.csv"
 
 ESTRATOS = ["cobertura alta", "cobertura baixa", "sem rede"]
 
 
 def casos_anuais(mapa6: dict[str, str]) -> pd.DataFrame:
     linhas = []
-    for arq in sorted(CACHE_SIH.glob("bp3_*.csv")):
-        ano = int(arq.stem[4:8])
+    for arq in sorted(CACHE_SIH.glob(f"{ESCOPO}_*.csv")):
+        ano = int(arq.stem.split("_")[1][:4])
         d = pd.read_csv(arq, dtype={"MUNIC_RES": str})
         if d.empty:
             continue

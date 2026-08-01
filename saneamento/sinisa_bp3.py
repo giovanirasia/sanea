@@ -42,13 +42,20 @@ Saida
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pandas as pd
 
 RAIZ = Path(__file__).resolve().parent.parent
-SAIDA = RAIZ / "dados" / "sinisa_bp3.csv"
-MUNICIPIOS = RAIZ / "dados" / "bp3_municipios.csv"
+
+# escopo: "bp3" (35 municipios da bacia) ou "parana" (os 399 do estado)
+ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
+if ESCOPO not in ("bp3", "parana"):
+    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+
+SAIDA = RAIZ / "dados" / f"sinisa_{ESCOPO}.csv"
+MUNICIPIOS = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
 
 RAIZ_SINISA = Path.home() / "Downloads" / "Projetos e Pastas"
 ESGOTO = (RAIZ_SINISA / "SINISA_ESGOTO_Planilhas_2024" / "Esgoto - Base Municipal"
