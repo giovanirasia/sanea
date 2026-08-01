@@ -40,6 +40,7 @@ Saida
 
 from __future__ import annotations
 
+import os
 import shutil
 import tempfile
 import urllib.request
@@ -52,8 +53,17 @@ from dbfread import DBF
 
 RAIZ = Path(__file__).resolve().parent.parent
 MUNICIPIOS = RAIZ / "dados" / "bp3_municipios.csv"
+
+# escopo: "bp3" (35 municipios da bacia) ou "parana" (os 399 do estado).
+# O estado inteiro existe para dar poder ao modelo de dose-resposta, que na
+# bacia se apoia em 35 municipios so. Trocar por variavel de ambiente:
+#   SANEA_ESCOPO=parana python saude/sih_bp3.py
+ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
+if ESCOPO not in ("bp3", "parana"):
+    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+
 PARCIAIS = RAIZ / "dados" / "bruto" / "sih"
-SAIDA = RAIZ / "dados" / "sih_bp3_mensal.csv"
+SAIDA = RAIZ / "dados" / f"sih_{ESCOPO}_mensal.csv"
 
 FTP = ("ftp://ftp.datasus.gov.br/dissemin/publicos/SIHSUS/200801_/Dados/"
        "RDPR{aa:02d}{mm:02d}.dbc")
@@ -78,15 +88,28 @@ def grupo_cid(cid: str) -> str | None:
     return None
 
 
-def codigos_bp3() -> set[str]:
-    """Codigos IBGE de 6 digitos dos municipios da BP3."""
+def codigos_alvo() -> set[str] | None:
+    """Codigos IBGE de 6 digitos a manter. None = todo o Parana.
+
+    No escopo estadual nao ha lista: basta o prefixo 41, que e a UF. Isso
+    exclui residentes de outros estados internados no Parana, que existem e
+    nao pertencem ao denominador populacional daqui.
+    """
+    if ESCOPO == "parana":
+        return None
     bp3 = pd.read_csv(MUNICIPIOS)
     return {str(c)[:6] for c in bp3["cod_ibge"]}
 
 
-def mes(ano: int, m: int, cod6: set[str]) -> pd.DataFrame | None:
+def _mantem(cod: str | None, alvo: set[str] | None) -> bool:
+    if cod is None:
+        return False
+    return cod.startswith("41") if alvo is None else cod in alvo
+
+
+def mes(ano: int, m: int, alvo: set[str] | None) -> pd.DataFrame | None:
     """Registros da BP3 num mes. Cacheia o filtrado; descarta o bruto."""
-    parcial = PARCIAIS / f"bp3_{ano}{m:02d}.csv"
+    parcial = PARCIAIS / f"{ESCOPO}_{ano}{m:02d}.csv"
     if parcial.exists():
         return pd.read_csv(parcial, dtype={"MUNIC_RES": str})
 
@@ -105,7 +128,7 @@ def mes(ano: int, m: int, cod6: set[str]) -> pd.DataFrame | None:
         linhas = [
             {c: r.get(c) for c in COLUNAS}
             for r in DBF(str(dbf), encoding="latin-1")
-            if r.get("MUNIC_RES") in cod6
+            if _mantem(r.get("MUNIC_RES"), alvo)
         ]
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -117,13 +140,13 @@ def mes(ano: int, m: int, cod6: set[str]) -> pd.DataFrame | None:
 
 
 def main() -> None:
-    cod6 = codigos_bp3()
+    alvo = codigos_alvo()
     contagens: list[dict] = []
     total_internacoes = 0
 
     for ano in range(ANO_INICIO, ANO_FIM + 1):
         for m in range(1, 13):
-            df = mes(ano, m, cod6)
+            df = mes(ano, m, alvo)
             if df is None or df.empty:
                 continue
             total_internacoes += len(df)
@@ -146,7 +169,7 @@ def main() -> None:
 
     hidrica = saida[saida["grupo"].str.startswith(("A00", "A27", "B15", "B65"))]
     print()
-    print(f"internacoes de residentes na BP3: {total_internacoes:,}")
+    print(f"internacoes de residentes ({ESCOPO}): {total_internacoes:,}")
     print(f"meses com dado: {saida[['ano', 'mes']].drop_duplicates().shape[0]}")
     print()
     print("por grupo, no periodo inteiro:")

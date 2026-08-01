@@ -28,6 +28,28 @@ Por que sem rede = 0 e honesto
   Nao ter rede coletora e cobertura zero, nao dado faltante. Os 15 municipios
   aparecem no modulo de agua do SINISA; so nao tem esgoto para reportar.
 
+O coeficiente do PIB: por que nao interpretar
+  Na primeira versao deste modelo, PIB per capita saiu associado a MAIS
+  internacao (2,03, p=0,018), o que e contraintuitivo e ficou como pendencia.
+  Tres hipoteses foram testadas e nenhuma se sustentou:
+
+    colinearidade      VIF entre 1,3 e 1,5 — nao e isso
+    pecuaria           a BP3 tem 111 milhoes de galinaceos e 3,4 milhoes de
+                       suinos para 1,3 milhao de habitantes, e dejeto animal
+                       contamina agua. Mas suinos/km2 da p=0,54 e galinaceos
+                       p=0,94, e o coeficiente do PIB nao se move
+    acesso a leito     PIB nao prediz internacao por qualquer causa per
+                       capita (1,068, p=0,44)
+
+  O que resolve a pendencia e outra coisa: controlando a propensao geral a
+  internar (internacoes totais per capita), o coeficiente do PIB cai para 1,68
+  e perde significancia (p=0,071). Ou seja, e uma estimativa instavel, nao um
+  achado. A conclusao e nao interpreta-lo.
+
+  A cobertura de esgoto, ao contrario, passou nas duas checagens: com rebanho
+  no modelo o p melhora (0,0117 -> 0,0079); com internacao total controlada
+  segue significativa (p=0,019).
+
 Limites
   - o SINISA e de 2024 e o painel comeca em 2008: cobertura mudou no periodo,
     o que atenua o contraste
