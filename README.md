@@ -56,9 +56,16 @@ O que sobrevive ao ajuste é a dose-resposta contínua:
 
 Painel município-ano, Poisson com erro-padrão agrupado por município, offset de população.
 
-Um resultado do modelo segue sem explicação: PIB per capita aparece associado a *mais*
-internação (razão 2,03, p = 0,018). Pode ser acesso a leito, pode ser colinearidade com
-cobertura. Está registrado como pendência, não interpretado.
+O modelo também mostrava PIB per capita associado a *mais* internação (2,03, p = 0,018),
+o que era contraintuitivo. Investigado e resolvido: **não é para ser interpretado.**
+Colinearidade foi descartada (VIF 1,3–1,5) e intensidade pecuária também — a bacia tem
+111 milhões de galináceos e 3,4 milhões de suínos para 1,3 milhão de habitantes, e ainda
+assim suínos/km² dá p = 0,54. O que resolve é que, controlando a propensão geral a
+internar, o coeficiente cai para 1,68 e perde significância (p = 0,071). É estimativa
+instável, não achado.
+
+A cobertura de esgoto passou nas duas checagens: com rebanho no modelo o p melhora
+(0,0117 → 0,0079); com internação total controlada segue significativa (p = 0,019).
 
 ### El Niño e chuva na bacia
 
