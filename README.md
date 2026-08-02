@@ -49,23 +49,36 @@ saneamento.** Municípios sem rede também são menos densos, e ao controlar den
 renda e tendência, o contraste entre estratos cai para 2,1× e perde significância
 (p = 0,10). Ruralidade explica boa parte do gradiente bruto.
 
-O que sobrevive ao ajuste é a dose-resposta contínua:
+Na bacia, o que sobrevivia ao ajuste era a dose-resposta contínua: 0,884 por 10 pontos
+percentuais de cobertura (IC 0,803–0,973), p = 0,012 — cerca de 12% menos internação.
 
-> **Cada 10 pontos percentuais de cobertura de rede coletora associam-se a ~12% menos
-> internação por A00–A09** — razão 0,884 (IC95% 0,803–0,973), p = 0,012.
+**Esse número não replicou em escala estadual, e a estimativa boa é a estadual.**
+Repetindo a mesma análise nos 399 municípios do Paraná (7.543 observações, 255 mil casos,
+com cobertura de água também controlada):
 
-Painel município-ano, Poisson com erro-padrão agrupado por município, offset de população.
+| | Bacia Paraná 3 (35 mun.) | Paraná (397 mun.) |
+|---|---|---|
+| Dose-resposta por 10 p.p. | 0,884 (p = 0,012) | **0,967 (p = 0,074)** |
+| Sem rede vs cobertura alta, ajustado | 2,09× (p = 0,10) | **1,22× (p = 0,18)** |
 
-O modelo também mostrava PIB per capita associado a *mais* internação (2,03, p = 0,018),
-o que era contraintuitivo. Investigado e resolvido: **não é para ser interpretado.**
-Colinearidade foi descartada (VIF 1,3–1,5) e intensidade pecuária também — a bacia tem
-111 milhões de galináceos e 3,4 milhões de suínos para 1,3 milhão de habitantes, e ainda
-assim suínos/km² dá p = 0,54. O que resolve é que, controlando a propensão geral a
-internar, o coeficiente cai para 1,68 e perde significância (p = 0,071). É estimativa
-instável, não achado.
+O efeito cai de ~12% para ~3% e o intervalo passa a incluir 1 (0,933–1,003). Não é falta
+de poder: com 11× mais municípios o intervalo ficou **mais estreito**, não mais largo.
+A leitura honesta é que o resultado da bacia era superestimativa de amostra pequena.
 
-A cobertura de esgoto passou nas duas checagens: com rebanho no modelo o p melhora
-(0,0117 → 0,0079); com internação total controlada segue significativa (p = 0,019).
+O que se sustenta nas duas escalas é outra coisa: **densidade demográfica**. Razão 0,712
+(p < 0,0001) no estado, 0,564 na bacia. Municípios menos densos adoecem mais, e isso não
+é explicado por saneamento, renda nem tendência temporal.
+
+Na bacia o modelo também mostrava PIB per capita associado a *mais* internação (2,03,
+p = 0,018), o que era contraintuitivo e foi investigado: colinearidade descartada
+(VIF 1,3–1,5), intensidade pecuária descartada (a bacia tem 111 milhões de galináceos e
+3,4 milhões de suínos para 1,3 milhão de habitantes, e ainda assim suínos/km² dá p = 0,54),
+e o coeficiente perdia significância ao controlar a propensão geral a internar. A conclusão
+foi não interpretá-lo.
+
+A escala estadual confirmou: no Paraná o mesmo coeficiente é **0,755** (p = 0,028) — mais
+renda, menos internação, direção esperada. O sinal invertido da bacia era instabilidade de
+amostra pequena, como suspeitado.
 
 ### El Niño e chuva na bacia
 
