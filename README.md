@@ -63,6 +63,18 @@ menor. Quem usar a coluna do desfecho sozinha vai encontrar saneamento precário
 a *menos* morte — foi o que quase aconteceu aqui, e está contado em
 [Um sinal invertido que era da base, não do mundo](#um-sinal-invertido-que-era-da-base-não-do-mundo).
 
+## Nota metodológica
+
+📝 **[Onde fica a linha entre saneamento adequado e inadequado?](notas/onde-fica-a-linha.md)**
+
+Dois inquéritos domiciliares sugerem que a fossa séptica **não ligada à rede** se comporta
+como solução inadequada, e não adequada — como a classifica o padrão em uso no Brasil e no
+monitoramento internacional. Se confirmado, estudos que cruzam saneamento com saúde vêm
+medindo a exposição com a linha no lugar errado, o que atenua estimativas para zero.
+
+A nota é curta, traz a evidência e as três fragilidades dela, e existe para que outros
+testem com dado melhor — não para encerrar o assunto.
+
 ## Resultados
 
 Tudo abaixo é reproduzível pelos scripts deste repositório. Os números foram revisados
