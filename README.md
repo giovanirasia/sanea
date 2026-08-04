@@ -23,11 +23,17 @@ o município, e quando possível o ponto de coleta.
 **Análise, sem aplicação.** Não há app, API nem release — o que existe são scripts que
 baixam as bases públicas, cruzam e testam hipóteses.
 
-Dois recortes, e a comparação entre eles é parte do método: a **Bacia Hidrográfica do
-Paraná 3** (35 municípios do oeste do estado) e o **Paraná inteiro** (399 municípios).
-Todo módulo aceita `SANEA_ESCOPO`, e o segundo recorte existe porque o primeiro produziu
-um achado que não replicou — o que só ficou visível ao escalar. A Região Metropolitana de
-São Paulo foi um piloto anterior, com o programa Observando os Rios.
+Três recortes, e a comparação entre eles é parte do método. Todo módulo aceita
+`SANEA_ESCOPO`, e cada recorte novo nasceu de um limite do anterior:
+
+| Recorte | Municípios | Por que existe |
+|---|---|---|
+| **Bacia Hidrográfica do Paraná 3** | 35 | piloto, com relação institucional na região |
+| **Paraná** | 399 | o achado da bacia não replicou, e isso só apareceu ao escalar |
+| **Maranhão** | 217 | no Paraná a doença letal infantil já foi resolvida; sem variância não há o que medir |
+
+A Região Metropolitana de São Paulo foi um piloto anterior, com o programa Observando os
+Rios.
 
 ## Dado publicado: saneamento domiciliar dos 5.570 municípios
 
@@ -167,17 +173,99 @@ em 2019, **899 dos 10.197 casos** de A00–A09 vinham gravados em meses ou dias,
 que um lactente de 8 meses era indistinguível de uma criança de 8 anos — exatamente o
 grupo da pergunta.
 
-### Onde a pergunta ainda está viva
+### Por que o Paraná é o lugar errado para testar isso
 
 Em 19 anos, o Paraná inteiro registrou **58 óbitos por A00–A09 em menores de 5 anos**.
 Poucos demais para modelar, e esse é justamente o ponto: doença hídrica letal infantil já
 foi resolvida aqui.
 
-Não se mede variação no que não varia mais. O nulo deste repositório é um resultado sobre
-o Paraná — estado com 79,8% de cobertura de água tratada mesmo nos municípios sem esgoto —
-e não se transfere para onde as duas coberturas são baixas ao mesmo tempo. A interação
-esgoto × poço raso, que testaria o mecanismo de contaminação diretamente, deu nulo aqui
-por falta de amplitude: a mediana de domicílios com poço raso no Paraná é de 1%.
+Não se mede variação no que não varia mais. O nulo do Paraná é um resultado sobre o Paraná
+— estado com 79,8% de cobertura de água tratada mesmo nos municípios sem esgoto — e não se
+transfere para onde as duas coberturas são baixas ao mesmo tempo. A interação esgoto ×
+poço raso, que testaria o mecanismo de contaminação diretamente, não tinha amplitude ali:
+a mediana de domicílios com poço raso no Paraná é de 1%.
+
+### Maranhão: o caso mais favorável possível
+
+Então a pergunta foi levada para onde ela ainda vive. O Maranhão tem a pior cobertura de
+saneamento do país e mortalidade infantil por diarreia ainda existente:
+
+| | Paraná | Maranhão |
+|---|---|---|
+| Esgotamento inadequado, mediana | 43,4% | **79,9%** |
+| Domicílios com poço raso, mediana | 1,0% | **8,1%** (até 61,5%) |
+| Óbitos por A00–A09 em menores de 5 | 58 (hospitalares, 19 anos) | **982** (17 anos) |
+
+E o desfecho mudou junto: **óbito, do SIM, não internação**. `MORTE` no SIH só enxerga
+quem morreu internado, e quem morre de diarreia em município sem leito ou sem estrada
+morre sem internar — o sub-registro seria maior exatamente onde a exposição é maior, o que
+puxa a associação para zero. Usar SIH ali seria construir o nulo. O SIM registra a partir
+da declaração de óbito.
+
+Com desfecho duro, exposição ampla e a doença ainda matando:
+
+> **esgoto inadequado → óbito em menor de 5 anos = 1,005 (IC95% 0,958–1,055, p = 0,84)**
+
+Nulo. A interação com poço raso, agora com amplitude de verdade, dá 0,980 (p = 0,33).
+Água de rede não protege menor de 5 (0,997, p = 0,90).
+
+### Um sinal invertido que era da base, não do mundo
+
+Nas faixas adultas o coeficiente saiu **protetor** (0,918 em 20–59, p = 0,013) e a fossa
+séptica saiu como **fator de risco** (1,089, p = 0,014) — o inverso da hipótese nas duas
+pontas ao mesmo tempo. Isso quase nunca é efeito.
+
+Duas explicações foram testadas. Causa mal definida existe mas é fraca (correlação 0,18
+com a exposição; mediana de 2,9% para 4,0% entre quartis extremos). A que explica é outra:
+**a mortalidade por todas as causas em menores de 5 também cai com a exposição**
+(Spearman −0,16). Não é crível que se morra menos, de qualquer causa, nos municípios mais
+pobres e rurais do Maranhão — o que cai é o registro. E como o viés atinge numerador e
+denominador juntos, controlar mortalidade geral não corrige.
+
+Isso gerou uma previsão falseável: se o sinal protetor fosse artefato do SIM, deveria
+sumir num desfecho apurado por outro sistema. A AIH existe porque o hospital precisa ser
+pago; a declaração de óbito depende de cartório.
+
+| Faixa | SIM (óbito) | SIH (internação) |
+|---|---|---|
+| 20–59 | 0,918 (p = 0,013) | 1,069 (p = 0,17) |
+| 60+ | 0,943 (p = 0,028) | 1,076 (p = 0,047) |
+
+Sumiu. E o descritivo fecha o argumento: internação por todas as causas em menores de 5
+**não varia** com a exposição (Spearman −0,018), enquanto a mortalidade por todas as
+causas caía. A lacuna estava na apuração do óbito, não na exposição.
+
+Sobre a hipótese, porém, a internação no Maranhão repete o Paraná: 1,060 em menores de 5,
+1,069 em adultos de 20 a 59, 1,076 em idosos. As três são a mesma estimativa — que uma
+alcance significância e outra não é diferença de precisão, não de magnitude, e lê-la como
+assinatura etária seria confundir p-valor com tamanho de efeito.
+
+> Uma armadilha documentada em [`saude/internacao.py`](saude/internacao.py): na primeira
+> especificação, poço raso saiu 1,814 por 10 p.p. — o que daria fator 36 ao longo da
+> amplitude observada. Num modelo com termo de produto, o efeito principal vale onde o
+> outro termo é zero, e esgoto inadequado zero não existe no painel (o mínimo é 9%).
+> Centrado na média: 1,030 (p = 0,48). Sozinho: 0,998 (p = 0,97).
+
+### Três nulos, uma explicação
+
+Cuidado com a leitura fácil. **Isto não é "saneamento não afeta saúde"** — o efeito do
+saneamento sobre doença diarreica é das relações mais bem estabelecidas da saúde pública,
+medida em ensaio comunitário e em coorte.
+
+O que este repositório mostra é outra coisa, três vezes no mesmo sentido:
+
+- na **RMSP**, a cobertura municipal não explicou o IQA do ponto de coleta
+- no **Paraná**, não explicou internação
+- no **Maranhão**, não explica óbito infantil — no caso mais favorável que existe
+
+Quando o mesmo desenho falha em três contextos tão diferentes, a hipótese mais econômica
+não é que o mundo mudou: é que **a unidade de análise está errada**. A média municipal
+dilui uma exposição que é domiciliar, e o município é grande demais para que a fração
+exposta e a fração adoecida sejam as mesmas pessoas. É falácia ecológica operando a favor
+do nulo.
+
+Isso é o que justifica pedir dado no nível do ponto e do domicílio, em vez de mais uma
+volta no agregado municipal.
 
 ### O que prediz, então
 
@@ -262,6 +350,11 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
   Um município pode ter muita fossa rudimentar e muito poço raso sem que sejam as mesmas
   casas — é falácia ecológica em potencial, e por isso aquele resultado é indício
 - os denominadores por faixa etária aplicam a estrutura de 2022 a todos os anos
+- o SIM tem sub-registro próprio, historicamente maior no Norte e Nordeste e caindo ao
+  longo da série; parte da tendência temporal é melhora de cobertura, não queda de
+  mortalidade. No Maranhão isso foi diagnosticado, não apenas listado
+- causa básica mal definida (capítulo R do CID-10) absorve óbitos que deveriam estar em
+  A00–A09, e essa má definição também é maior onde há menos assistência
 - controlar a propensão geral a internar é diagnóstico, não especificação final: é um
   desfecho, não covariável exógena, e ajustá-la pode ser sobreajuste
 - ERA5 é reanálise, não pluviômetro; validar contra ANA/INMET antes de publicar número
@@ -275,7 +368,8 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
 | SINISA 2024 | água e esgoto por município (Ministério das Cidades) | planilhas públicas |
 | SNIS | série histórica de saneamento | público, também via Base dos Dados |
 | IBGE — Censo 2022 (SIDRA) | saneamento e fonte de água do domicílio, estrutura etária | público |
-| DATASUS | internações e agravos de veiculação hídrica | público |
+| DATASUS — SIH/SUS | internações por agravo de veiculação hídrica | público |
+| DATASUS — SIM | óbitos por causa básica, independentes de internação | público |
 | Observando os Rios | qualidade da água por voluntários (SOS Mata Atlântica) | público |
 | CEMADEN / INMET | chuva, alertas de desastre | público |
 | NOAA CPC — ONI | índice El Niño / La Niña, série desde 1950 | público |
@@ -299,9 +393,10 @@ inclusive a segunda, que é um resultado negativo.
 ## Estrutura
 
 ```
+escopo.py    qual recorte territorial está ativo (SANEA_ESCOPO)
 ana/         cliente da API da ANA e cruzamentos (piloto RMSP)
 clima/       bacia, série ONI, chuva e extremos por município
-saude/       internações do SIH/SUS e os modelos
+saude/       internações do SIH, óbitos do SIM, e os modelos
 saneamento/  indicadores do SINISA e o saneamento domiciliar do Censo
 dados_ibge/  população, PIB, área, estrutura etária e rebanho
 dados/       saídas derivadas, versionadas (os dumps brutos não são)
@@ -344,11 +439,26 @@ padrão 6) e cacheia cada mês já filtrado. O cache se rebaixa sozinho quando l
 coluna que a versão atual do script pede, então trocar `COLUNAS` basta para forçar a
 reextração — não é preciso apagar nada.
 
-Para rodar no estado inteiro em vez da bacia, prefixe com `SANEA_ESCOPO=parana`. Os dois
-escopos gravam em arquivos separados e convivem lado a lado:
+Para trocar de recorte, prefixe com `SANEA_ESCOPO`. Os escopos gravam em arquivos
+separados e convivem lado a lado:
 
 ```bash
 SANEA_ESCOPO=parana python saude/gradiente_ajustado.py
+```
+
+O recorte do Maranhão usa desfecho de mortalidade e não depende do SINISA:
+
+```bash
+export SANEA_ESCOPO=maranhao
+python clima/bp3.py                    # apesar do nome, monta a lista de qualquer UF
+python dados_ibge/populacao_bp3.py
+python dados_ibge/contexto_bp3.py
+python dados_ibge/estrutura_etaria.py
+python saneamento/censo_domiciliar.py
+python saude/sim.py                    # óbitos, 17 anos do FTP
+python saude/mortalidade.py            # o teste principal
+python saude/sih_bp3.py                # internação, para comparar as duas bases
+python saude/internacao.py
 ```
 
 Só dois passos precisam de coisa externa. O `sinisa_bp3.py` lê as planilhas do
