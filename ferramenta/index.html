@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SANEA — saneamento e saúde no seu município</title>
+<meta name="description" content="Como está o saneamento no seu município, como ele se compara, e o que os dados de saúde mostram. Censo 2022 e SIM/DATASUS.">
+<style>
+:root {
+  color-scheme: light;
+  --plano: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #898781;
+  --grid: #e1e0d9;
+  --base: #c3c2b7;
+  --borda: rgba(11,11,11,0.10);
+  /* rampa ordinal: melhor -> pior. Nao usa a paleta de status: a escala e
+     ordinal, e vermelho aqui seria editorializar pelo canal errado. */
+  --ord-1: #1c5cab;
+  --ord-2: #3987e5;
+  --ord-3: #9ec5f4;
+  --serie: #2a78d6;
+  --alerta: #ec835a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --plano: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink-2: #c3c2b7;
+    --ink-3: #898781; --grid: #2c2c2a; --base: #383835;
+    --borda: rgba(255,255,255,0.10);
+    --ord-1: #86b6ef; --ord-2: #3987e5; --ord-3: #184f95;
+    --serie: #3987e5;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --plano: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink-2: #c3c2b7;
+  --ink-3: #898781; --grid: #2c2c2a; --base: #383835;
+  --borda: rgba(255,255,255,0.10);
+  --ord-1: #86b6ef; --ord-2: #3987e5; --ord-3: #184f95;
+  --serie: #3987e5;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--plano); color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.wrap { max-width: 940px; margin: 0 auto; padding: 32px 20px 72px; }
+header h1 { font-size: 1.55rem; margin: 0 0 4px; letter-spacing: -0.01em; }
+header p { margin: 0 0 28px; color: var(--ink-2); max-width: 62ch; }
+
+.busca { position: relative; margin-bottom: 28px; }
+.busca input {
+  width: 100%; padding: 13px 15px; font: inherit; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--base); border-radius: 9px;
+}
+.busca input:focus { outline: 2px solid var(--serie); outline-offset: -1px; }
+.sug {
+  position: absolute; z-index: 5; left: 0; right: 0; top: calc(100% + 5px);
+  background: var(--surface); border: 1px solid var(--borda); border-radius: 9px;
+  max-height: 300px; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,.10);
+}
+.sug:empty { display: none; }
+.sug button {
+  display: block; width: 100%; text-align: left; padding: 9px 15px;
+  font: inherit; color: var(--ink); background: none; border: 0; cursor: pointer;
+}
+.sug button:hover, .sug button[aria-selected="true"] { background: var(--plano); }
+.sug .uf { color: var(--ink-3); font-size: .87rem; }
+
+.cartao {
+  background: var(--surface); border: 1px solid var(--borda);
+  border-radius: 12px; padding: 22px 24px; margin-bottom: 18px;
+}
+.cartao h2 { font-size: 1.02rem; margin: 0 0 3px; }
+.cartao .sub { color: var(--ink-3); font-size: .87rem; margin: 0 0 18px; }
+
+.municipio { display: flex; flex-wrap: wrap; gap: 22px 40px; align-items: baseline; }
+.municipio h2 { font-size: 1.5rem; margin: 0; }
+.municipio .meta { color: var(--ink-2); font-size: .93rem; }
+
+.barra { height: 26px; display: flex; gap: 2px; margin: 6px 0 12px; }
+.barra span { border-radius: 3px; }
+.barra span:first-child { border-radius: 4px 3px 3px 4px; }
+.barra span:last-child { border-radius: 3px 4px 4px 3px; }
+
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: .88rem; }
+.legenda i { width: 11px; height: 11px; border-radius: 3px; display: inline-block;
+  margin-right: 6px; vertical-align: -1px; }
+.legenda b { font-variant-numeric: tabular-nums; }
+
+.rolavel { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .93rem; min-width: 380px; }
+th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--grid); }
+th { color: var(--ink-3); font-weight: 500; font-size: .84rem; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+
+.medidor { position: relative; height: 8px; background: var(--grid);
+  border-radius: 4px; min-width: 120px; }
+.medidor i { position: absolute; inset: 0 auto 0 0; background: var(--ord-2);
+  border-radius: 4px; }
+.medidor u { position: absolute; top: -4px; width: 2px; height: 16px;
+  background: var(--ink-2); }
+
+.destaque { display: flex; flex-wrap: wrap; gap: 28px 44px; margin-bottom: 16px; }
+.destaque div { min-width: 110px; }
+.destaque .n { font-size: 1.85rem; line-height: 1.1; }
+.destaque .r { color: var(--ink-3); font-size: .84rem; }
+
+.aviso {
+  border-left: 3px solid var(--alerta); padding: 10px 0 10px 14px;
+  color: var(--ink-2); font-size: .89rem; margin-top: 16px;
+}
+.aviso b { color: var(--ink); }
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+.tt { fill: var(--ink); font-size: 11px; }
+footer { color: var(--ink-3); font-size: .86rem; margin-top: 36px; line-height: 1.7; }
+footer a { color: var(--ink-2); }
+a { color: var(--serie); }
+.vazio { color: var(--ink-3); padding: 40px 0; text-align: center; }
+@media (max-width: 560px) {
+  .destaque { gap: 18px 28px; }
+  .destaque .n { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>SANEA</h1>
+  <p>Como está o saneamento no seu município, como ele se compara ao estado e ao
+     país, e o que os registros de saúde mostram. Dados do Censo 2022 (IBGE) e do
+     SIM/DATASUS.</p>
+</header>
+
+<div class="busca">
+  <input id="q" type="search" autocomplete="off" placeholder="Digite o nome do município…"
+         aria-label="Buscar município">
+  <div class="sug" id="sug" role="listbox"></div>
+</div>
+
+<div id="saida"><p class="vazio">Busque um município para começar.</p></div>
+
+<footer>
+  <p><b>Fontes.</b> Saneamento e água: Censo 2022 (IBGE), tabelas 6805 e 6803.
+     Óbitos: SIM/DATASUS, causa básica A00–A09, 2008–2024. População: Censo 2022,
+     tabela 4709.</p>
+  <p><b>Limites.</b> O Censo é um retrato de 2022. Óbito por causa específica
+     depende da qualidade do registro, que é pior onde há menos assistência — por
+     isso a fração de causas mal definidas aparece junto, e não escondida.
+     Contagem pequena oscila muito de um ano para o outro.</p>
+  <p>Código, dados e método em
+     <a href="https://github.com/giovanirasia/sanea">github.com/giovanirasia/sanea</a>.</p>
+</footer>
+</div>
+
+<script>
+const F = (n, d = 1) => n == null ? "—" : n.toLocaleString("pt-BR",
+  { minimumFractionDigits: d, maximumFractionDigits: d });
+const I = n => n == null ? "—" : n.toLocaleString("pt-BR");
+
+let MUN = [], PERFIL = {}, REF = {};
+
+Promise.all([
+  fetch("dados/municipios.json").then(r => r.json()),
+  fetch("dados/perfil.json").then(r => r.json()),
+  fetch("dados/referencia.json").then(r => r.json()),
+]).then(([m, p, r]) => { MUN = m; PERFIL = p; REF = r; ligaBusca(); });
+
+const sem = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+
+function ligaBusca() {
+  const q = document.getElementById("q"), sug = document.getElementById("sug");
+  let idx = -1, atuais = [];
+  q.addEventListener("input", () => {
+    const t = sem(q.value.trim());
+    sug.innerHTML = ""; idx = -1;
+    if (t.length < 2) return;
+    // ordena por qualidade do casamento: exato, depois prefixo, depois
+    // conteudo. Sem isso "Sao Paulo" devolve "Sao Paulo de Olivenca" primeiro,
+    // porque a ordem do arquivo e por codigo IBGE e o AM vem antes do SP.
+    const rank = n => n === t ? 0 : n.startsWith(t) ? 1 : 2;
+    atuais = MUN.filter(m => sem(m.n).includes(t))
+      .map(m => [rank(sem(m.n)), sem(m.n).length, m])
+      .sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2].n.localeCompare(b[2].n))
+      .slice(0, 40).map(x => x[2]);
+    atuais.forEach((m, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.setAttribute("role", "option");
+      b.innerHTML = `${m.n} <span class="uf">${m.u}</span>`;
+      b.onclick = () => { q.value = m.n; sug.innerHTML = ""; mostra(m); };
+      sug.appendChild(b);
+    });
+  });
+  q.addEventListener("keydown", e => {
+    const b = [...sug.querySelectorAll("button")];
+    if (!b.length) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      idx = (idx + (e.key === "ArrowDown" ? 1 : -1) + b.length) % b.length;
+      b.forEach((x, i) => x.setAttribute("aria-selected", i === idx));
+      b[idx].scrollIntoView({ block: "nearest" });
+    } else if (e.key === "Enter" && idx >= 0) { e.preventDefault(); b[idx].click(); }
+    else if (e.key === "Escape") sug.innerHTML = "";
+  });
+  document.addEventListener("click", e => {
+    if (!e.target.closest(".busca")) sug.innerHTML = "";
+  });
+}
+
+const NOME_ESG = ["Rede geral ou fossa ligada à rede", "Fossa séptica não ligada",
+                  "Fossa rudimentar", "Destino inadequado", "Destino adequado"];
+const NOME_AGUA = ["Rede geral", "Poço profundo", "Poço raso",
+                   "Nascente", "Carro-pipa", "Rio, açude ou lago"];
+
+function mostra(m) {
+  const p = PERFIL[m.c], ref = REF[m.u] || {}, br = REF.BR || {};
+  const [rede, septica, rudim, inadeq, adeq] = p.esg;
+  const outra = Math.max(0, +(100 - rede - septica - inadeq).toFixed(1));
+  const [ob04, obTot04, mal04, obTodas] = p.ob;
+
+  // composicao: tres fatias que nao se sobrepoem, em rampa ordinal
+  const fatias = [
+    [rede, "var(--ord-1)", "Rede geral ou fossa ligada"],
+    [septica, "var(--ord-2)", "Fossa séptica não ligada"],
+    [inadeq, "var(--ord-3)", "Destino inadequado"],
+  ];
+  if (outra > 0.05) fatias.push([outra, "var(--grid)", "Outra forma"]);
+
+  const linhaComp = (rot, vals, nomes) => vals.map((v, i) => `
+    <tr><td>${nomes[i]}</td>
+        <td class="num">${F(v)}%</td>
+        <td style="width:42%"><div class="medidor">
+          <i style="width:${Math.min(100, v)}%"></i>
+          <u style="left:${Math.min(100, ref[rot[i]] ?? 0)}%"
+             title="mediana ${m.u}: ${F(ref[rot[i]])}%"></u>
+        </div></td>
+        <td class="num" style="color:var(--ink-3)">${F(ref[rot[i]])}%</td>
+        <td class="num" style="color:var(--ink-3)">${F(br[rot[i]])}%</td></tr>`).join("");
+
+  // populacao de 0 a 4 do Censo 2022, nao um percentual fixo da populacao
+  // total: a estrutura etaria varia muito entre regioes, e usar proxy fixo
+  // erraria justamente no contraste que a ferramenta existe para mostrar
+  const taxa04 = m.p4 ? (ob04 / (m.p4 * 17)) * 1e5 : null;
+  const pctMal = obTot04 ? (100 * mal04 / obTot04) : null;
+
+  document.getElementById("saida").innerHTML = `
+  <div class="cartao">
+    <div class="municipio">
+      <h2>${m.n}<span style="color:var(--ink-3);font-weight:400"> · ${m.u}</span></h2>
+      <div class="meta">${I(m.p)} habitantes · ${I(p.dom)} domicílios</div>
+    </div>
+  </div>
+
+  <div class="cartao">
+    <h2>Para onde vai o esgoto</h2>
+    <p class="sub">Composição dos domicílios, Censo 2022</p>
+    <div class="barra">
+      ${fatias.map(([v, c]) => `<span style="width:${v}%;background:${c}"></span>`).join("")}
+    </div>
+    <div class="legenda">
+      ${fatias.map(([v, c, n]) =>
+        `<span><i style="background:${c}"></i>${n} <b>${F(v)}%</b></span>`).join("")}
+    </div>
+    <div class="rolavel"><table style="margin-top:20px">
+      <tr><th>Indicador</th><th class="num">Município</th><th></th>
+          <th class="num">Mediana ${m.u}</th><th class="num">Mediana BR</th></tr>
+      ${linhaComp(["esgoto_rede_pct","fossa_septica_pct","fossa_rudimentar_pct",
+                   "esgoto_inadequado_pct"],
+                  [rede, septica, rudim, inadeq], NOME_ESG)}
+    </table></div>
+    <div class="aviso">
+      <b>Onde fica a linha?</b> A classificação oficial soma
+      ${F(adeq)}% como <i>saneamento adequado</i> aqui, contando a fossa séptica
+      não ligada à rede. Dois inquéritos domiciliares sugerem que essa fossa se
+      comporta como solução inadequada — pela ligação à rede, o número seria
+      ${F(rede)}%. Ver a
+      <a href="https://github.com/giovanirasia/sanea/blob/main/notas/onde-fica-a-linha.md">nota metodológica</a>.
+    </div>
+  </div>
+
+  <div class="cartao">
+    <h2>De onde vem a água</h2>
+    <p class="sub">Forma principal de abastecimento, Censo 2022</p>
+    <div class="rolavel"><table>
+      <tr><th>Fonte</th><th class="num">Município</th><th></th>
+          <th class="num">Mediana ${m.u}</th><th class="num">Mediana BR</th></tr>
+      ${linhaComp(["agua_rede_pct","agua_poco_profundo_pct","agua_poco_raso_pct",
+                   "agua_nascente_pct","agua_carropipa_pct","agua_superficial_pct"],
+                  p.agu, NOME_AGUA)}
+    </table></div>
+  </div>
+
+  <div class="cartao">
+    <h2>Óbitos por doença infecciosa intestinal</h2>
+    <p class="sub">Causa básica A00–A09, 2008 a 2024, residentes do município</p>
+    <div class="destaque">
+      <div><div class="n">${I(obTodas)}</div><div class="r">todas as idades, 17 anos</div></div>
+      <div><div class="n">${I(ob04)}</div><div class="r">menores de 5 anos</div></div>
+      ${taxa04 != null ? `<div><div class="n">${F(taxa04, 1)}</div>
+        <div class="r">por 100 mil crianças-ano (estimado)</div></div>` : ""}
+    </div>
+    ${serieSVG(p.serie)}
+    <div class="aviso">
+      <b>Leia com o denominador de qualidade.</b>
+      ${pctMal != null ? `${F(pctMal)}% dos óbitos de menores de 5 anos deste
+      município ficaram com <i>causa mal definida</i>` : "Sem óbitos infantis registrados no período"}.
+      Onde essa fração é alta, a contagem por causa específica subestima — o óbito
+      está registrado, mas na gaveta errada.
+    </div>
+  </div>`;
+}
+
+function serieSVG(serie) {
+  const anos = Object.keys(serie).map(Number).sort((a, b) => a - b);
+  if (anos.length < 2) return `<p style="color:var(--ink-3);font-size:.9rem">
+    Sem série anual suficiente para desenhar (menos de dois anos com óbito registrado).</p>`;
+  const a0 = 2008, a1 = 2024, W = 680, H = 150, P = 26;
+  const max = Math.max(...Object.values(serie), 2);
+  const x = a => P + (a - a0) / (a1 - a0) * (W - P * 2);
+  const y = v => H - P - (v / max) * (H - P * 2);
+  const pts = [];
+  for (let a = a0; a <= a1; a++) pts.push([x(a), y(serie[a] || 0), a, serie[a] || 0]);
+  const d = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img"
+    aria-label="Óbitos por A00-A09 em menores de 5 anos, por ano, de 2008 a 2024">
+    <line x1="${P}" y1="${H - P}" x2="${W - P}" y2="${H - P}" stroke="var(--base)"/>
+    <text class="tt" x="${P}" y="${H - P + 15}" fill="var(--ink-3)">${a0}</text>
+    <text class="tt" x="${W - P}" y="${H - P + 15}" text-anchor="end" fill="var(--ink-3)">${a1}</text>
+    <text class="tt" x="${P}" y="${y(max) - 6}" fill="var(--ink-3)">${max} óbitos</text>
+    <path d="${d}" fill="none" stroke="var(--serie)" stroke-width="2"
+          stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.filter(p => p[3] > 0).map(p =>
+      `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4"
+         fill="var(--serie)" stroke="var(--surface)" stroke-width="2">
+         <title>${p[2]}: ${p[3]} óbito${p[3] > 1 ? "s" : ""}</title></circle>`).join("")}
+  </svg>
+  <p style="color:var(--ink-3);font-size:.84rem;margin:2px 0 0">
+    Menores de 5 anos, por ano. Passe o cursor sobre os pontos.</p>`;
+}
+</script>
+</body>
+</html>

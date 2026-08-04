@@ -35,6 +35,28 @@ Três recortes, e a comparação entre eles é parte do método. Todo módulo ac
 A Região Metropolitana de São Paulo foi um piloto anterior, com o programa Observando os
 Rios.
 
+## Ferramenta
+
+🔎 **[`ferramenta/`](ferramenta/)** — consulta por município: composição do esgoto, fonte de
+água, comparação com as medianas do estado e do país, e a série de óbitos infantis por
+doença intestinal.
+
+Site estático, sem backend. Os dados não mudam — o Censo é um retrato e o SIM atualiza uma
+vez por ano — então um serviço que consulta banco para devolver sempre a mesma resposta
+seria custo e ponto de falha sem contrapartida. `build.py` gera 1 MB de JSON a partir dos
+dois datasets publicados, e a página é arquivo.
+
+```bash
+python ferramenta/build.py
+python -m http.server 8931 --directory ferramenta
+```
+
+Duas decisões que valem registro. A taxa infantil usa a **população de 0 a 4 anos do Censo**,
+não um percentual fixo da população total: proxy fixo erraria justamente no contraste que a
+ferramenta existe para mostrar — Palotina (PR) tem 4,8 óbitos por 100 mil crianças-ano e São
+Paulo de Olivença (AM) tem 71,9. E a fração de **causas mal definidas** aparece ao lado da
+contagem, porque sem ela a taxa por causa específica engana onde o registro é pior.
+
 ## Dados publicados
 
 Dois subprodutos da análise viraram os artefatos mais reaproveitáveis daqui, e valem
