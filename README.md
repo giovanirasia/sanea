@@ -319,8 +319,42 @@ juntos. Resultado, por 10 p.p. de expansão:
 mostrar que o desenho enxergaria um efeito se houvesse. Aqui não: o **controle positivo
 também deu nulo** — a variação de rede não prediz nem a mudança na fração de causas mal
 definidas, que é marcador de desenvolvimento do serviço de saúde. Some-se o intervalo largo
-do tratamento binário, o denominador conservador por construção e a ausência de teste de
-tendência prévia. É um desenho que rodou e não achou, não uma demonstração de ausência.
+do tratamento binário e o denominador conservador por construção. É um desenho que rodou e
+não achou, não uma demonstração de ausência.
+
+### O placebo reprova o desenho
+
+A premissa das primeiras diferenças é que, sem tratamento, tratados e não tratados teriam
+seguido juntos. Isso é testável: basta aplicar o mesmo estimador a duas janelas **anteriores
+ao tratamento**, onde ele não pode ter efeito.
+
+A ideia original era usar a série anual do SNIS para isso. Não foi necessária — o SNIS
+daria o *momento* da expansão, mas o teste precisa do *desfecho antes* dela, e o SIM começa
+em **1996**, catorze anos antes da janela de tratamento.
+
+| Janela | Coeficiente | IC95% | p |
+|---|---|---|---|
+| **1998–2002 → 2006–2010** *(placebo: tudo antes)* | **0,960** | 0,922–1,000 | **0,048** |
+| 2006–2010 → 2020–2024 *(o tratamento)* | 1,015 | 0,958–1,076 | 0,61 |
+
+O coeficiente que tinha de ser 1 não é. **Municípios que depois expandiriam a rede já
+vinham reduzindo mais rápido a fração de óbitos infantis por doença intestinal, dez anos
+antes da obra.** Tendências paralelas não valem, e a estimativa acima não é causal.
+
+A falha é marginal — o intervalo encosta em 1. Mas um placebo que cai bem na borda não se
+descarta, ainda mais quando a função dele é tranquilizar.
+
+**Não é artefato de certificação.** A fração de causa mal definida caiu de 12,7% (1996–2007)
+para 5,7% (2008–2024), e melhora diferencial dela produziria exatamente esse falso sinal —
+mas ela não se move com o tratamento (1,025, p = 0,34) na mesma janela do placebo.
+
+Um aspecto tranquiliza: o viés aponta para **achar** efeito protetor, já que os tratados
+melhoravam sozinhos, e ainda assim não se achou nada. O nulo não esconde efeito; se algo, é
+conservador. Mas isso é leitura da direção do viés, não estimativa válida.
+
+E a tendência prévia é substantivamente coerente com o resto: a expansão foi para
+municípios já em trajetória melhor — o mesmo fenômeno que a tabela abaixo mostra por outro
+ângulo.
 
 ### O achado mais firme desta parte não é causal
 
@@ -431,9 +465,12 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
 - causa básica mal definida (capítulo R do CID-10) absorve óbitos que deveriam estar em
   A00–A09, e essa má definição também é maior onde há menos assistência
 - primeira diferença remove confundimento de **nível** fixo no tempo, não tendência
-  diferencial: município que recebeu rede não foi sorteado, é o que recebeu investimento
-- com dois pontos de exposição não há como testar tendência prévia, que é a checagem
-  central de credibilidade desse tipo de desenho; para isso seria preciso série anual
+  diferencial — e aqui a tendência diferencial existe: o placebo reprovou (p = 0,048)
+- o que ainda falta, e para isso o SNIS seria necessário, é saber **quando** cada município
+  expandiu. Isso permitiria um estudo de evento, vendo o desfecho ano a ano em torno da
+  obra, em vez de dois blocos
+- até 2005 o SIM grava o código de município com 7 dígitos e de 2006 em diante com 6;
+  quem for reprocessar a série longa precisa uniformizar, ou anos inteiros somem no join
 - controlar a propensão geral a internar é diagnóstico, não especificação final: é um
   desfecho, não covariável exógena, e ajustá-la pode ser sobreajuste
 - ERA5 é reanálise, não pluviômetro; validar contra ANA/INMET antes de publicar número
@@ -519,6 +556,17 @@ mais o Censo 2010, então roda sem escopo:
 
 ```bash
 python saude/primeiras_diferencas.py
+```
+
+O teste de tendência prévia precisa da extensão retroativa do SIM, que grava em arquivo
+próprio para não tocar no painel publicado:
+
+```bash
+SANEA_ESCOPO=br SANEA_ANO_INICIO=1996 SANEA_ANO_FIM=2007 python saude/sim.py
+```
+
+```bash
+python saude/tendencia_previa.py
 ```
 
 O `sih_bp3.py` baixa 221 meses do FTP do DATASUS em processos paralelos (`SANEA_PARALELO`,
