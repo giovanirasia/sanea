@@ -105,6 +105,17 @@ Resultado — e por que ele vale menos que os anteriores
   Conclusao honesta: **isto e um nulo fraco, e nao deve ser contado como quarta
   confirmacao da tese do repositorio.** E um desenho que rodou e nao achou.
 
+  ATUALIZACAO — a premissa deste desenho foi testada depois, em
+  tendencia_previa.py, e **nao passou**. Aplicando o mesmo estimador a duas
+  janelas anteriores ao tratamento (1998-2002 contra 2006-2010), o coeficiente
+  da 0,960 (p=0,048) em vez de 1. Municipios que depois expandiriam a rede ja
+  vinham melhorando mais rapido antes da obra. Tendencias paralelas nao valem,
+  e a estimativa acima nao e causal.
+
+  O vies aponta para achar efeito protetor, e nao se achou — entao o nulo nao
+  esconde efeito, e se algo e conservador. Mas isso e leitura da direcao do
+  vies, nao estimativa valida.
+
 O que este modulo achou de fato, e nao e causal
 
   A expansao de rede entre 2010 e 2022 passou ao largo de quem nao tinha nada.

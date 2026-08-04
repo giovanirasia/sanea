@@ -77,15 +77,34 @@ if ESCOPO != "br":
     ESCOPO = escopo.atual()
 
 PARCIAIS = RAIZ / "dados" / "bruto" / "sim"
-SAIDA = (RAIZ / "dados" / ("obitos_hidricas_br.csv" if ESCOPO == "br"
-                           else f"sim_{ESCOPO}_anual.csv"))
+
+
+def _nome_saida() -> str:
+    """Nome do arquivo de saida, com o periodo quando nao for o padrao.
+
+    Sem isso, rodar a extensao retroativa (1996-2007) sobrescreveria o painel
+    nacional publicado, que e de 2008-2024, com um arquivo de outro periodo e
+    mesmo nome. O erro so apareceria depois, em quem lesse o CSV esperando a
+    serie publicada.
+    """
+    if ESCOPO != "br":
+        return f"sim_{ESCOPO}_anual.csv"
+    if (ANO_INICIO, ANO_FIM) == (2008, 2024):
+        return "obitos_hidricas_br.csv"
+    return f"obitos_hidricas_br_{ANO_INICIO}_{ANO_FIM}.csv"
 MUNICIPIOS = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
 CENSO_BR = RAIZ / "dados" / "censo_domiciliar_br.csv"
 
 FTP_HOST = "ftp.datasus.gov.br"
 FTP_ARQ = "/dissemin/publicos/SIM/CID10/DORES/DO{sigla}{ano}.dbc"
-ANO_INICIO, ANO_FIM = 2008, 2024
+# o painel publicado comeca em 2008, para casar com as covariaveis municipais.
+# O teste de tendencia previa precisa do periodo ANTERIOR ao tratamento, e o
+# SIM comeca em 1996 — dai o override por variavel de ambiente.
+ANO_INICIO = int(os.environ.get("SANEA_ANO_INICIO", "2008"))
+ANO_FIM = int(os.environ.get("SANEA_ANO_FIM", "2024"))
 PARALELO = int(os.environ.get("SANEA_PARALELO", "4"))
+
+SAIDA = RAIZ / "dados" / _nome_saida()
 
 UF_DE_SIGLA = {"RO": 11, "AC": 12, "AM": 13, "RR": 14, "PA": 15, "AP": 16,
                "TO": 17, "MA": 21, "PI": 22, "CE": 23, "RN": 24, "PB": 25,
@@ -244,6 +263,13 @@ def agrega(sigla: str, ano: int, mapa: set[str] | None) -> list[pd.DataFrame]:
     if d is None or d.empty:
         return []
 
+    # ate 2005 o SIM grava CODMUNRES com 7 digitos (codigo IBGE completo, com
+    # verificador); de 2006 em diante, com 6. Truncar uniformiza, e os 6
+    # primeiros digitos sao os mesmos nos dois formatos — Sao Paulo e 3550308
+    # e 355030. Sem isso os anos antigos nao casam com nenhuma chave de 6
+    # digitos e somem inteiros no merge, sem erro nenhum.
+    d = d.assign(CODMUNRES=d["CODMUNRES"].astype(str).str[:6])
+
     # o SIM tem um codigo por UF para "municipio ignorado" (210000 no MA),
     # que nao e municipio e nao tem denominador populacional
     d = d[~d["CODMUNRES"].str.endswith("0000")]
@@ -308,6 +334,17 @@ def main() -> None:
                  .sort_values(["cod_ibge", "ano", "faixa"])
                  [["cod_ibge", "municipio", "uf", "ano", "faixa",
                    "obitos_a00a09", "obitos_mal_definidos", "obitos_total"]])
+    # se um ano inteiro sumiu na agregacao, e erro de chave, nao ausencia de
+    # obito — nenhum ano do Brasil tem zero morte. Falhar alto: foi assim que
+    # o formato de 7 digitos do CODMUNRES ate 2005 passou despercebido,
+    # descartando dez dos doze anos pedidos sem levantar excecao.
+    esperados = set(range(ANO_INICIO, ANO_FIM + 1))
+    faltando = sorted(esperados - set(saida["ano"].unique()))
+    if faltando:
+        raise SystemExit(
+            f"\n{len(faltando)} anos sumiram na agregacao: {faltando}\n"
+            "O cache existe mas nada casou. Suspeite da chave de municipio.")
+
     saida.to_csv(SAIDA, index=False)
 
     chave = "cod_ibge" if ESCOPO == "br" else "cod6"
