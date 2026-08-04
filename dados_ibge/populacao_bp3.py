@@ -29,6 +29,7 @@ Saida
 from __future__ import annotations
 
 import os
+import sys
 import gzip
 import json
 import time
@@ -40,9 +41,10 @@ import pandas as pd
 RAIZ = Path(__file__).resolve().parent.parent
 
 # escopo: "bp3" (35 municipios da bacia) ou "parana" (os 399 do estado)
-ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
-if ESCOPO not in ("bp3", "parana"):
-    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+sys.path.insert(0, str(RAIZ))
+import escopo                                                  # noqa: E402
+
+ESCOPO = escopo.atual()
 
 MUNICIPIOS = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
 BRUTO = RAIZ / "dados" / "bruto" / "ibge"

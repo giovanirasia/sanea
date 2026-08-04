@@ -31,6 +31,7 @@ from __future__ import annotations
 import gzip
 import json
 import os
+import sys
 import time
 import unicodedata
 import urllib.request
@@ -41,17 +42,17 @@ import pandas as pd
 RAIZ = Path(__file__).resolve().parent.parent
 BRUTO = RAIZ / "dados" / "bruto" / "malhas"
 
-# escopo: "bp3" (35 municipios da bacia) ou "parana" (os 399 do estado).
-# O estadual existe para dar poder ao modelo de dose-resposta do saneamento,
-# que na bacia se apoia em 35 municipios so.
-ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
-if ESCOPO not in ("bp3", "parana"):
-    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+sys.path.insert(0, str(RAIZ))
+import escopo                                                  # noqa: E402
+
+ESCOPO = escopo.atual()
+UF = escopo.uf(ESCOPO)
+SIGLA = escopo.sigla(ESCOPO).lower()
 
 SAIDA = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
 
-UF_PARANA = 41
-IBGE_MUNICIPIOS = f"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{UF_PARANA}/municipios"
+IBGE_MUNICIPIOS = ("https://servicodados.ibge.gov.br/api/v1/localidades"
+                   f"/estados/{UF}/municipios")
 IBGE_MALHA = ("https://servicodados.ibge.gov.br/api/v3/malhas/municipios/{cod}"
               "?formato=application/vnd.geo+json")
 
@@ -97,7 +98,7 @@ def _baixa_json(url: str, destino: Path | None = None) -> dict | list:
 
 def codigos_ibge() -> dict[str, int]:
     """Nome normalizado -> codigo IBGE, para todos os municipios do PR."""
-    dados = _baixa_json(IBGE_MUNICIPIOS, BRUTO / "pr_municipios.json")
+    dados = _baixa_json(IBGE_MUNICIPIOS, BRUTO / f"{SIGLA}_municipios.json")
     return {normaliza(m["nome"]): m["id"] for m in dados}
 
 
@@ -122,14 +123,14 @@ def centroide(cod: int) -> tuple[float, float]:
 
 def alvo() -> list[tuple[str, int]]:
     """(nome, codigo IBGE) dos municipios do escopo."""
-    mapa = codigos_ibge()
-    if ESCOPO == "parana":
-        dados = _baixa_json(IBGE_MUNICIPIOS, BRUTO / "pr_municipios.json")
+    if escopo.uf_inteira(ESCOPO):
+        dados = _baixa_json(IBGE_MUNICIPIOS, BRUTO / f"{SIGLA}_municipios.json")
         return sorted((m["nome"], m["id"]) for m in dados)
 
+    mapa = codigos_ibge()
     faltando = [m for m in BP3 if normaliza(m) not in mapa]
     if faltando:
-        raise SystemExit(f"nao encontrados no IBGE (PR): {faltando}")
+        raise SystemExit(f"nao encontrados no IBGE ({SIGLA.upper()}): {faltando}")
     return [(nome, mapa[normaliza(nome)]) for nome in BP3]
 
 

@@ -64,6 +64,7 @@ from __future__ import annotations
 import gzip
 import json
 import os
+import sys
 import time
 import urllib.request
 from pathlib import Path
@@ -72,9 +73,14 @@ import pandas as pd
 
 RAIZ = Path(__file__).resolve().parent.parent
 
+sys.path.insert(0, str(RAIZ))
+import escopo                                                  # noqa: E402
+
+# "br" so existe aqui: e o recorte nacional publicado, que nao e unidade de
+# analise deste repositorio e por isso nao entra no escopo.py
 ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
-if ESCOPO not in ("bp3", "parana", "br"):
-    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+if ESCOPO != "br":
+    ESCOPO = escopo.atual()
 
 MUNICIPIOS = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
 BRUTO = RAIZ / "dados" / "bruto" / "ibge"
@@ -137,8 +143,8 @@ ADEQUADO = ["rede", "fossa_ligada", "fossa_septica"]
 
 
 def ufs_do_escopo() -> list[int]:
-    """No recorte nacional sao as 27; nos do Parana, so a 41."""
-    return sorted(UFS) if ESCOPO == "br" else [41]
+    """No recorte nacional sao as 27; nos demais, so a UF do escopo."""
+    return sorted(UFS) if ESCOPO == "br" else [escopo.uf(ESCOPO)]
 
 
 def _baixa(tabela: int, classif: int, cats: dict[str, str], uf: int) -> list[dict]:

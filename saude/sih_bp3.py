@@ -43,6 +43,7 @@ from __future__ import annotations
 import ftplib
 import os
 import shutil
+import sys
 import tempfile
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -53,21 +54,21 @@ import pandas as pd
 from dbfread import DBF
 
 RAIZ = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(RAIZ))
+import escopo                                                  # noqa: E402
+
 MUNICIPIOS = RAIZ / "dados" / "bp3_municipios.csv"
 
-# escopo: "bp3" (35 municipios da bacia) ou "parana" (os 399 do estado).
-# O estado inteiro existe para dar poder ao modelo de dose-resposta, que na
-# bacia se apoia em 35 municipios so. Trocar por variavel de ambiente:
+# recorte territorial, por variavel de ambiente:
 #   SANEA_ESCOPO=parana python saude/sih_bp3.py
-ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
-if ESCOPO not in ("bp3", "parana"):
-    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+ESCOPO = escopo.atual()
 
 PARCIAIS = RAIZ / "dados" / "bruto" / "sih"
 SAIDA = RAIZ / "dados" / f"sih_{ESCOPO}_mensal.csv"
 
 FTP_HOST = "ftp.datasus.gov.br"
-FTP_ARQ = "/dissemin/publicos/SIHSUS/200801_/Dados/RDPR{aa:02d}{mm:02d}.dbc"
+FTP_ARQ = ("/dissemin/publicos/SIHSUS/200801_/Dados/"
+           "RD" + escopo.sigla(ESCOPO) + "{aa:02d}{mm:02d}.dbc")
 ANO_INICIO, ANO_FIM = 2008, 2026
 PARALELO = int(os.environ.get("SANEA_PARALELO", "6"))
 
@@ -111,13 +112,13 @@ def grupo_cid(cid: str) -> str | None:
 
 
 def codigos_alvo() -> set[str] | None:
-    """Codigos IBGE de 6 digitos a manter. None = todo o Parana.
+    """Codigos IBGE de 6 digitos a manter. None = a UF inteira.
 
-    No escopo estadual nao ha lista: basta o prefixo 41, que e a UF. Isso
-    exclui residentes de outros estados internados no Parana, que existem e
-    nao pertencem ao denominador populacional daqui.
+    Em recorte de UF nao ha lista: basta o prefixo do codigo IBGE. Isso exclui
+    residentes de outros estados internados aqui, que existem e nao pertencem
+    ao denominador populacional deste recorte.
     """
-    if ESCOPO == "parana":
+    if escopo.uf_inteira(ESCOPO):
         return None
     bp3 = pd.read_csv(MUNICIPIOS)
     return {str(c)[:6] for c in bp3["cod_ibge"]}
@@ -126,7 +127,8 @@ def codigos_alvo() -> set[str] | None:
 def _mantem(cod: str | None, alvo: set[str] | None) -> bool:
     if cod is None:
         return False
-    return cod.startswith("41") if alvo is None else cod in alvo
+    prefixo = str(escopo.uf(ESCOPO))
+    return cod.startswith(prefixo) if alvo is None else cod in alvo
 
 
 def cache_completo(parcial: Path) -> bool:

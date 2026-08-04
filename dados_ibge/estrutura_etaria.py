@@ -39,6 +39,7 @@ from __future__ import annotations
 import gzip
 import json
 import os
+import sys
 import re
 import time
 import urllib.request
@@ -48,9 +49,10 @@ import pandas as pd
 
 RAIZ = Path(__file__).resolve().parent.parent
 
-ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
-if ESCOPO not in ("bp3", "parana"):
-    raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
+sys.path.insert(0, str(RAIZ))
+import escopo                                                  # noqa: E402
+
+ESCOPO = escopo.atual()
 
 MUNICIPIOS = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
 BRUTO = RAIZ / "dados" / "bruto" / "ibge"
