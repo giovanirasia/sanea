@@ -1,0 +1,55 @@
+# Publica a ferramenta no GitHub Pages.
+#
+# Por que via Actions e nao pela configuracao classica: o Pages servido de
+# branch so aceita a raiz do repositorio ou /docs, e a ferramenta mora em
+# ferramenta/. Renomear a pasta para docs/ resolveria, mas trocaria um nome que
+# diz o que a coisa e por um que diz onde o GitHub quer que ela esteja.
+#
+# O passo configure-pages com enablement: true liga o Pages na primeira
+# execucao, usando o proprio GITHUB_TOKEN. Nao e preciso mexer em nenhuma
+# configuracao pela interface.
+#
+# O build de dados (ferramenta/build.py) NAO roda aqui: ele consulta o SIDRA e
+# depende de rede externa, e o JSON gerado esta versionado. Publicacao deve ser
+# deterministica; quando os dados mudarem, roda-se o build localmente e comita.
+
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ferramenta/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# uma publicacao por vez; nao cancela a que estiver em andamento, para nao
+# deixar o site num estado intermediario
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ferramenta
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
