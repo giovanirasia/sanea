@@ -35,20 +35,33 @@ Três recortes, e a comparação entre eles é parte do método. Todo módulo ac
 A Região Metropolitana de São Paulo foi um piloto anterior, com o programa Observando os
 Rios.
 
-## Dado publicado: saneamento domiciliar dos 5.570 municípios
+## Dados publicados
 
-Um subproduto da análise virou o artefato mais reaproveitável daqui, e é independente de
-qualquer conclusão sobre saúde:
+Dois subprodutos da análise viraram os artefatos mais reaproveitáveis daqui, e valem
+independentemente do que este repositório conclua sobre saúde. São as duas pontas do
+cruzamento que o projeto se propõe a fazer, e casam pelo `cod_ibge`.
 
 📄 **[`dados/censo_domiciliar_br.csv`](dados/censo_domiciliar_br.csv)** — esgotamento
-sanitário e fonte de água dos domicílios, por município, do Censo 2022.
-[Dicionário e limites](dados/censo_domiciliar_br.md).
+sanitário e fonte de água dos domicílios, por município, Censo 2022. 5.570 municípios.
+[Dicionário](dados/censo_domiciliar_br.md).
 
-Serve a quem cruza saneamento com qualquer coisa por município. O indicador usado por
-padrão no país — cobertura de rede do SNIS/SINISA — mede a rede do prestador, e por isso
-zera todo município sem rede coletora. No Paraná esse achatamento atinge **39% dos
-municípios**, que na verdade vão de 9,5% a 99,6% de domicílios com destino inadequado de
-esgoto. O detalhe está em [O nulo é da hipótese ou da variável?](#o-nulo-é-da-hipótese-ou-da-variável).
+O indicador usado por padrão no país — cobertura de rede do SNIS/SINISA — mede a rede do
+prestador, e por isso zera todo município sem rede coletora. No Paraná esse achatamento
+atinge **39% dos municípios**, que na verdade vão de 9,5% a 99,6% de domicílios com
+destino inadequado de esgoto. O detalhe está em
+[O nulo é da hipótese ou da variável?](#o-nulo-é-da-hipótese-ou-da-variável).
+
+📄 **[`dados/obitos_hidricas_br.csv`](dados/obitos_hidricas_br.csv)** — óbitos por doença
+infecciosa intestinal (A00–A09), por município, ano e faixa etária, 2008–2024, do
+SIM/DATASUS. [Dicionário](dados/obitos_hidricas_br.md).
+
+O SIM é público mas não vem em forma de painel: são 459 arquivos DBC, um por UF e ano, e o
+campo de idade não é um número — `310` é dez meses e `410` é dez anos. Cada linha traz
+também os **óbitos totais** e os **óbitos por causa mal definida**, e isso não é enfeite:
+a taxa de mortalidade por causa específica cai onde o registro é pior, não onde a doença é
+menor. Quem usar a coluna do desfecho sozinha vai encontrar saneamento precário associado
+a *menos* morte — foi o que quase aconteceu aqui, e está contado em
+[Um sinal invertido que era da base, não do mundo](#um-sinal-invertido-que-era-da-base-não-do-mundo).
 
 ## Resultados
 
@@ -456,6 +469,7 @@ python dados_ibge/contexto_bp3.py
 python dados_ibge/estrutura_etaria.py
 python saneamento/censo_domiciliar.py
 python saude/sim.py                    # óbitos, 17 anos do FTP
+# ...ou SANEA_ESCOPO=br, que gera o painel nacional de óbitos (459 arquivos)
 python saude/mortalidade.py            # o teste principal
 python saude/sih_bp3.py                # internação, para comparar as duas bases
 python saude/internacao.py

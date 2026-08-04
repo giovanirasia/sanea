@@ -57,6 +57,7 @@ import os
 import shutil
 import sys
 import tempfile
+import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
@@ -69,16 +70,35 @@ RAIZ = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ))
 import escopo                                                  # noqa: E402
 
-ESCOPO = escopo.atual()
+# "br" nao e unidade de analise deste repositorio: e o recorte nacional
+# publicado, e por isso nao entra no escopo.py
+ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
+if ESCOPO != "br":
+    ESCOPO = escopo.atual()
+
 PARCIAIS = RAIZ / "dados" / "bruto" / "sim"
-SAIDA = RAIZ / "dados" / f"sim_{ESCOPO}_anual.csv"
+SAIDA = (RAIZ / "dados" / ("obitos_hidricas_br.csv" if ESCOPO == "br"
+                           else f"sim_{ESCOPO}_anual.csv"))
 MUNICIPIOS = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
+CENSO_BR = RAIZ / "dados" / "censo_domiciliar_br.csv"
 
 FTP_HOST = "ftp.datasus.gov.br"
-FTP_ARQ = ("/dissemin/publicos/SIM/CID10/DORES/"
-           "DO" + escopo.sigla(ESCOPO) + "{ano}.dbc")
+FTP_ARQ = "/dissemin/publicos/SIM/CID10/DORES/DO{sigla}{ano}.dbc"
 ANO_INICIO, ANO_FIM = 2008, 2024
 PARALELO = int(os.environ.get("SANEA_PARALELO", "4"))
+
+UF_DE_SIGLA = {"RO": 11, "AC": 12, "AM": 13, "RR": 14, "PA": 15, "AP": 16,
+               "TO": 17, "MA": 21, "PI": 22, "CE": 23, "RN": 24, "PB": 25,
+               "PE": 26, "AL": 27, "SE": 28, "BA": 29, "MG": 31, "ES": 32,
+               "RJ": 33, "SP": 35, "PR": 41, "SC": 42, "RS": 43, "MS": 50,
+               "MT": 51, "GO": 52, "DF": 53}
+SIGLAS_BR = list(UF_DE_SIGLA)
+
+
+def siglas() -> list[str]:
+    """UFs a baixar. O cache e por sigla+ano, que e a chave do arquivo no FTP,
+    entao um recorte estadual e o nacional reaproveitam o mesmo disco."""
+    return SIGLAS_BR if ESCOPO == "br" else [escopo.sigla(ESCOPO)]
 
 COLUNAS = ["CODMUNRES", "CAUSABAS", "DTOBITO", "IDADE", "SEXO"]
 
@@ -108,33 +128,63 @@ def cache_completo(parcial: Path) -> bool:
         return not set(COLUNAS) - set((fh.readline() or "").strip().split(","))
 
 
-def baixa_dbc(ano: int, destino: Path) -> None:
-    ftp = ftplib.FTP(FTP_HOST, timeout=300)
-    try:
-        ftp.login()
-        with open(destino, "wb") as saida:
-            ftp.retrbinary("RETR " + FTP_ARQ.format(ano=ano), saida.write)
-    finally:
+def baixa_dbc(sigla: str, ano: int, destino: Path, tentativas: int = 4) -> None:
+    """Baixa um DO do FTP, com recuo progressivo em falha transitoria.
+
+    A distincao importa e nao e detalhe. error_perm e o servidor dizendo que o
+    arquivo nao existe — nao adianta insistir. Qualquer outra coisa (gaierror
+    de DNS, timeout, conexao derrubada) e transitoria, e tratar as duas do
+    mesmo jeito significa deixar buraco silencioso no painel: a UF-ano some do
+    resultado e nada no arquivo final denuncia a ausencia.
+
+    Isso aconteceu de verdade na primeira rodada nacional — 41 arquivos
+    perdidos por gaierror, quatro processos resolvendo o mesmo host ao mesmo
+    tempo.
+    """
+    for tentativa in range(tentativas):
+        ftp = None
         try:
-            ftp.quit()
+            ftp = ftplib.FTP(FTP_HOST, timeout=300)
+            ftp.login()
+            with open(destino, "wb") as saida:
+                ftp.retrbinary("RETR " + FTP_ARQ.format(sigla=sigla, ano=ano),
+                               saida.write)
+            return
+        except ftplib.error_perm:
+            raise                                  # arquivo nao existe mesmo
         except Exception:
-            ftp.close()
+            if tentativa == tentativas - 1:
+                raise
+            time.sleep(2 ** tentativa)
+        finally:
+            if ftp is not None:
+                try:
+                    ftp.quit()
+                except Exception:
+                    ftp.close()
 
 
-def ano_bruto(ano: int) -> pd.DataFrame | None:
-    """Obitos de residentes no recorte, num ano. Cacheia o filtrado."""
-    parcial = PARCIAIS / f"{ESCOPO}_{ano}.csv"
+def ano_bruto(sigla: str, ano: int) -> pd.DataFrame | None:
+    """Obitos de residentes numa UF, num ano. Cacheia o filtrado.
+
+    O filtro pelo prefixo do codigo IBGE nao e redundante com o arquivo ser da
+    UF: o SIM guarda o obito na UF de ocorrencia, e CODMUNRES pode apontar para
+    outro estado — quem morreu viajando ou em hospital de referencia fora. Esse
+    obito pertence ao denominador da UF de residencia, nao a esta.
+    """
+    parcial = PARCIAIS / f"{sigla.lower()}_{ano}.csv"
     if cache_completo(parcial):
         return pd.read_csv(parcial, dtype={"CODMUNRES": str, "IDADE": str})
 
-    prefixo = str(escopo.uf(ESCOPO))
+    prefixo = str(UF_DE_SIGLA[sigla])
     tmp = Path(tempfile.mkdtemp())
     try:
         dbc, dbf = tmp / "a.dbc", tmp / "a.dbf"
         try:
-            baixa_dbc(ano, dbc)
+            baixa_dbc(sigla, ano, dbc)
         except Exception as erro:
-            print(f"  {ano}: indisponivel ({type(erro).__name__})", flush=True)
+            print(f"  {sigla} {ano}: indisponivel ({type(erro).__name__})",
+                  flush=True)
             return None
         datasus_dbc.decompress(str(dbc), str(dbf))
         linhas = [
@@ -153,83 +203,121 @@ def ano_bruto(ano: int) -> pd.DataFrame | None:
     return df
 
 
-def _prefetch(ano: int) -> int:
-    ano_bruto(ano)
-    return ano
+def _prefetch(args: tuple[str, int]) -> tuple[str, int]:
+    ano_bruto(*args)
+    return args
 
 
 def preenche_cache() -> None:
-    faltam = [a for a in range(ANO_INICIO, ANO_FIM + 1)
-              if not cache_completo(PARCIAIS / f"{ESCOPO}_{a}.csv")]
+    faltam = [(s, a) for s in siglas() for a in range(ANO_INICIO, ANO_FIM + 1)
+              if not cache_completo(PARCIAIS / f"{s.lower()}_{a}.csv")]
     if not faltam:
         return
     PARCIAIS.mkdir(parents=True, exist_ok=True)
-    print(f"faltam {len(faltam)} anos; {PARALELO} processos", flush=True)
+    print(f"faltam {len(faltam)} arquivos; {PARALELO} processos", flush=True)
     with ProcessPoolExecutor(max_workers=PARALELO) as pool:
-        for f in as_completed([pool.submit(_prefetch, a) for a in faltam]):
+        for i, f in enumerate(as_completed(
+                [pool.submit(_prefetch, a) for a in faltam]), 1):
             try:
                 f.result()
             except Exception as erro:
                 print(f"  falhou: {type(erro).__name__}: {erro}", flush=True)
+            if i % 25 == 0:
+                print(f"  {i}/{len(faltam)}", flush=True)
+
+    # o painel so vale se estiver completo. Sem esta checagem, uma falha de
+    # rede vira UF-ano ausente do resultado, e nada no CSV final denuncia.
+    ainda = [(s, a) for s, a in faltam
+             if not cache_completo(PARCIAIS / f"{s.lower()}_{a}.csv")]
+    if ainda:
+        resumo = ", ".join(f"{s} {a}" for s, a in ainda[:10])
+        raise SystemExit(
+            f"\n{len(ainda)} arquivos nao baixaram: {resumo}"
+            f"{' ...' if len(ainda) > 10 else ''}\n"
+            "Rode de novo — o cache retoma de onde parou. Se persistir para a "
+            "mesma UF-ano, confira se o arquivo existe no FTP do DATASUS.")
+
+
+def agrega(sigla: str, ano: int, mapa: set[str] | None) -> list[pd.DataFrame]:
+    """Contagens por municipio e faixa etaria, de um arquivo UF/ano."""
+    d = ano_bruto(sigla, ano)
+    if d is None or d.empty:
+        return []
+
+    # o SIM tem um codigo por UF para "municipio ignorado" (210000 no MA),
+    # que nao e municipio e nao tem denominador populacional
+    d = d[~d["CODMUNRES"].str.endswith("0000")]
+    if mapa is not None:
+        d = d[d["CODMUNRES"].isin(mapa)]
+    if d.empty:
+        return []
+
+    cid = d["CAUSABAS"].fillna("").str.strip().str.upper().str[:3]
+    d = d.assign(
+        hidrica=((cid >= "A00") & (cid <= "A09")).astype(int),
+        # capitulo XVIII do CID-10: sintomas, sinais e achados anormais, ou
+        # seja, obito sem causa determinada. E o indicador padrao de qualidade
+        # do registro, e importa por um motivo especifico: onde nao ha
+        # assistencia medica, a morte por diarreia tende a ser codificada como
+        # mal definida em vez de A00-A09. Isso subtrai casos do desfecho
+        # exatamente onde a exposicao e maior — vies que o controle de
+        # mortalidade geral nao pega, porque o obito esta registrado, so esta
+        # na gaveta errada. Por isso vai publicado junto.
+        mal_definida=((cid >= "R00") & (cid <= "R99")).astype(int),
+        anos=[idade_anos(i) for i in d["IDADE"]])
+    d = d.dropna(subset=["anos"])
+
+    saida = []
+    for faixa, (lo, hi) in FAIXAS.items():
+        f = d[(d["anos"] >= lo) & (d["anos"] < hi)]
+        if f.empty:
+            continue
+        g = f.groupby("CODMUNRES").agg(
+            obitos_a00a09=("hidrica", "sum"),
+            obitos_mal_definidos=("mal_definida", "sum"),
+            obitos_total=("hidrica", "size")).reset_index()
+        saida.append(g.assign(ano=ano, faixa=faixa))
+    print(f"{sigla} {ano}: {len(d):,} obitos, "
+          f"{int(d['hidrica'].sum()):,} por A00-A09", flush=True)
+    return saida
 
 
 def main() -> None:
     preenche_cache()
 
     mapa = None
-    if not escopo.uf_inteira(ESCOPO):
+    if ESCOPO != "br" and not escopo.uf_inteira(ESCOPO):
         mun = pd.read_csv(MUNICIPIOS)
         mapa = {str(c)[:6] for c in mun["cod_ibge"]}
 
-    linhas = []
-    for ano in range(ANO_INICIO, ANO_FIM + 1):
-        d = ano_bruto(ano)
-        if d is None or d.empty:
-            continue
-        # o SIM tem um codigo por UF para "municipio ignorado" (210000 no MA),
-        # que nao e municipio e nao tem denominador populacional. Sao 408
-        # obitos no periodo, 3 deles por A00-A09.
-        d = d[~d["CODMUNRES"].str.endswith("0000")]
-        if mapa is not None:
-            d = d[d["CODMUNRES"].isin(mapa)]
-        cid = d["CAUSABAS"].fillna("").str.strip().str.upper().str[:3]
-        d = d.assign(
-            hidrica=((cid >= "A00") & (cid <= "A09")).astype(int),
-            # capitulo XVIII do CID-10: sintomas, sinais e achados anormais,
-            # ou seja, obito sem causa determinada. E o indicador padrao de
-            # qualidade do registro, e importa aqui por um motivo especifico:
-            # onde nao ha assistencia medica, a morte por diarreia tende a ser
-            # codificada como mal definida em vez de A00-A09. Isso subtrai
-            # casos do desfecho exatamente onde a exposicao e maior — vies que
-            # o controle de mortalidade geral nao pega, porque o obito esta
-            # registrado, so esta na gaveta errada.
-            mal_definida=((cid >= "R00") & (cid <= "R99")).astype(int),
-            anos=[idade_anos(i) for i in d["IDADE"]])
-        d = d.dropna(subset=["anos"])
-
-        for faixa, (lo, hi) in FAIXAS.items():
-            f = d[(d["anos"] >= lo) & (d["anos"] < hi)]
-            if f.empty:
-                continue
-            g = f.groupby("CODMUNRES").agg(
-                obitos_a00a09=("hidrica", "sum"),
-                obitos_mal_definidos=("mal_definida", "sum"),
-                obitos_total=("hidrica", "size")).reset_index()
-            linhas.append(g.assign(ano=ano, faixa=faixa))
-        print(f"{ano}: {len(d):,} obitos, "
-              f"{int(d['hidrica'].sum()):,} por A00-A09", flush=True)
+    linhas = [g for sigla in siglas()
+              for ano in range(ANO_INICIO, ANO_FIM + 1)
+              for g in agrega(sigla, ano, mapa)]
 
     saida = (pd.concat(linhas, ignore_index=True)
              .rename(columns={"CODMUNRES": "cod6"})
              .groupby(["cod6", "ano", "faixa"], as_index=False)
              [["obitos_a00a09", "obitos_mal_definidos", "obitos_total"]].sum())
+
+    if ESCOPO == "br":
+        # nomes vem do dataset de saneamento ja publicado, que e a outra ponta
+        # do cruzamento; assim as duas tabelas usam exatamente a mesma grafia
+        nomes = pd.read_csv(CENSO_BR)[["cod_ibge", "municipio", "uf"]]
+        nomes["cod6"] = nomes["cod_ibge"].astype(str).str[:6]
+        saida = (nomes.merge(saida, on="cod6", how="inner")
+                 .sort_values(["cod_ibge", "ano", "faixa"])
+                 [["cod_ibge", "municipio", "uf", "ano", "faixa",
+                   "obitos_a00a09", "obitos_mal_definidos", "obitos_total"]])
     saida.to_csv(SAIDA, index=False)
 
+    chave = "cod_ibge" if ESCOPO == "br" else "cod6"
     print()
-    print(f"{ESCOPO}: {saida['cod6'].nunique()} municipios, "
-          f"{saida['ano'].nunique()} anos")
+    print(f"{ESCOPO}: {saida[chave].nunique()} municipios, "
+          f"{saida['ano'].nunique()} anos, {len(saida):,} linhas")
     print(f"obitos por A00-A09: {int(saida['obitos_a00a09'].sum()):,} "
           f"de {int(saida['obitos_total'].sum()):,} obitos")
+    print(f"mal definidos: {int(saida['obitos_mal_definidos'].sum()):,} "
+          f"({100 * saida['obitos_mal_definidos'].sum() / saida['obitos_total'].sum():.1f}%)")
     print()
     print("A00-A09 por faixa etaria:")
     print(saida.groupby("faixa")["obitos_a00a09"].sum().to_string())
