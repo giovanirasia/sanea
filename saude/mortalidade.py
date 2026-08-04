@@ -204,10 +204,16 @@ def main() -> None:
 
     print("=== 3. mecanismo: esgoto cru x agua de poco raso ===")
     print("no Parana este teste nao tinha amplitude; aqui tem\n")
+    # centrados na media: num modelo com produto, o termo principal vale onde
+    # o outro e zero, e esgoto inadequado zero nao existe no painel (o minimo
+    # e 9%). Ver a nota equivalente em internacao.py, onde a diferenca foi
+    # grande — o poco raso saltava de 1,03 para 1,81 so por causa disso.
     z = d[d["faixa"] == "0a4"].copy()
-    z["inadeq_x_poco"] = z["inadeq_10pp"] * z["poco_10pp"]
-    roda(z, ["inadeq_10pp", "poco_10pp", "inadeq_x_poco"] + ctrl,
-         "0a4: termos principais e interacao", mostrar=3)
+    z["inadeq_c"] = z["inadeq_10pp"] - z["inadeq_10pp"].mean()
+    z["poco_c"] = z["poco_10pp"] - z["poco_10pp"].mean()
+    z["inadeq_x_poco"] = z["inadeq_c"] * z["poco_c"]
+    roda(z, ["inadeq_c", "poco_c", "inadeq_x_poco"] + ctrl,
+         "0a4: termos centrados na media e interacao", mostrar=3)
 
     print("=== 4. agua de rede protege menor de 5? ===")
     roda(d[d["faixa"] == "0a4"], ["agua_rede_10pp"] + ctrl, "0a4")
