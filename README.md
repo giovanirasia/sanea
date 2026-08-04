@@ -37,9 +37,10 @@ Rios.
 
 ## Ferramenta
 
-🔎 **[`ferramenta/`](ferramenta/)** — consulta por município: composição do esgoto, fonte de
-água, comparação com as medianas do estado e do país, e a série de óbitos infantis por
-doença intestinal.
+🔎 **[giovanirasia.github.io/sanea](https://giovanirasia.github.io/sanea/)** — consulta por
+município: composição do esgoto, fonte de água, comparação com as medianas do estado e do
+país, e a série de óbitos infantis por doença intestinal. Código em
+[`ferramenta/`](ferramenta/).
 
 Site estático, sem backend. Os dados não mudam — o Censo é um retrato e o SIM atualiza uma
 vez por ano — então um serviço que consulta banco para devolver sempre a mesma resposta
