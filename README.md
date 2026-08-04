@@ -280,6 +280,12 @@ do nulo.
 Isso é o que justifica pedir dado no nível do ponto e do domicílio, em vez de mais uma
 volta no agregado municipal.
 
+> **Esta explicação foi testada depois e não se confirmou.** Com a PNS 2019, que mede
+> exposição e desfecho na mesma casa, o resultado continua nulo e continua uniforme entre
+> idades — ver [O teste da própria explicação](#o-teste-da-própria-explicação-descer-ao-domicílio).
+> O desfecho de lá é fraco demais para refutar a hipótese, mas ela deixou de ser resposta
+> pronta.
+
 ### Atacar o confundimento pela raiz: primeiras diferenças
 
 Há uma segunda saída, que não exige dado novo. Todos os confundidores que estragaram as
@@ -376,6 +382,61 @@ e razoavelmente uniforme é o padrão de causas nacionais e simultâneas — rot
 2006, reidratação oral, transferência de renda, tratamento de água. Um efeito municipal de
 esgoto teria de aparecer por cima disso.
 
+### O teste da própria explicação: descer ao domicílio
+
+Todo nulo acima admitia a mesma resposta — *"pode ser a unidade de análise"* — e este
+repositório não só a admitia como a defendia. Mas explicação preferida também se testa.
+
+A **PNS 2019** (IBGE/MS) mede exposição e desfecho **na mesma casa**: 273.393 moradores com
+o destino do esgoto do próprio domicílio informado. E a classificação é idêntica à do
+Censo, categoria por categoria, porque as duas usam o padrão do IBGE — a comparação com os
+resultados municipais é direta, não analógica.
+
+| Faixa | Razão de chances | IC95% | p |
+|---|---|---|---|
+| 0 a 9 anos | 1,029 | 0,761–1,391 | 0,85 |
+| 20 a 59 *(controle negativo)* | 1,044 | 0,882–1,235 | 0,62 |
+| 60 anos ou mais | 1,149 | 0,852–1,550 | 0,36 |
+
+O descritivo dispensa modelo. Entre crianças de 0 a 9 anos, por destino do esgoto do
+domicílio onde moram:
+
+| Destino | Moradores | Problema gastrointestinal |
+|---|---|---|
+| Rede geral | 13.506 | **1,20%** |
+| Fossa séptica | 8.261 | 1,28% |
+| Fossa rudimentar | 9.549 | **1,19%** |
+| Vala | 1.432 | 1,47% |
+
+**Casa ligada à rede e casa com fossa rudimentar têm a mesma taxa.**
+
+### O que esse resultado pode e não pode sustentar
+
+**Não pode** encerrar a questão, e o motivo é o desfecho. Não existe variável de diarreia na
+PNS — nem em 2019 nem em 2013; o módulo de crianças é sobre aleitamento, testes neonatais e
+vacinação. O que há é *"problemas gastrointestinais (diarreia / vômito / náusea / gastrite /
+dor de barriga)"* como motivo principal de ter interrompido atividades habituais nas duas
+últimas semanas. Composto, com limiar de gravidade e recordatório curto — tudo atenuando
+para zero. Um efeito verdadeiro de 1,5 sobre diarreia apareceria aqui como ~1,2, dentro do
+intervalo observado.
+
+**Pode** sustentar duas coisas. A primeira é a **uniformidade entre idades**, que não é
+questão de poder: é a mesma assinatura errada encontrada no Paraná, no Maranhão e nas
+primeiras diferenças, agora num desenho onde a falácia ecológica não se aplica. A segunda é
+mais desconfortável para este repositório — **a explicação que ele vinha defendendo não se
+confirmou.** Remover o agregado municipal não fez efeito nenhum aparecer.
+
+Isso não refuta a explicação (o desfecho é fraco demais para refutar seja o que for), mas
+retira dela o status de resposta pronta. O que sobra é mais honesto e menos conclusivo: o
+efeito do saneamento sobre doença diarreica é real e bem estabelecido em ensaio e coorte, e
+**nenhum dado observacional brasileiro de acesso público que este repositório encontrou
+consegue vê-lo** — nem no município, nem no domicílio.
+
+E há indício de que o viés de relato alcança até aqui: "rio, lago, córrego ou mar", o pior
+destino possível, tem a menor taxa da tabela (0,60%). São 830 moradores, então pode ser
+ruído — mas é o mesmo padrão que o SIM do Maranhão mostrou, de quem tem menos acesso
+relatar menos.
+
 ### O que prediz, então
 
 Duas coisas, ambas robustas e nenhuma delas ambiental.
@@ -471,6 +532,12 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
   obra, em vez de dois blocos
 - até 2005 o SIM grava o código de município com 7 dígitos e de 2006 em diante com 6;
   quem for reprocessar a série longa precisa uniformizar, ou anos inteiros somem no join
+- o desfecho da PNS é morbidade autorrelatada, composta e condicionada a ter interrompido
+  atividades: atenua qualquer efeito na direção do zero
+- a estimativa da PNS é não ponderada, com erro-padrão agrupado pela unidade primária de
+  amostragem. O `statsmodels` não dá variância confiável junto com peso de frequência;
+  fazer certo exigiria pacote de amostragem complexa, e os determinantes do peso entram
+  como covariáveis no lugar
 - controlar a propensão geral a internar é diagnóstico, não especificação final: é um
   desfecho, não covariável exógena, e ajustá-la pode ser sobreajuste
 - ERA5 é reanálise, não pluviômetro; validar contra ANA/INMET antes de publicar número
@@ -486,6 +553,7 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
 | IBGE — Censo 2022 (SIDRA) | saneamento e fonte de água do domicílio, estrutura etária | público |
 | DATASUS — SIH/SUS | internações por agravo de veiculação hídrica | público |
 | DATASUS — SIM | óbitos por causa básica, independentes de internação | público |
+| IBGE/MS — PNS 2019 | saneamento e saúde no mesmo domicílio (microdados) | público |
 | Observando os Rios | qualidade da água por voluntários (SOS Mata Atlântica) | público |
 | CEMADEN / INMET | chuva, alertas de desastre | público |
 | NOAA CPC — ONI | índice El Niño / La Niña, série desde 1950 | público |
@@ -567,6 +635,15 @@ SANEA_ESCOPO=br SANEA_ANO_INICIO=1996 SANEA_ANO_FIM=2007 python saude/sim.py
 
 ```bash
 python saude/tendencia_previa.py
+```
+
+A análise no domicílio usa os microdados da PNS 2019, que são grandes (455 MB) e não entram
+no repositório. Baixe de
+[ftp.ibge.gov.br/PNS/2019/Microdados/Dados](https://ftp.ibge.gov.br/PNS/2019/Microdados/Dados/)
+e aponte `SANEA_PNS` para a pasta:
+
+```bash
+SANEA_PNS=~/Downloads/PNS_2019 python saude/pns_domicilio.py
 ```
 
 O `sih_bp3.py` baixa 221 meses do FTP do DATASUS em processos paralelos (`SANEA_PARALELO`,
