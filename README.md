@@ -280,11 +280,13 @@ do nulo.
 Isso é o que justifica pedir dado no nível do ponto e do domicílio, em vez de mais uma
 volta no agregado municipal.
 
-> **Esta explicação foi testada depois e não se confirmou.** Com a PNS 2019, que mede
-> exposição e desfecho na mesma casa, o resultado continua nulo e continua uniforme entre
-> idades — ver [O teste da própria explicação](#o-teste-da-própria-explicação-descer-ao-domicílio).
-> O desfecho de lá é fraco demais para refutar a hipótese, mas ela deixou de ser resposta
-> pronta.
+> **Esta explicação foi testada depois, e ganhou uma concorrente.** Com a PNS 2019, que mede
+> exposição e desfecho na mesma casa, o resultado continua nulo — ver
+> [O teste da própria explicação](#o-teste-da-própria-explicação-descer-ao-domicílio).
+> E com o ENANI-2019, que mede diarreia de verdade, aparece sinal — mas por um motivo
+> diferente: a linha entre saneamento adequado e inadequado parece estar no lugar errado,
+> e todas as análises municipais daqui a usaram. Ver
+> [A segunda explicação](#a-segunda-explicação-a-linha-da-exposição-está-no-lugar-errado).
 
 ### Atacar o confundimento pela raiz: primeiras diferenças
 
@@ -427,15 +429,81 @@ mais desconfortável para este repositório — **a explicação que ele vinha d
 confirmou.** Remover o agregado municipal não fez efeito nenhum aparecer.
 
 Isso não refuta a explicação (o desfecho é fraco demais para refutar seja o que for), mas
-retira dela o status de resposta pronta. O que sobra é mais honesto e menos conclusivo: o
-efeito do saneamento sobre doença diarreica é real e bem estabelecido em ensaio e coorte, e
-**nenhum dado observacional brasileiro de acesso público que este repositório encontrou
-consegue vê-lo** — nem no município, nem no domicílio.
+retira dela o status de resposta pronta.
 
 E há indício de que o viés de relato alcança até aqui: "rio, lago, córrego ou mar", o pior
 destino possível, tem a menor taxa da tabela (0,60%). São 830 moradores, então pode ser
 ruído — mas é o mesmo padrão que o SIM do Maranhão mostrou, de quem tem menos acesso
 relatar menos.
+
+> Uma versão anterior deste README concluía aqui que *"nenhum dado observacional brasileiro
+> de acesso público consegue ver o efeito"*. **Isso estava errado**, e a seção seguinte
+> mostra por quê: faltava uma base que medisse diarreia como diarreia.
+
+### O ENANI: medir diarreia como diarreia
+
+Cinco análises nunca mediram o desfecho certo. Mediram internação (que depende de haver
+leito), óbito (que depende de cartório) e "problema gastrointestinal" da PNS (composto com
+gastrite, e só quando grave o bastante para interromper atividades). O gargalo sempre foi o
+desfecho, não o desenho.
+
+O **ENANI-2019** (UFRJ/Ministério da Saúde) pergunta direto: *"a criança está ou esteve com
+diarreia nos últimos 15 dias?"* — a 14.558 crianças menores de 5 anos, com o saneamento do
+próprio domicílio na mesma entrevista. São **2.343 casos**, prevalência de 16,1%.
+
+Pela primeira vez em seis análises, o descritivo tem gradiente monotônico:
+
+| Destino do esgoto do domicílio | Crianças | Diarreia |
+|---|---|---|
+| Rede geral | 10.005 | **14,9%** |
+| Fossa séptica | 3.202 | 18,3% |
+| Fossa rudimentar | 895 | 19,7% |
+| Vala | 186 | **22,0%** |
+
+Teste pré-especificado, adequado × inadequado na classificação do IBGE:
+**1,170 (IC95% 0,995–1,376, p = 0,058)**. Positivo, direção certa, encostando.
+
+### A segunda explicação: a linha da exposição está no lugar errado
+
+Repare onde cai a fossa séptica: **18,3%, mais perto de fossa rudimentar (19,7%) que de
+rede geral (14,9%)** — embora o IBGE a classifique como adequada, e embora *todas* as
+análises municipais deste repositório a tenham posto do lado adequado.
+
+Testando o contraste que a tabela sugere:
+
+| Contra rede geral | Razão de chances | IC95% | p |
+|---|---|---|---|
+| **Sem ligação à rede** (fossa séptica inclusa) | **1,180** | 1,040–1,339 | **0,010** |
+| Fossa séptica | 1,155 | 1,002–1,332 | 0,047 |
+| Fossa rudimentar | 1,218 | 0,997–1,488 | 0,054 |
+| Vala | 1,472 | 1,037–2,089 | 0,031 |
+
+> **Este resultado nasceu de olhar a tabela, não de hipótese prévia.** Não é confirmatório:
+> é hipótese gerada aqui, que precisa de outro dado para ser testada. Registrar isso importa
+> mais que o p-valor.
+
+Se a divisão certa for "tem rede ou não tem", então todas as análises municipais mediram a
+exposição com a linha errada, juntando fossa séptica — de risco elevado — com rede geral, de
+risco baixo. **Erro de classificação não diferencial atenua na direção do zero.**
+
+Isso não transforma nenhum nulo anterior em erro: eles medem o que mediram, com a variável
+que existia. O que muda é a explicação. Não era só a unidade de análise — era também a
+definição da exposição, e as duas empurravam para o mesmo lado.
+
+### O mecanismo não é o copo d'água
+
+Fonte de água fora da rede geral: 0,953 (p = 0,63), nulo. E o efeito do esgoto é
+praticamente igual entre quem **filtra ou ferve** a água da criança (1,105) e quem não trata
+(1,159). Se a transmissão fosse pela água ingerida, tratar a água deveria reduzir o efeito.
+
+Aponta para contato e ambiente — criança engatinhando e brincando em solo contaminado — e é
+coerente com o sinal aparecer em **2 a 4 anos** (1,239) e não em menores de 2 (1,080), que
+são mais amamentados e menos móveis. Os intervalos se sobrepõem demais para afirmar a
+diferença etária, mas a direção é a esperada.
+
+**E o tamanho é modesto.** Razão de chances de 1,18 é pequena perto do que ensaios
+comunitários reportam, e pode conter confundimento residual: domicílio com rede difere em
+escolaridade, aglomeração e higiene, e só parte disso está controlada.
 
 ### O que prediz, então
 
@@ -534,6 +602,10 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
   quem for reprocessar a série longa precisa uniformizar, ou anos inteiros somem no join
 - o desfecho da PNS é morbidade autorrelatada, composta e condicionada a ter interrompido
   atividades: atenua qualquer efeito na direção do zero
+- o contraste "com rede × sem rede" do ENANI é hipótese **gerada** olhando a tabela, não
+  testada: precisa de outro dado para valer como achado
+- o ENANI amostrou 123 municípios, não os 5.570 — representa o país, mas não permite
+  recorte municipal
 - a estimativa da PNS é não ponderada, com erro-padrão agrupado pela unidade primária de
   amostragem. O `statsmodels` não dá variância confiável junto com peso de frequência;
   fazer certo exigiria pacote de amostragem complexa, e os determinantes do peso entram
@@ -554,6 +626,7 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
 | DATASUS — SIH/SUS | internações por agravo de veiculação hídrica | público |
 | DATASUS — SIM | óbitos por causa básica, independentes de internação | público |
 | IBGE/MS — PNS 2019 | saneamento e saúde no mesmo domicílio (microdados) | público |
+| UFRJ/MS — ENANI 2019 | diarreia infantil e saneamento no mesmo domicílio | público |
 | Observando os Rios | qualidade da água por voluntários (SOS Mata Atlântica) | público |
 | CEMADEN / INMET | chuva, alertas de desastre | público |
 | NOAA CPC — ONI | índice El Niño / La Niña, série desde 1950 | público |
@@ -644,6 +717,13 @@ e aponte `SANEA_PNS` para a pasta:
 
 ```bash
 SANEA_PNS=~/Downloads/PNS_2019 python saude/pns_domicilio.py
+```
+
+E a análise com diarreia medida como diarreia usa os microdados do ENANI-2019
+([`bancos_Enani.csv.zip`](https://dadosabertos.saude.gov.br/dataset/estudo-nacional-de-alimentacao-e-nutricao-infantil-enani-2019)):
+
+```bash
+SANEA_ENANI=~/Downloads/ENANI_2019 python saude/enani_diarreia.py
 ```
 
 O `sih_bp3.py` baixa 221 meses do FTP do DATASUS em processos paralelos (`SANEA_PARALELO`,
