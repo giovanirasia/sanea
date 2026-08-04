@@ -480,7 +480,7 @@ Testando o contraste que a tabela sugere:
 
 > **Este resultado nasceu de olhar a tabela, não de hipótese prévia.** Não é confirmatório:
 > é hipótese gerada aqui, que precisa de outro dado para ser testada. Registrar isso importa
-> mais que o p-valor.
+> mais que o p-valor — e a seção seguinte faz esse teste.
 
 Se a divisão certa for "tem rede ou não tem", então todas as análises municipais mediram a
 exposição com a linha errada, juntando fossa séptica — de risco elevado — com rede geral, de
@@ -489,6 +489,52 @@ risco baixo. **Erro de classificação não diferencial atenua na direção do z
 Isso não transforma nenhum nulo anterior em erro: eles medem o que mediram, com a variável
 que existia. O que muda é a explicação. Não era só a unidade de análise — era também a
 definição da exposição, e as duas empurravam para o mesmo lado.
+
+### O teste independente: a PNS separa o que o ENANI junta
+
+A hipótese acima é testável, e a PNS 2019 é o dado certo para testá-la — por um motivo
+específico: **ela separa a fossa séptica ligada à rede da não ligada.** No ENANI as duas são
+uma categoria só. Duas categorias que diferem apenas pela ligação, e que a classificação
+oficial trata como igualmente adequadas, são exatamente o contraste que a hipótese prevê.
+
+Primeiro, a troca de linha replica:
+
+| | Adequado × inadequado (IBGE) | Ligado × não ligado |
+|---|---|---|
+| PNS (0–9 anos) | 1,029 | **1,179** |
+| ENANI (menores de 5) | 1,170 | **1,180** |
+
+Trocar a definição move a estimativa na mesma direção e quase na mesma magnitude em duas
+pesquisas independentes, com desfechos diferentes. Na PNS não alcança significância
+(p = 0,24) porque o desfecho de lá é fraco — 422 eventos contra 2.343.
+
+E o teste direto:
+
+> **fossa séptica NÃO ligada × LIGADA à rede = 2,030 (IC95% 1,103–3,737, p = 0,023)**
+
+Duas vezes a chance, dentro do que a classificação oficial chama de mesma coisa.
+
+### Onde esse teste é frágil
+
+O grupo de referência tem **14 eventos**. Com esse tamanho a estimativa é instável, e o
+intervalo — de 1,10 a 3,74 — mostra isso sozinho.
+
+Dois sinais de que a fragilidade é real, e ambos ficam registrados porque listar só o que
+ajuda seria desonesto:
+
+- a fossa séptica ligada sai **melhor que a própria rede geral** (0,512, p = 0,018), o que é
+  difícil de sustentar e provavelmente reflete os mesmos 14 eventos
+- **corpo d'água**, o pior destino possível, dá 0,521 contra rede geral. São 5 eventos em
+  830 moradores: não refuta nada, mas também não confirma gradiente nenhum
+
+**O que fica sólido:** a linha da exposição importa. Trocar a definição move a estimativa do
+mesmo jeito em dois dados independentes — isso é replicação, não coincidência.
+
+**O que fica frágil:** a magnitude. O "duas vezes" depende de um grupo pequeno demais.
+
+A hipótese passou por um teste que podia tê-la reprovado. Isso é mais que nada e menos que
+confirmação, e a distância entre essas duas coisas é o que separa uma investigação de uma
+tese defendida.
 
 ### O mecanismo não é o copo d'água
 
@@ -602,8 +648,8 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
   quem for reprocessar a série longa precisa uniformizar, ou anos inteiros somem no join
 - o desfecho da PNS é morbidade autorrelatada, composta e condicionada a ter interrompido
   atividades: atenua qualquer efeito na direção do zero
-- o contraste "com rede × sem rede" do ENANI é hipótese **gerada** olhando a tabela, não
-  testada: precisa de outro dado para valer como achado
+- o contraste "com rede × sem rede" nasceu de olhar a tabela do ENANI, e foi testado depois
+  na PNS: replicou no ponto estimado, mas o teste direto se apoia em 14 eventos
 - o ENANI amostrou 123 municípios, não os 5.570 — representa o país, mas não permite
   recorte municipal
 - a estimativa da PNS é não ponderada, com erro-padrão agrupado pela unidade primária de
