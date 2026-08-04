@@ -100,6 +100,51 @@ Resultado (PNS 2019, 273.393 moradores, 1.913 eventos)
 
   Agua de fonte vulneravel tambem nao aparece: 0,726 (p=0,15) em 0 a 9.
 
+Teste da hipotese gerada no ENANI (acrescentado depois)
+
+  O ENANI encontrou sinal ao trocar a linha da exposicao: em vez de adequado
+  contra inadequado pela classificacao do IBGE, "ligado a rede contra nao
+  ligado". Era hipotese gerada olhando a tabela, e precisava de dado
+  independente. A PNS serve, e serve melhor que o ENANI num ponto: **separa a
+  fossa septica ligada a rede da nao ligada**, que la e uma categoria so.
+
+  Trocando a linha, em menores de 10 anos:
+    adequado x inadequado (IBGE)      1,029  (IC 0,761-1,391, p=0,85)
+    ligado a rede x nao ligado        1,179  (IC 0,898-1,547, p=0,24)
+
+  O ponto estimado sobe de 1,03 para 1,18 — e 1,18 e praticamente o 1,180 que
+  o ENANI deu, em base independente e com outro desfecho. A troca de linha
+  move a estimativa na mesma direcao e na mesma magnitude nas duas pesquisas.
+  Nao alcanca significancia aqui porque o desfecho da PNS e fraco: 422 eventos
+  contra os 2.343 do ENANI.
+
+  O teste mais direto compara as duas fossas septicas entre si, que diferem so
+  pela ligacao a rede e que o IBGE trata como igualmente adequadas:
+
+    fossa septica NAO ligada vs LIGADA    2,030  (IC 1,103-3,737, p=0,023)
+
+  Duas vezes a chance, dentro do que a classificacao oficial chama de mesma
+  coisa. E a direcao prevista.
+
+Onde isso e fragil, e nao da para varrer para baixo do tapete
+
+  O grupo de referencia tem **14 eventos**. Com esse tamanho a estimativa e
+  instavel, e o intervalo de 1,10 a 3,74 mostra isso. Contra rede geral, a
+  fossa septica ligada da 0,512 (p=0,018) — ou seja, sai *melhor* que a rede,
+  o que e dificil de sustentar e provavelmente reflete os mesmos 14 eventos.
+
+  E ha uma categoria que contradiz: corpo d'agua, o pior destino possivel, da
+  0,521 contra rede geral. Sao 5 eventos em 830 moradores, entao nao refuta
+  nada — mas tambem nao confirma gradiente nenhum, e listar so o que ajuda
+  seria desonesto.
+
+  Leitura final: a hipotese **sobreviveu a um teste que podia te-la reprovado**,
+  em dado independente, com replicacao proxima do ponto estimado. Isso e mais
+  do que nada e menos que confirmacao. O que esta solido e que a linha da
+  exposicao importa — trocar a definicao move a estimativa do mesmo jeito nas
+  duas pesquisas. O que esta fragil e a magnitude, que depende de um grupo
+  pequeno demais.
+
 Quanto peso dar a este nulo
 
   Menos do que a limpeza do desenho sugere, e a razao esta no desfecho. Se so
@@ -156,6 +201,18 @@ CAMPOS = {
 
 ADEQUADO = {"1", "2", "3"}      # rede, fossa septica ligada, fossa septica
 INADEQUADO = {"4", "5", "6"}    # fossa rudimentar, vala, corpo d'agua
+
+# A linha alternativa, vinda do ENANI: o que separaria seria estar ligado a
+# rede, nao a classificacao de adequacao do IBGE. A PNS testa isso melhor que
+# o ENANI, porque separa a fossa septica em ligada (2) e nao ligada (3) — no
+# ENANI as duas sao uma categoria so. Se a hipotese estiver certa, a 2 deve se
+# comportar como a 1, e a 3 como a 4.
+COM_REDE = {"1", "2"}
+SEM_REDE = {"3", "4", "5", "6"}
+
+ROTULO_ESGOTO = {"1": "rede geral", "2": "fossa septica LIGADA a rede",
+                 "3": "fossa septica nao ligada", "4": "fossa rudimentar",
+                 "5": "vala", "6": "rio, lago, corrego ou mar"}
 FAIXAS = {"0a9": (0, 10), "20a59": (20, 60), "60mais": (60, 200)}
 
 REGIAO = {**{u: "N" for u in ["11", "12", "13", "14", "15", "16", "17"]},
@@ -185,6 +242,8 @@ def carrega() -> pd.DataFrame:
     d["gi"] = (d["motivo"] == "06").astype(int)
     d["inadequado"] = d["esgoto"].map(
         lambda x: 1.0 if x in INADEQUADO else (0.0 if x in ADEQUADO else np.nan))
+    d["sem_rede"] = d["esgoto"].map(
+        lambda x: 1.0 if x in SEM_REDE else (0.0 if x in COM_REDE else np.nan))
     # poco raso, nascente, chuva e corpo d'agua: fontes vulneraveis
     d["agua_vulneravel"] = d["agua"].map(
         lambda x: 1.0 if x in {"3", "4", "5"} else (0.0 if x in {"1", "2"}
@@ -249,6 +308,36 @@ def main() -> None:
     for n, u in faixas.items():
         roda(u.dropna(subset=["agua_vulneravel"]), "agua_vulneravel", n,
              ponderado=False)
+
+    print("=== 3b. teste da hipotese gerada no ENANI ===")
+    print("La, fossa septica se comportou como inadequada, e o contraste que")
+    print("apareceu foi 'ligado a rede ou nao'. Aqui isso e testavel melhor:")
+    print("a PNS separa fossa septica ligada da nao ligada, o ENANI nao.\n")
+    for n, u in faixas.items():
+        roda(u.dropna(subset=["sem_rede"]), "sem_rede",
+             n + ("   <-- controle negativo" if n == "20a59" else ""),
+             ponderado=False)
+
+    print("=== 3c. o teste decisivo: dentro da fossa septica ===")
+    print("as duas categorias diferem SO por estar ligada a rede ou nao, e o")
+    print("IBGE classifica ambas como adequadas. Comparacao que o ENANI nao")
+    print("podia fazer, porque la fossa septica e uma categoria unica.\n")
+    u = faixas["0a9"]
+    u = u[u["esgoto"].isin({"2", "3"})].copy()
+    u["nao_ligada"] = (u["esgoto"] == "3").astype(float)
+    roda(u, "nao_ligada", "fossa septica NAO ligada vs LIGADA a rede",
+         ponderado=False)
+
+    print("=== 3d. cada destino contra rede geral, 0 a 9 anos ===")
+    print("se o que separa e a ligacao a rede, a categoria 2 (fossa septica")
+    print("LIGADA) deve ficar junto da rede geral, e a 3 (nao ligada) longe\n")
+    u = faixas["0a9"][faixas["0a9"]["esgoto"].isin(ROTULO_ESGOTO)].copy()
+    g = (u.groupby("esgoto").agg(moradores=("gi", "size"), eventos=("gi", "sum"))
+         .reindex(list(ROTULO_ESGOTO)).dropna().reset_index())
+    g["destino"] = g["esgoto"].map(ROTULO_ESGOTO)
+    g["pct"] = (100 * g["eventos"] / g["moradores"]).round(2)
+    print(g[["destino", "moradores", "eventos", "pct"]].to_string(index=False))
+    print()
 
     print("=== 4. gradiente por categoria de destino, 0 a 9 anos ===")
     u = faixas["0a9"]
