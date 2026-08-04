@@ -5,6 +5,9 @@
 # dumps brutos da API (grandes, reprodutiveis)
 dados/bruto/
 
+# logs de execucao longa
+*.log
+
 # python
 __pycache__/
 *.py[cod]

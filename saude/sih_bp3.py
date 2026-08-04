@@ -40,11 +40,12 @@ Saida
 
 from __future__ import annotations
 
+import ftplib
 import os
 import shutil
 import tempfile
-import urllib.request
 from collections import Counter
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 import datasus_dbc
@@ -65,9 +66,10 @@ if ESCOPO not in ("bp3", "parana"):
 PARCIAIS = RAIZ / "dados" / "bruto" / "sih"
 SAIDA = RAIZ / "dados" / f"sih_{ESCOPO}_mensal.csv"
 
-FTP = ("ftp://ftp.datasus.gov.br/dissemin/publicos/SIHSUS/200801_/Dados/"
-       "RDPR{aa:02d}{mm:02d}.dbc")
+FTP_HOST = "ftp.datasus.gov.br"
+FTP_ARQ = "/dissemin/publicos/SIHSUS/200801_/Dados/RDPR{aa:02d}{mm:02d}.dbc"
 ANO_INICIO, ANO_FIM = 2008, 2026
+PARALELO = int(os.environ.get("SANEA_PARALELO", "6"))
 
 COLUNAS = ["MUNIC_RES", "DIAG_PRINC", "DT_INTER", "IDADE", "COD_IDADE", "MORTE"]
 
@@ -127,24 +129,56 @@ def _mantem(cod: str | None, alvo: set[str] | None) -> bool:
     return cod.startswith("41") if alvo is None else cod in alvo
 
 
+def cache_completo(parcial: Path) -> bool:
+    """O CSV existe e tem todas as colunas que a versao atual pede?
+
+    Checar so a existencia nao basta: um cache gravado por uma versao anterior
+    do script tem menos colunas e nao da para completar sem rebaixar o bruto.
+    Quem preenche o cache em paralelo precisa usar exatamente este criterio, ou
+    considera pronto o que o processamento vai rejeitar depois — e ai o
+    rebaixamento acontece serializado, um mes por vez.
+    """
+    if not parcial.exists():
+        return False
+    with open(parcial, encoding="utf-8") as fh:
+        cabecalho = (fh.readline() or "").strip().split(",")
+    return not set(COLUNAS) - set(cabecalho)
+
+
+def baixa_dbc(ano: int, m: int, destino: Path) -> None:
+    """Baixa um RDPR via FTP, uma conexao propria por chamada.
+
+    Nao usar urllib aqui: o FTPHandler dele guarda a conexao num cache global
+    compartilhado, o que serializa qualquer paralelismo e ainda mistura estado
+    entre chamadas. Com ftplib direto, cada processo abre a sua e o arquivo de
+    4,5 MB chega em cerca de 2 segundos.
+    """
+    ftp = ftplib.FTP(FTP_HOST, timeout=300)
+    try:
+        ftp.login()
+        with open(destino, "wb") as saida:
+            ftp.retrbinary("RETR " + FTP_ARQ.format(aa=ano % 100, mm=m),
+                           saida.write)
+    finally:
+        try:
+            ftp.quit()
+        except Exception:
+            ftp.close()
+
+
 def mes(ano: int, m: int, alvo: set[str] | None) -> pd.DataFrame | None:
     """Registros da BP3 num mes. Cacheia o filtrado; descarta o bruto."""
     parcial = PARCIAIS / f"{ESCOPO}_{ano}{m:02d}.csv"
+    if cache_completo(parcial):
+        return pd.read_csv(parcial, dtype={"MUNIC_RES": str, "COD_IDADE": str})
     if parcial.exists():
-        cache = pd.read_csv(parcial, dtype={"MUNIC_RES": str, "COD_IDADE": str})
-        # cache de uma versao anterior, com menos colunas que as pedidas hoje:
-        # nao da para completar sem o bruto, entao rebaixa
-        if not set(COLUNAS) - set(cache.columns):
-            return cache
         print(f"  {ano}-{m:02d}: cache incompleto, rebaixando")
 
-    url = FTP.format(aa=ano % 100, mm=m)
     tmp = Path(tempfile.mkdtemp())
     try:
         dbc, dbf = tmp / "a.dbc", tmp / "a.dbf"
         try:
-            with urllib.request.urlopen(url, timeout=300) as resp:
-                dbc.write_bytes(resp.read())
+            baixa_dbc(ano, m, dbc)
         except Exception as erro:            # mes ainda nao publicado
             print(f"  {ano}-{m:02d}: indisponivel ({type(erro).__name__})")
             return None
@@ -160,12 +194,52 @@ def mes(ano: int, m: int, alvo: set[str] | None) -> pd.DataFrame | None:
 
     df = pd.DataFrame(linhas, columns=COLUNAS)
     parcial.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(parcial, index=False)
+    # grava em temporario e renomeia: interromper o processo no meio de um
+    # to_csv deixa arquivo truncado que o cache aceitaria como bom, e o
+    # sintoma disso aparece muito depois, num modelo com dado faltando
+    tmp_csv = parcial.with_suffix(".csv.parcial")
+    df.to_csv(tmp_csv, index=False)
+    tmp_csv.replace(parcial)
     return df
+
+
+def _prefetch(args: tuple[int, int, set[str] | None]) -> tuple[int, int]:
+    """Wrapper picklavel: preenche o cache e nao devolve o DataFrame."""
+    ano, m, alvo = args
+    mes(ano, m, alvo)
+    return ano, m
+
+
+def preenche_cache(alvo: set[str] | None) -> None:
+    """Preenche em paralelo os meses que faltam no cache.
+
+    Processos, nao threads: baixar um mes leva ~2 s, mas ler o DBF e filtrar
+    meio milhao de registros e Python puro e segura a GIL por uns 20 s. Com
+    threads o ganho seria so no trecho de rede, que e a menor parte. O numero
+    de trabalhadores fica baixo de proposito — o FTP do DATASUS e publico.
+    """
+    faltam = [(a, m, alvo) for a in range(ANO_INICIO, ANO_FIM + 1)
+              for m in range(1, 13)
+              if not cache_completo(PARCIAIS / f"{ESCOPO}_{a}{m:02d}.csv")]
+    if not faltam:
+        return
+    PARCIAIS.mkdir(parents=True, exist_ok=True)
+    print(f"faltam {len(faltam)} meses; {PARALELO} processos", flush=True)
+    with ProcessPoolExecutor(max_workers=PARALELO) as pool:
+        for i, f in enumerate(as_completed(
+                [pool.submit(_prefetch, a) for a in faltam]), 1):
+            try:
+                f.result()
+            except Exception as erro:
+                print(f"  falhou: {type(erro).__name__}: {erro}", flush=True)
+            if i % 20 == 0:
+                print(f"  {i}/{len(faltam)}", flush=True)
 
 
 def main() -> None:
     alvo = codigos_alvo()
+    preenche_cache(alvo)
+
     contagens: list[dict] = []
     total_internacoes = 0
 
