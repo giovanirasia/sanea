@@ -280,6 +280,68 @@ do nulo.
 Isso é o que justifica pedir dado no nível do ponto e do domicílio, em vez de mais uma
 volta no agregado municipal.
 
+### Atacar o confundimento pela raiz: primeiras diferenças
+
+Há uma segunda saída, que não exige dado novo. Todos os confundidores que estragaram as
+estimativas acima — ruralidade, acesso a leito, qualidade de registro, limiar de internação
+— têm uma propriedade que até então não tinha sido usada: **são praticamente fixos no
+tempo.** Comparar o município com ele mesmo, antes e depois da rede chegar, elimina todos
+de uma vez, sem precisar medi-los.
+
+Isso exige exposição que varie no tempo, e a verificação de comparabilidade
+([`saneamento/comparabilidade_censo.py`](saneamento/comparabilidade_censo.py)) produziu um
+resultado incômodo: **a medida boa não é comparável, e a comparável é a medida ruim.**
+
+| Mudança 2010→2022 | Média | Desvio-padrão | Amplitude |
+|---|---|---|---|
+| Rede (exige obra física) | +3,4 p.p. | 5,6 | −3,8 a +27,4 |
+| Fossa séptica (autodeclarada) | +8,8 p.p. | **23,3** | **−51,2 a +73,3** |
+
+*(Maranhão; no país o contraste é o mesmo mas menos nítido.)* Fossa séptica não cai 51
+pontos em 12 anos — o questionário de 2022 redividiu a categoria. É reclassificação, e
+diferenciar uma variável mal classificada dobra o erro dela. Sobra a cobertura de rede,
+justamente a variável do tipo SINISA. Mas como **mudança** ela é legítima: a rede chegou ou
+não chegou. A pergunta deixa de ser "quem está exposto adoece mais?" e passa a ser **"ligar
+domicílios à rede reduz morte infantil?"** — que é a pergunta que governo responde com
+orçamento.
+
+O desenho usa óbitos infantis por todas as causas como denominador, não população. Isso
+cancela o sub-registro diagnosticado no Maranhão, que atinge numerador e denominador
+juntos. Resultado, por 10 p.p. de expansão:
+
+| | Razão | IC95% | p |
+|---|---|---|---|
+| Menores de 5 anos | 1,022 | 0,963–1,084 | 0,48 |
+| 20 a 59 *(controle negativo)* | 1,021 | 0,963–1,082 | 0,49 |
+| Expansão > 20 p.p. (binário) | 1,093 | 0,894–1,337 | 0,39 |
+
+**Este nulo não é um quarto na lista acima, e a diferença importa.** Nos outros havia como
+mostrar que o desenho enxergaria um efeito se houvesse. Aqui não: o **controle positivo
+também deu nulo** — a variação de rede não prediz nem a mudança na fração de causas mal
+definidas, que é marcador de desenvolvimento do serviço de saúde. Some-se o intervalo largo
+do tratamento binário, o denominador conservador por construção e a ausência de teste de
+tendência prévia. É um desenho que rodou e não achou, não uma demonstração de ausência.
+
+### O achado mais firme desta parte não é causal
+
+| Quartil de cobertura em 2010 | Cobertura | Expansão média 2010→2022 |
+|---|---|---|
+| Q1 — sem rede | 0,4% | **+4,7 p.p.** |
+| Q2 | 3,9% | +10,1 p.p. |
+| Q3 | 34,8% | **+12,9 p.p.** |
+| Q4 — já tinha | 77,1% | +5,4 p.p. |
+
+**A expansão de rede no Brasil passou ao largo de quem não tinha nada.** Quem começou do
+zero ganhou um terço do que ganhou quem já tinha um terço de cobertura. O investimento foi
+estender rede existente, não começar do zero — o que é caro e difícil, e explica o padrão
+sem supor má-fé. Isso independe de qualquer estimativa causal.
+
+Como pano de fundo: no período, os óbitos infantis por A00–A09 caíram **55%** no país
+(5.243 em 2008–2012 para 2.383 em 2020–2024), enquanto os de adultos subiram. Queda grande
+e razoavelmente uniforme é o padrão de causas nacionais e simultâneas — rotavírus desde
+2006, reidratação oral, transferência de renda, tratamento de água. Um efeito municipal de
+esgoto teria de aparecer por cima disso.
+
 ### O que prediz, então
 
 Duas coisas, ambas robustas e nenhuma delas ambiental.
@@ -368,6 +430,10 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
   mortalidade. No Maranhão isso foi diagnosticado, não apenas listado
 - causa básica mal definida (capítulo R do CID-10) absorve óbitos que deveriam estar em
   A00–A09, e essa má definição também é maior onde há menos assistência
+- primeira diferença remove confundimento de **nível** fixo no tempo, não tendência
+  diferencial: município que recebeu rede não foi sorteado, é o que recebeu investimento
+- com dois pontos de exposição não há como testar tendência prévia, que é a checagem
+  central de credibilidade desse tipo de desenho; para isso seria preciso série anual
 - controlar a propensão geral a internar é diagnóstico, não especificação final: é um
   desfecho, não covariável exógena, e ajustá-la pode ser sobreajuste
 - ERA5 é reanálise, não pluviômetro; validar contra ANA/INMET antes de publicar número
@@ -439,12 +505,20 @@ python dados_ibge/estrutura_etaria.py  # % 0-4 e % 60+ do Censo 2022
 python saneamento/sinisa_bp3.py   # exige as planilhas do SINISA em disco
 python saneamento/censo_domiciliar.py  # esgoto e água do domicílio, Censo 2022
 # ...ou SANEA_ESCOPO=br, que gera o arquivo nacional dos 5.570 municípios
+python saneamento/comparabilidade_censo.py  # o que dá para comparar entre censos
 python saude/chuva_x_diarreia.py  # chuva x doença, bacia agregada
 python saude/estratificado.py     # o mesmo, por estrato de saneamento
 python saude/gradiente_ajustado.py  # o gradiente com renda e ruralidade controladas
 python saude/densidade.py         # o que a densidade demográfica está medindo
 python saude/exposicao_censo.py   # o nulo é da hipótese ou da variável?
 python saude/menores5.py          # controle negativo por idade
+```
+
+O desenho de primeiras diferenças é nacional e depende só dos dois arquivos publicados
+mais o Censo 2010, então roda sem escopo:
+
+```bash
+python saude/primeiras_diferencas.py
 ```
 
 O `sih_bp3.py` baixa 221 meses do FTP do DATASUS em processos paralelos (`SANEA_PARALELO`,
