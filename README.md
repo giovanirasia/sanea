@@ -29,6 +29,21 @@ Todo módulo aceita `SANEA_ESCOPO`, e o segundo recorte existe porque o primeiro
 um achado que não replicou — o que só ficou visível ao escalar. A Região Metropolitana de
 São Paulo foi um piloto anterior, com o programa Observando os Rios.
 
+## Dado publicado: saneamento domiciliar dos 5.570 municípios
+
+Um subproduto da análise virou o artefato mais reaproveitável daqui, e é independente de
+qualquer conclusão sobre saúde:
+
+📄 **[`dados/censo_domiciliar_br.csv`](dados/censo_domiciliar_br.csv)** — esgotamento
+sanitário e fonte de água dos domicílios, por município, do Censo 2022.
+[Dicionário e limites](dados/censo_domiciliar_br.md).
+
+Serve a quem cruza saneamento com qualquer coisa por município. O indicador usado por
+padrão no país — cobertura de rede do SNIS/SINISA — mede a rede do prestador, e por isso
+zera todo município sem rede coletora. No Paraná esse achatamento atinge **39% dos
+municípios**, que na verdade vão de 9,5% a 99,6% de domicílios com destino inadequado de
+esgoto. O detalhe está em [O nulo é da hipótese ou da variável?](#o-nulo-é-da-hipótese-ou-da-variável).
+
 ## Resultados
 
 Tudo abaixo é reproduzível pelos scripts deste repositório. Os números foram revisados
@@ -315,6 +330,7 @@ python dados_ibge/rebanho_bp3.py    # opcional: efetivo de suínos e aves
 python dados_ibge/estrutura_etaria.py  # % 0-4 e % 60+ do Censo 2022
 python saneamento/sinisa_bp3.py   # exige as planilhas do SINISA em disco
 python saneamento/censo_domiciliar.py  # esgoto e água do domicílio, Censo 2022
+# ...ou SANEA_ESCOPO=br, que gera o arquivo nacional dos 5.570 municípios
 python saude/chuva_x_diarreia.py  # chuva x doença, bacia agregada
 python saude/estratificado.py     # o mesmo, por estrato de saneamento
 python saude/gradiente_ajustado.py  # o gradiente com renda e ruralidade controladas

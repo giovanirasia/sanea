@@ -47,6 +47,14 @@ Limites
     subrepresentados na fracao. Para o cruzamento com internacao isso e ruido,
     nao vies sistematico.
 
+Escopos
+  bp3, parana   os recortes de analise deste repositorio
+  br            os 5.570 municipios do pais, que nao serve a analise daqui e
+                sim a quem for cruzar saneamento com qualquer coisa por
+                municipio. O defeito descrito acima nao e do Parana: e do
+                indicador, e vale para o pais inteiro. Documentado em
+                dados/censo_domiciliar_br.md
+
 Saida
   dados/censo_domiciliar_{escopo}.csv
 """
@@ -56,6 +64,7 @@ from __future__ import annotations
 import gzip
 import json
 import os
+import time
 import urllib.request
 from pathlib import Path
 
@@ -64,16 +73,21 @@ import pandas as pd
 RAIZ = Path(__file__).resolve().parent.parent
 
 ESCOPO = os.environ.get("SANEA_ESCOPO", "bp3")
-if ESCOPO not in ("bp3", "parana"):
+if ESCOPO not in ("bp3", "parana", "br"):
     raise SystemExit(f"SANEA_ESCOPO invalido: {ESCOPO}")
 
 MUNICIPIOS = RAIZ / "dados" / f"{ESCOPO}_municipios.csv"
 BRUTO = RAIZ / "dados" / "bruto" / "ibge"
 SAIDA = RAIZ / "dados" / f"censo_domiciliar_{ESCOPO}.csv"
 
-# uma requisicao traz o estado inteiro; no escopo da bacia filtra-se depois
-SIDRA = ("https://apisidra.ibge.gov.br/values/t/{t}/n6/in%20n3%2041"
+# uma requisicao traz uma UF inteira; recortes menores filtram depois
+SIDRA = ("https://apisidra.ibge.gov.br/values/t/{t}/n6/in%20n3%20{uf}"
          "/v/381/p/2022/c{c}/{cats}")
+
+UFS = {11: "RO", 12: "AC", 13: "AM", 14: "RR", 15: "PA", 16: "AP", 17: "TO",
+       21: "MA", 22: "PI", 23: "CE", 24: "RN", 25: "PB", 26: "PE", 27: "AL",
+       28: "SE", 29: "BA", 31: "MG", 32: "ES", 33: "RJ", 35: "SP", 41: "PR",
+       42: "SC", 43: "RS", 50: "MS", 51: "MT", 52: "GO", 53: "DF"}
 
 # tabela 6805, classificacao 11558 — tipo de esgotamento sanitario.
 # 46290 (agregado "rede geral, pluvial ou fossa ligada a rede") e omitido de
@@ -90,16 +104,26 @@ ESGOTO = {
     "sem_banheiro": "92861",
 }
 
-# tabela 6803, classificacao 1821 — ligacao a rede e forma principal de agua
+# tabela 6803, classificacao 1821 — ligacao a rede e forma principal de agua.
+# Cada fonte aparece duas vezes: para quem tem ligacao com a rede mas usa
+# principalmente outra coisa, e para quem nao tem ligacao. As duas somam, e a
+# distincao importa pouco para exposicao — o que a pessoa bebe e a fonte
+# principal, tenha ou nao um cano parado na porta.
 AGUA = {
     "total": "72129",
     "rede_usa": "72144",          # tem ligacao e a usa como forma principal
-    "lig_poco_raso": "72147",     # tem ligacao, mas usa poco raso
-    "lig_superficial": "72151",   # tem ligacao, mas usa rio/acude/corrego
+    "lig_poco_prof": "72146",
+    "lig_poco_raso": "72147",
+    "lig_nascente": "72148",
+    "lig_carropipa": "72149",
+    "lig_chuva": "72150",
+    "lig_superficial": "72151",   # rio, acude, corrego, lago, igarape
     "sem_lig": "72153",
     "sem_lig_poco_prof": "72154",
     "sem_lig_poco_raso": "72155",
     "sem_lig_nascente": "72156",
+    "sem_lig_carropipa": "72157",
+    "sem_lig_chuva": "72158",
     "sem_lig_superficial": "72159",
 }
 
@@ -107,12 +131,28 @@ AGUA = {
 # ser categoria residual sem conteudo sanitario definido
 INADEQUADO = ["fossa_rudimentar", "vala", "corpo_dagua", "sem_banheiro"]
 
+# o que o IBGE considera solucao adequada: rede, fossa ligada a rede, e fossa
+# septica ou filtro mesmo sem ligacao. Julga o tipo de solucao, nao a execucao.
+ADEQUADO = ["rede", "fossa_ligada", "fossa_septica"]
 
-def _baixa(tabela: int, classif: int, cats: dict[str, str]) -> list[dict]:
-    destino = BRUTO / f"censo{tabela}_pr.json"
+
+def ufs_do_escopo() -> list[int]:
+    """No recorte nacional sao as 27; nos do Parana, so a 41."""
+    return sorted(UFS) if ESCOPO == "br" else [41]
+
+
+def _baixa(tabela: int, classif: int, cats: dict[str, str], uf: int) -> list[dict]:
+    destino = BRUTO / f"censo{tabela}_{UFS[uf].lower()}.json"
     if destino.exists():
-        return json.loads(destino.read_text(encoding="utf-8"))
-    url = SIDRA.format(t=tabela, c=classif, cats=",".join(cats.values()))
+        guardado = json.loads(destino.read_text(encoding="utf-8"))
+        # o nome do arquivo nao diz quais categorias foram pedidas na epoca.
+        # Acrescentar uma categoria ao dicionario acima deixaria o cache antigo
+        # valido aos olhos do disco e a coluna nova sairia toda NaN, silenciosa.
+        if set(cats.values()) <= {str(r.get("D4C")) for r in guardado[1:]}:
+            return guardado
+        print(f"  {UFS[uf]} tabela {tabela}: cache sem as categorias novas, "
+              f"rebaixando")
+    url = SIDRA.format(t=tabela, uf=uf, c=classif, cats=",".join(cats.values()))
     with urllib.request.urlopen(url, timeout=600) as resp:
         dados = resp.read()
     if dados[:2] == b"\x1f\x8b":
@@ -120,6 +160,7 @@ def _baixa(tabela: int, classif: int, cats: dict[str, str]) -> list[dict]:
     bruto = dados.decode("utf-8")
     destino.parent.mkdir(parents=True, exist_ok=True)
     destino.write_text(bruto, encoding="utf-8")
+    time.sleep(1)                               # o SIDRA e publico; sem pressa
     return json.loads(bruto)
 
 
@@ -127,12 +168,18 @@ def tabela(t: int, classif: int, cats: dict[str, str]) -> pd.DataFrame:
     """Contagens por municipio, uma coluna por categoria pedida."""
     rotulo = {cod: nome for nome, cod in cats.items()}
     linhas: dict[int, dict] = {}
-    for r in _baixa(t, classif, cats)[1:]:      # [0] e o cabecalho descritivo
-        cod = int(r["D1C"])
-        valor = r["V"]
-        # SIDRA usa "-" para zero e "..." para nao aplicavel
-        n = int(valor) if str(valor).isdigit() else 0
-        linhas.setdefault(cod, {"cod_ibge": cod})[rotulo[r["D4C"]]] = n
+    for uf in ufs_do_escopo():
+        for r in _baixa(t, classif, cats, uf)[1:]:   # [0] e o cabecalho
+            cod = int(r["D1C"])
+            valor = r["V"]
+            # SIDRA usa "-" para zero e "..." para nao aplicavel
+            n = int(valor) if str(valor).isdigit() else 0
+            # o proprio D1N ja traz "Municipio - UF", entao o recorte nacional
+            # nao precisa de outra chamada so para nomear os 5.570
+            nome, _, sigla = str(r["D1N"]).rpartition(" - ")
+            linhas.setdefault(cod, {"cod_ibge": cod, "municipio": nome,
+                                    "uf": sigla})[rotulo[r["D4C"]]] = n
+        print(f"  {UFS[uf]} tabela {t}: {len(linhas)} municipios acumulados")
     return pd.DataFrame(linhas.values())
 
 
@@ -140,38 +187,47 @@ def main() -> None:
     esg = tabela(6805, 11558, ESGOTO)
     agu = tabela(6803, 1821, AGUA)
 
-    d = esg.merge(agu, on="cod_ibge", suffixes=("_esg", "_agu"))
-    mun = pd.read_csv(MUNICIPIOS)[["cod_ibge", "municipio"]]
-    d = mun.merge(d, on="cod_ibge", how="inner")
+    d = esg.merge(agu.drop(columns=["municipio", "uf"]), on="cod_ibge",
+                  suffixes=("_esg", "_agu"))
+    if ESCOPO != "br":
+        # recortes menores usam a lista propria, que ja define quem entra
+        alvo = pd.read_csv(MUNICIPIOS)[["cod_ibge"]]
+        d = alvo.merge(d, on="cod_ibge", how="inner")
 
     te, ta = d["total_esg"], d["total_agu"]
     pct = lambda n, t: (100 * n / t).round(2)
 
+    fonte = lambda base: pct(d["lig_" + base] + d["sem_lig_" + base], ta)
+
     d["domicilios"] = te
     # a variavel nova: exposicao a esgoto cru, definida para todo municipio
     d["esgoto_inadequado_pct"] = pct(d[INADEQUADO].sum(axis=1), te)
+    d["esgoto_adequado_pct"] = pct(d[ADEQUADO].sum(axis=1), te)
     # comparavel ao IES0001 do SINISA, para checar as duas medidas uma na outra
     d["esgoto_rede_pct"] = pct(d["rede"] + d["fossa_ligada"], te)
     # a solucao individual adequada, que o SINISA conta como zero
     d["fossa_septica_pct"] = pct(d["fossa_septica"], te)
+    d["fossa_rudimentar_pct"] = pct(d["fossa_rudimentar"], te)
+    d["sem_banheiro_pct"] = pct(d["sem_banheiro"], te)
 
     d["agua_rede_pct"] = pct(d["rede_usa"], ta)
+    d["agua_poco_profundo_pct"] = fonte("poco_prof")
     # fonte vulneravel a contaminacao por fossa vizinha
-    d["agua_poco_raso_pct"] = pct(d["lig_poco_raso"] + d["sem_lig_poco_raso"], ta)
-    d["agua_superficial_pct"] = pct(d["lig_superficial"]
-                                    + d["sem_lig_superficial"], ta)
-    d["agua_nascente_pct"] = pct(d["sem_lig_nascente"], ta)
+    d["agua_poco_raso_pct"] = fonte("poco_raso")
+    d["agua_nascente_pct"] = fonte("nascente")
+    d["agua_carropipa_pct"] = fonte("carropipa")
+    d["agua_chuva_pct"] = fonte("chuva")
+    d["agua_superficial_pct"] = fonte("superficial")
     d["agua_sem_rede_pct"] = pct(d["sem_lig"], ta)
 
-    cols = ["cod_ibge", "municipio", "domicilios", "esgoto_inadequado_pct",
-            "esgoto_rede_pct", "fossa_septica_pct", "agua_rede_pct",
-            "agua_poco_raso_pct", "agua_superficial_pct", "agua_nascente_pct",
-            "agua_sem_rede_pct"]
+    cols = (["cod_ibge", "municipio", "uf", "domicilios"]
+            + [c for c in d.columns if c.endswith("_pct")])
+    d = d.sort_values("cod_ibge")
     d[cols].to_csv(SAIDA, index=False)
 
-    print(f"{ESCOPO}: {len(d)} municipios, {int(te.sum()):,} domicilios")
+    print(f"\n{ESCOPO}: {len(d)} municipios, {int(te.sum()):,} domicilios")
     print()
-    for c in cols[3:]:
+    for c in cols[4:]:
         print(f"  {c:<24} mediana {d[c].median():>6.2f}   "
               f"de {d[c].min():>6.2f} a {d[c].max():>6.2f}")
 
