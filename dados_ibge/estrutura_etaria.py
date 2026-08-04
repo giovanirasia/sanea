@@ -79,7 +79,7 @@ def _baixa(cod: int) -> list[dict]:
 
 def perfil(cod: int) -> dict | None:
     """Populacao por faixa agregada. Soma so os grupos quinquenais."""
-    total = criancas = idosos = pop_grupos = 0
+    total = criancas = idosos = adultos = pop_grupos = 0
 
     for r in _baixa(cod)[1:]:
         rotulo = str(r.get("D4N", "")).strip()
@@ -102,6 +102,8 @@ def perfil(cod: int) -> dict | None:
         pop_grupos += valor
         if inicio == 0:
             criancas += valor              # 0 a 4 anos
+        if 20 <= inicio < 60:
+            adultos += valor               # 20 a 59: o controle negativo
         if inicio >= 60:
             idosos += valor
 
@@ -109,6 +111,7 @@ def perfil(cod: int) -> dict | None:
         return None
     return {"cod_ibge": cod, "pop_censo": total or pop_grupos,
             "pct_0a4": round(100 * criancas / pop_grupos, 2),
+            "pct_20a59": round(100 * adultos / pop_grupos, 2),
             "pct_60mais": round(100 * idosos / pop_grupos, 2)}
 
 
@@ -123,7 +126,7 @@ def main() -> None:
         time.sleep(0.2)
 
     d = pd.DataFrame(linhas)[["cod_ibge", "municipio", "pop_censo",
-                              "pct_0a4", "pct_60mais"]]
+                              "pct_0a4", "pct_20a59", "pct_60mais"]]
     d.to_csv(SAIDA, index=False)
 
     print(f"{ESCOPO}: {len(d)} municipios")

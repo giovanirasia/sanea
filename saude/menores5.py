@@ -33,6 +33,42 @@ procurar; obito por A00-A09 e evento mais duro e menos sujeito a limiar de
 hospitalizacao, que foi justamente o mecanismo que contaminou o efeito da
 densidade em densidade.py.
 
+Resultado (Parana, 397 municipios, 2008-2026)
+
+  O controle negativo reprovou a hipotese de transmissao. Dentro dos 155 sem
+  rede, por 10 p.p. de esgotamento inadequado:
+
+    0 a 4      1,074  (IC 1,023-1,127, p=0,004)
+    20 a 59    1,119  (IC 1,028-1,219, p=0,010)   <- controle negativo
+    60+        1,114  (IC 1,053-1,179, p=0,0002)
+
+  Adulto em idade de trabalhar responde MAIS que crianca pequena. Se fosse
+  agua e alimento contaminados, a ordem teria de ser a inversa, e com folga.
+
+  No estado inteiro fica ainda mais nitido: em menores de 5 anos o efeito
+  desaparece (1,032, p=0,11), enquanto em adultos (1,080, p=0,006) e idosos
+  (1,085, p=0,0001) permanece. A exposicao prediz internacao em todo mundo,
+  menos exatamente em quem a doenca de veiculacao hidrica mais atinge.
+
+  A fossa septica acompanha o mesmo padrao errado: protege idoso (0,924,
+  p=0,015) e nao crianca (0,953, p=0,099).
+
+  Leitura: o gradiente achado em exposicao_censo.py e real, mas nao e
+  transmissao. E caracteristica de municipio que eleva internacao em qualquer
+  idade — ruralidade, acesso, limiar de internacao, perfil socioeconomico. O
+  sinal de alerta do PIB invertido naquele subgrupo apontava para isso.
+
+  A tese central segue de pe como estava: cobertura de saneamento nao explica
+  internacao por doenca intestinal no Parana. Agora com um argumento mais
+  forte que o nulo anterior — nao e so que a associacao some, e que quando
+  aparece tem a assinatura etaria errada.
+
+  Achado lateral que importa para o proximo passo: em 19 anos, o Parana
+  inteiro registrou 58 obitos por A00-A09 em menores de 5 anos. Doenca
+  hidrica letal em crianca praticamente nao existe mais aqui, e nao se mede
+  variacao no que ja foi resolvido. A pergunta continua viva onde a cobertura
+  de agua e baixa — nao neste estado.
+
 Por que exigiu rebaixar o SIH
   IDADE no arquivo RD so e interpretavel junto com COD_IDADE: lactente vem
   gravado em dias ou meses, entao 8 pode ser 8 meses. Sem esse campo, qualquer
@@ -124,14 +160,18 @@ def monta() -> pd.DataFrame:
                 on=["municipio", "ano"], how="inner")
          .merge(pd.read_csv(CENSO)[["municipio", "esgoto_inadequado_pct",
                                     "fossa_septica_pct"]], on="municipio")
-         .merge(pd.read_csv(IDADE)[["municipio", "pct_0a4", "pct_60mais"]],
-                on="municipio"))
+         .merge(pd.read_csv(IDADE)[["municipio", "pct_0a4", "pct_20a59",
+                                    "pct_60mais"]], on="municipio"))
 
     # denominador especifico da faixa: a estrutura etaria de 2022 aplicada a
-    # populacao do ano. Para 20-59 usa-se o complemento das duas pontas.
+    # populacao do ano. As tres fracoes vem somadas do Censo, cada uma da sua
+    # faixa. Tomar 20-59 como complemento das outras duas seria erro: engloba
+    # os de 5 a 19, e o tamanho desse pedaco varia com a estrutura etaria do
+    # municipio, que por sua vez anda junto com ruralidade — ou seja, o vies
+    # entraria exatamente no braco que serve de controle negativo.
     fr = {"0a4": d["pct_0a4"] / 100,
-          "60mais": d["pct_60mais"] / 100,
-          "20a59": 1 - (d["pct_0a4"] + d["pct_60mais"]) / 100}
+          "20a59": d["pct_20a59"] / 100,
+          "60mais": d["pct_60mais"] / 100}
     d["pop_faixa"] = np.select(
         [d["faixa"] == f for f in fr], [d["populacao"] * v for v in fr.values()])
 
