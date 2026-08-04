@@ -69,7 +69,27 @@ FTP = ("ftp://ftp.datasus.gov.br/dissemin/publicos/SIHSUS/200801_/Dados/"
        "RDPR{aa:02d}{mm:02d}.dbc")
 ANO_INICIO, ANO_FIM = 2008, 2026
 
-COLUNAS = ["MUNIC_RES", "DIAG_PRINC", "DT_INTER", "IDADE", "MORTE"]
+COLUNAS = ["MUNIC_RES", "DIAG_PRINC", "DT_INTER", "IDADE", "COD_IDADE", "MORTE"]
+
+# COD_IDADE diz em que unidade IDADE esta escrita. Sem ele, o campo e
+# ambiguo justamente onde mais importa: um lactente de 8 meses aparece como
+# IDADE=8, indistinguivel de uma crianca de 8 anos. Isso inviabiliza qualquer
+# corte por menores de 5, que e o grupo onde doenca de veiculacao hidrica
+# realmente pesa. Layout RD do SIH: 2=dias, 3=meses, 4=anos, 5=anos acima de
+# 100 (soma-se 100); 0 ou vazio = ignorada.
+UNIDADE_IDADE = {"2": 1 / 365.25, "3": 1 / 12, "4": 1.0, "5": 1.0}
+
+
+def idade_anos(idade, cod) -> float | None:
+    """Idade em anos a partir de IDADE + COD_IDADE. None se ignorada."""
+    if pd.isna(idade) or pd.isna(cod):
+        return None
+    cod = str(cod).strip()
+    fator = UNIDADE_IDADE.get(cod)
+    if fator is None:
+        return None
+    anos = float(idade) * fator
+    return anos + 100 if cod == "5" else anos
 
 
 def grupo_cid(cid: str) -> str | None:
@@ -111,7 +131,12 @@ def mes(ano: int, m: int, alvo: set[str] | None) -> pd.DataFrame | None:
     """Registros da BP3 num mes. Cacheia o filtrado; descarta o bruto."""
     parcial = PARCIAIS / f"{ESCOPO}_{ano}{m:02d}.csv"
     if parcial.exists():
-        return pd.read_csv(parcial, dtype={"MUNIC_RES": str})
+        cache = pd.read_csv(parcial, dtype={"MUNIC_RES": str, "COD_IDADE": str})
+        # cache de uma versao anterior, com menos colunas que as pedidas hoje:
+        # nao da para completar sem o bruto, entao rebaixa
+        if not set(COLUNAS) - set(cache.columns):
+            return cache
+        print(f"  {ano}-{m:02d}: cache incompleto, rebaixando")
 
     url = FTP.format(aa=ano % 100, mm=m)
     tmp = Path(tempfile.mkdtemp())
