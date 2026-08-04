@@ -72,11 +72,97 @@ A leitura honesta é que o resultado da bacia era superestimativa de amostra peq
 E o desfecho, com o modelo completo — idade, densidade, renda, tendência e propensão geral
 a internar:
 
-> **cobertura de esgoto = 1,000 (IC95% 0,998–1,002, p = 0,98)**
+> **cobertura de esgoto = 1,000 por 10 p.p. (IC95% 0,976–1,025, p = 0,98)**
 
-Nenhuma associação. Não é efeito pequeno: é ausência, com intervalo apertado o bastante
-para afirmar isso. **A hipótese de que a cobertura municipal de esgoto prediz internação
+Nenhuma associação. Não é efeito pequeno: é ausência, e o intervalo exclui qualquer efeito
+maior que ~2,5% por 10 pontos percentuais de cobertura. **A hipótese de que a cobertura municipal de esgoto prediz internação
 por doença de veiculação hídrica não se sustenta no Paraná.**
+
+### O nulo é da hipótese ou da variável?
+
+Um resultado nulo admite sempre duas objeções: faltou poder, ou a variável era ruim. A
+primeira já estava respondida — ao escalar de 35 para 397 municípios o intervalo ficou
+mais estreito. A segunda não, e havia razão concreta para levá-la a sério.
+
+O SINISA mede a rede do prestador: quantos domicílios o operador atende. Os 157
+municípios do Paraná sem rede coletora entram todos como cobertura zero, como se fossem
+o mesmo caso. Pelo Censo 2022, não são. Entre esses 157, a fração de domicílios com
+destino inadequado de esgoto — fossa rudimentar, vala, corpo d'água ou nenhum banheiro —
+vai de **9,5% a 99,6%**, com desvio-padrão de 26 pontos. Um município onde todos têm
+fossa séptica e um onde todos lançam em vala a céu aberto recebem a mesma nota.
+
+Em 39% da amostra, portanto, a exposição estava achatada num ponto só. Isso é erro de
+medida na variável independente, e erro de medida atenua coeficiente na direção do zero.
+
+Onde há rede, as duas medidas concordam — correlação 0,87 entre o IES0001 e a cobertura
+de rede do Censo. O SINISA não está errado sobre o que se propõe a medir; o problema é o
+que ele não vê.
+
+Trocar a variável, sozinho, não muda o resultado estadual: 1,025 (p = 0,24) contra 0,982
+(p = 0,28). Mas dentro dos 155 municípios sem rede — subconjunto onde o SINISA é
+constante e não pode produzir coeficiente nenhum — o Censo enxerga gradiente:
+
+| Por 10 pontos percentuais | Razão | IC95% | p |
+|---|---|---|---|
+| Esgoto inadequado → internação | 1,114 | 1,046–1,186 | 0,0008 |
+| Fossa séptica → internação | 0,914 | 0,845–0,988 | 0,023 |
+
+E sobrevive às duas checagens que derrubaram achados anteriores aqui: controlando
+propensão geral a internar dá 1,064 (p = 0,024), e com internações totais no offset,
+1,091 (p = 0,0025).
+
+Duas ressalvas seguram a leitura. A interação formal com "tem rede" dá p = 0,148, então
+"o efeito existe só onde não há rede" é leitura de subgrupo, não resultado estabelecido.
+E dentro do subgrupo o PIB per capita volta a sair invertido (1,466, p = 0,003) — o mesmo
+sintoma de instabilidade já catalogado na bacia.
+
+### A assinatura etária decide: não é veiculação hídrica
+
+O gradiente acima tem duas explicações possíveis, e nenhum controle adicional as separa:
+
+- **transmissão** — esgoto cru contamina água e alimento, e as pessoas adoecem
+- **artefato** — municípios com muita fossa rudimentar são os mais rurais e pobres, e o
+  que se mede é ruralidade
+
+O que distingue as duas não é mais controle, é **em quem** o efeito aparece. Doença de
+veiculação hídrica interna criança pequena muito acima de adulto. Ruralidade, pobreza e
+distância do hospital não escolhem idade.
+
+Rodando três faixas, com **20 a 59 anos como controle negativo**, dentro dos sem-rede:
+
+| Faixa | Razão por 10 p.p. | IC95% | p |
+|---|---|---|---|
+| 0 a 4 anos | 1,074 | 1,023–1,127 | 0,004 |
+| **20 a 59 anos** — controle negativo | **1,119** | 1,028–1,219 | 0,010 |
+| 60 anos ou mais | 1,114 | 1,053–1,179 | 0,0002 |
+
+Adulto em idade de trabalhar responde *mais* que criança pequena. No estado inteiro fica
+ainda mais nítido: em menores de 5 anos o efeito desaparece (1,032, p = 0,11), enquanto
+em adultos (1,080, p = 0,006) e idosos (1,085, p = 0,0001) permanece. A fossa séptica
+repete o padrão errado — protege idoso (0,924, p = 0,015) e não criança (0,953, p = 0,10).
+
+> O gradiente é real, mas não é saneamento. É característica de município que eleva
+> internação em qualquer idade.
+
+Isso reforça o nulo em vez de contradizê-lo, e com argumento melhor: não é só que a
+associação some sob controle — é que, quando ela aparece, tem a assinatura etária errada.
+
+O teste exigiu rebaixar o SIH inteiro. `IDADE` só é interpretável junto com `COD_IDADE`:
+em 2019, **899 dos 10.197 casos** de A00–A09 vinham gravados em meses ou dias, de modo
+que um lactente de 8 meses era indistinguível de uma criança de 8 anos — exatamente o
+grupo da pergunta.
+
+### Onde a pergunta ainda está viva
+
+Em 19 anos, o Paraná inteiro registrou **58 óbitos por A00–A09 em menores de 5 anos**.
+Poucos demais para modelar, e esse é justamente o ponto: doença hídrica letal infantil já
+foi resolvida aqui.
+
+Não se mede variação no que não varia mais. O nulo deste repositório é um resultado sobre
+o Paraná — estado com 79,8% de cobertura de água tratada mesmo nos municípios sem esgoto —
+e não se transfere para onde as duas coberturas são baixas ao mesmo tempo. A interação
+esgoto × poço raso, que testaria o mecanismo de contaminação diretamente, deu nulo aqui
+por falta de amplitude: a mediana de domicílios com poço raso no Paraná é de 1%.
 
 ### O que prediz, então
 
@@ -97,9 +183,12 @@ ruralidade, não como hipótese, e foi investigada em [`saude/densidade.py`](sau
 - **é em parte limiar de internação** — densidade prediz internação por *qualquer* causa
   (0,945, p < 0,0001); sem atenção básica por perto, uma diarreia que na cidade seria
   resolvida na UBS vira internação no interior
-- **sobra um resto sem explicação.** Candidatos não testados: fonte de água domiciliar no
-  rural (poço e nascente não entram no IAG0001), solução individual de esgoto mal
-  executada, distância até atenção básica
+- **não é saneamento domiciliar.** Este era o candidato mais forte — poço e nascente não
+  entram no IAG0001, e solução individual mal executada não entra no IES0001. O Censo
+  2022 trouxe as duas coisas, e o coeficiente da densidade não se move: 0,809 com a
+  cobertura do SINISA, 0,809 com o esgotamento inadequado do Censo no lugar dela
+- **sobra um resto sem explicação**, agora menor e mais cercado. Candidato ainda em pé:
+  distância até atenção básica, que nenhuma das bases usadas aqui mede
 
 Na bacia o modelo também mostrava PIB per capita associado a *mais* internação (2,03,
 p = 0,018), o que era contraintuitivo e foi investigado: colinearidade descartada
@@ -150,7 +239,14 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
 - "sem rede" é inferido da ausência do município no módulo de esgoto do SINISA. Não é dado
   faltante: esses municípios aparecem normalmente no módulo de água. São 15 dos 35 na
   bacia e **157 dos 399 no estado** — 39% do Paraná sem rede coletora
-- a estrutura etária vem do Censo 2022, um ponto no tempo aplicado a um painel de 19 anos
+- a estrutura etária e o saneamento domiciliar vêm do Censo 2022, um ponto no tempo
+  aplicado a um painel de 19 anos; descrevem melhor o fim da série que o começo
+- "adequado" segue a classificação do IBGE, que julga o tipo de solução e não sua
+  execução: fossa séptica mal dimensionada conta como adequada
+- a interação esgoto × poço raso usa frações municipais, não o cruzamento no domicílio.
+  Um município pode ter muita fossa rudimentar e muito poço raso sem que sejam as mesmas
+  casas — é falácia ecológica em potencial, e por isso aquele resultado é indício
+- os denominadores por faixa etária aplicam a estrutura de 2022 a todos os anos
 - controlar a propensão geral a internar é diagnóstico, não especificação final: é um
   desfecho, não covariável exógena, e ajustá-la pode ser sobreajuste
 - ERA5 é reanálise, não pluviômetro; validar contra ANA/INMET antes de publicar número
@@ -163,6 +259,7 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
 | ANA — HidroWebService | estações telemétricas, séries de qualidade da água | credenciado, por e-mail a `hidro@ana.gov.br` |
 | SINISA 2024 | água e esgoto por município (Ministério das Cidades) | planilhas públicas |
 | SNIS | série histórica de saneamento | público, também via Base dos Dados |
+| IBGE — Censo 2022 (SIDRA) | saneamento e fonte de água do domicílio, estrutura etária | público |
 | DATASUS | internações e agravos de veiculação hídrica | público |
 | Observando os Rios | qualidade da água por voluntários (SOS Mata Atlântica) | público |
 | CEMADEN / INMET | chuva, alertas de desastre | público |
@@ -190,14 +287,14 @@ inclusive a segunda, que é um resultado negativo.
 ana/         cliente da API da ANA e cruzamentos (piloto RMSP)
 clima/       bacia, série ONI, chuva e extremos por município
 saude/       internações do SIH/SUS e os modelos
-saneamento/  indicadores do SINISA e a estratificação
+saneamento/  indicadores do SINISA e o saneamento domiciliar do Censo
 dados_ibge/  população, PIB, área, estrutura etária e rebanho
 dados/       saídas derivadas, versionadas (os dumps brutos não são)
 ```
 
 Os dumps brutos ficam em `dados/bruto/`, fora do versionamento: são grandes e
-reprodutíveis a partir dos scripts. O do SIH chega a 1,2 GB baixado, do qual sobram
-33 MB depois do filtro.
+reprodutíveis a partir dos scripts. O do SIH baixa cerca de 1 GB do FTP e guarda 446 MB
+já filtrados no recorte estadual — 42 MB no da bacia.
 
 ## Como rodar
 
@@ -217,11 +314,19 @@ python saude/sih_bp3.py        # ~1,2 GB do FTP do DATASUS; resumível
 python dados_ibge/rebanho_bp3.py    # opcional: efetivo de suínos e aves
 python dados_ibge/estrutura_etaria.py  # % 0-4 e % 60+ do Censo 2022
 python saneamento/sinisa_bp3.py   # exige as planilhas do SINISA em disco
+python saneamento/censo_domiciliar.py  # esgoto e água do domicílio, Censo 2022
 python saude/chuva_x_diarreia.py  # chuva x doença, bacia agregada
 python saude/estratificado.py     # o mesmo, por estrato de saneamento
 python saude/gradiente_ajustado.py  # o gradiente com renda e ruralidade controladas
 python saude/densidade.py         # o que a densidade demográfica está medindo
+python saude/exposicao_censo.py   # o nulo é da hipótese ou da variável?
+python saude/menores5.py          # controle negativo por idade
 ```
+
+O `sih_bp3.py` baixa 221 meses do FTP do DATASUS em processos paralelos (`SANEA_PARALELO`,
+padrão 6) e cacheia cada mês já filtrado. O cache se rebaixa sozinho quando lhe falta uma
+coluna que a versão atual do script pede, então trocar `COLUNAS` basta para forçar a
+reextração — não é preciso apagar nada.
 
 Para rodar no estado inteiro em vez da bacia, prefixe com `SANEA_ESCOPO=parana`. Os dois
 escopos gravam em arquivos separados e convivem lado a lado:

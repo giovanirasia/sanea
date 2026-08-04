@@ -36,7 +36,8 @@ Resultado (Parana, 397 municipios, 2008-2026)
 
 O que este modulo mostra sobre saneamento
   Com tudo controlado — idade, densidade, renda, tendencia e propensao a
-  internar — a cobertura de esgoto da razao 1,000 (IC 0,998-1,002, p=0,98).
+  internar — a cobertura de esgoto da razao 1,000 por 10 p.p. (IC 0,976-1,025,
+  p=0,98).
   Nenhuma associacao. A tese de que cobertura municipal de esgoto prediz
   internacao por doenca intestinal nao se sustenta nesta escala.
 

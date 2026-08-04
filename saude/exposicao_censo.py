@@ -3,7 +3,8 @@
 O nulo do saneamento e efeito real ou erro de medida?
 
 O que motivou: com a cobertura de esgoto do SINISA, o modelo completo deu
-1,000 (IC 0,998-1,002, p=0,98). Ausencia de associacao, com intervalo apertado.
+1,000 por 10 p.p. (IC 0,976-1,025, p=0,98). Ausencia de associacao, com o
+intervalo excluindo efeito maior que ~2,5%.
 A leitura publicada foi que a tese nao se sustenta no Parana.
 
 Ha uma explicacao concorrente que aquele desenho nao conseguia separar. O
