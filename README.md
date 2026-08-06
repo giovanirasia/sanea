@@ -33,7 +33,10 @@ Três recortes, e a comparação entre eles é parte do método. Todo módulo ac
 | **Maranhão** | 217 | no Paraná a doença letal infantil já foi resolvida; sem variância não há o que medir |
 
 A Região Metropolitana de São Paulo foi um piloto anterior, com o programa Observando os
-Rios.
+Rios. Esse piloto virou uma quarta frente, agora nacional e não territorial: **1.406 pontos
+de monitoramento de qualidade de água em 320 municípios**, com 28.169 análises de 1991 a
+2026. É a única camada do projeto que mede o ambiente em vez do desfecho em pessoas, e foi
+ela que permitiu testar a unidade de análise em vez de supô-la.
 
 ## Ferramenta
 
@@ -623,6 +626,134 @@ A escala estadual confirmou: no Paraná o mesmo coeficiente é **0,755** (p = 0,
 renda, menos internação, direção esperada. O sinal invertido da bacia era instabilidade de
 amostra pequena, como suspeitado.
 
+### O elo do meio: a cobertura prediz a qualidade do rio?
+
+Os três nulos acima testaram a cadeia inteira de uma vez — cobertura municipal → contaminação
+ambiental → exposição → doença. O elo do meio nunca tinha sido medido, por falta de indicador
+de contaminação com abrangência nacional e chave municipal.
+
+O **Observando os Rios** (SOS Mata Atlântica) é essa medida: grupos voluntários coletam
+amostras com kit padronizado e o resultado vira um IQA. São **1.406 pontos em 320 municípios**
+e 20 UFs — o programa anuncia 215, que é só o que está ativo. Cada registro traz o código IBGE,
+então o cruzamento é por código e não por nome.
+
+Restringindo a medições de 2022 em diante, para casar com o Censo: **286 pontos, 128
+municípios**. IQA maior é água melhor, então a hipótese prevê sinal **negativo**.
+
+| Exposição (por 10 p.p.) | Bruto | + porte | + porte + FE de UF |
+|---|---|---|---|
+| Esgotamento inadequado | **+0,482** (p < 0,001) | +0,301 (p = 0,025) | **+0,040** (p = 0,84) |
+| Cobertura de rede | −0,396 (p < 0,001) | −0,287 (p = 0,005) | −0,128 (p = 0,41) |
+| Fossa séptica | +0,524 (p = 0,002) | +0,351 (p = 0,012) | +0,177 (p = 0,29) |
+| Água de rede | −0,470 (p = 0,023) | −0,131 (p = 0,53) | −0,107 (p = 0,61) |
+
+A associação bruta sai **invertida**: mais esgotamento inadequado aparece com rio *melhor*.
+
+Quem entrega o motivo é o controle negativo. Água de rede entrou no modelo porque água encanada
+não tem mecanismo para sujar rio nenhum — e "explicou" o IQA com p = 0,023. As duas variáveis
+estavam medindo cidade grande:
+
+```
+correlação log(domicílios) × esgotamento inadequado   −0,443
+correlação log(domicílios) × IQA                      −0,260
+```
+
+Município grande tem saneamento melhor e rio pior; as duas correlações juntas fabricam o sinal
+invertido. Controlando porte, a água de rede morre — o controle negativo se comportou como
+deve. Com porte e efeito fixo de UF, **as quatro exposições vão a zero**.
+
+O peso disso é diferente dos nulos anteriores: é o primeiro em que o desfecho **não é saúde**.
+Não há sub-registro, contagem pequena, estrutura etária nem acesso a hospital — é medição
+física de rio. E a exposição falha na *primeira* seta da cadeia, a mais direta. Os nulos de
+BP3, Paraná e Maranhão deixam de precisar de explicação própria.
+
+O modo de falha repete o do Maranhão: lá a exposição saiu protetora por sub-registro, aqui por
+porte. Quem rodar isso sem controle negativo publica "esgoto inadequado deixa o rio mais limpo".
+
+### A série histórica, e o desenho que não sobreviveu a ela
+
+A página de cada grupo serve o histórico completo se receber uma janela de datas — o padrão é
+móvel de 12 meses e esconde ~90% da série. Coletados os 1.406 pontos: **28.169 análises, de
+1991 a 2026**, com 919 pontos tendo 8 ou mais coletas.
+
+O objetivo era efeito fixo de ponto: mesmo rio, mesmo grupo, com a cobertura variando entre os
+censos. Isso elimina porte, seleção do ponto e herança industrial de uma vez. **O desenho morreu
+na checagem:**
+
+| Janela | Pontos |
+|---|---|
+| 2008–2012 (Censo 2010) | 231 |
+| 2020–2024 (Censo 2022) | 309 |
+| **Nos dois** | **16** (em 12 municípios) |
+
+Os grupos voluntários rodam. Quem media em 2010 não é quem mede em 2022 — são populações de
+pontos quase disjuntas. E onde há série, a variância intra-ponto do IQA é **0,60×** a variância
+entre pontos, então o efeito fixo descarta a maior parte do sinal antes de começar.
+
+O que sobra é 185 pontos com 5+ anos distintos e medição em 2022 ou depois, o que exige
+cobertura **anual** (SINISA) e não censitária.
+
+A coleta também expôs um problema de qualidade que vale relatar ao programa: **OD igual a zero
+em 10.921 de 25.333 registros (43%)** — quase certamente "não medido" gravado como 0, porque há
+rio com peixe pontuado 2 e oxigênio dissolvido 0 ppm. Outras 396 medições passam de 20 ppm,
+fisicamente impossível (satura perto de 14). DBO e fosfato têm o mesmo padrão. **O IQA composto
+é a variável mais limpa do conjunto**, apesar de comprimida.
+
+### A unidade certa não é o município — é o corpo d'água
+
+Até aqui, "percentual municipal de cobertura é variável de exposição ruim" era inferência a
+partir de uma sequência de nulos. Nulo é evidência fraca: tem muitas causas, e a mais
+desconfortável é o desenho estar mal feito.
+
+Com 1.135 pontos georreferenciados dá para medir de frente. Os níveis se cruzam de verdade —
+66 bacias tocam 2+ municípios e 75 municípios tocam 2+ bacias — então a variância atribuível a
+cada um é separável. Correlação intraclasse do IQA, considerando só grupos com 2 ou mais pontos:
+
+| Unidade | Grupos | Pontos | ICC |
+|---|---|---|---|
+| **Corpo d'água** | 59 | 171 | **0,489** |
+| Município | 73 | 370 | 0,187 |
+| Bacia | 55 | 439 | 0,127 |
+| UF | 18 | 476 | 0,109 |
+
+O rio explica **2,6× o que o município explica**. E a bacia explica *menos* que o município — o
+campo `bacia` da SOS é grosso demais, com 149 pontos numa unidade só.
+
+O teste mais limpo compara apenas pares de pontos **dentro do mesmo município**, o que segura
+saneamento, renda, registro e porte constantes por construção:
+
+```
+mesmo município, MESMO rio         diferença média do IQA   2,33
+mesmo município, rios DIFERENTES   diferença média do IQA   4,62
+
+efeito de ser o mesmo rio         −2,28  IC95 [−4,14, −0,43]  p = 0,016
+  controlando a distância         −2,16  IC95 [−4,26, −0,06]  p = 0,044
+  distância, por km              +0,0145                      p = 0,521
+```
+
+Estar no mesmo rio corta a diferença pela metade, e **a distância não explica nada**. Não é
+suavidade espacial genérica: é conectividade hidrológica.
+
+O semivariograma responde a mesma pergunta sem supor unidade nenhuma. A correlação some por
+volta de **5 km** — acima disso dois pontos são tão diferentes quanto dois sorteados no Brasil.
+E **31% da amplitude nacional do IQA cabe dentro de um único município** (amplitude mediana
+interna 6,6 de 21,1). O agregado municipal é grosso por construção, não por confundimento.
+
+Robustez: `corpo_dagua` é texto livre, e normalizar os nomes leva o ICC de 0,489 para 0,433 — a
+normalização funde genéricos que se repetem pelo país ("das Pedras", "Água Preta"). Os dois
+valores encaixotam a resposta. O teste limpo roda em 37 municípios e 266 pares, e pares que
+compartilham um ponto não são independentes; agrupar por município é aproximação, não solução.
+
+**Por que não descemos à área de contribuição a montante.** Seria o passo seguinte natural — rio
+integra o que vem de cima. A hidrografia ottocodificada nacional da ANA disponível por API é
+generalizada demais: em 40 pontos sorteados, encontra trecho para 18% a 500 m e 40% a 2 km, e os
+grupos medem em córrego urbano pequeno, que é justamente o que a generalização remove. Os
+polígonos de ottobacia expostos vão só até o nível 2 (~90 unidades para o país), e a camada com
+área de montante já calculada cobre 7% dos pontos. Mais de fundo: agregar a montante a **média
+municipal** de saneamento — que estes resultados mostram ser um descritor ruim — seria acertar a
+geometria mantendo o conteúdo errado. A versão que valeria a pena usa setor censitário, e é
+projeto próprio.
+
 ### El Niño e chuva na bacia
 
 Em El Niño forte ou muito forte, a BP3 recebe **+42,5 mm/mês acima de meses neutros**
@@ -708,7 +839,7 @@ caminho chuva → contaminação. Isso é hipótese, não resultado.
 | DATASUS — SIM | óbitos por causa básica, independentes de internação | público |
 | IBGE/MS — PNS 2019 | saneamento e saúde no mesmo domicílio (microdados) | público |
 | UFRJ/MS — ENANI 2019 | diarreia infantil e saneamento no mesmo domicílio | público |
-| Observando os Rios | qualidade da água por voluntários (SOS Mata Atlântica) | público |
+| Observando os Rios | IQA por ponto georreferenciado, 1.406 pontos, série mensal desde 1991 (SOS Mata Atlântica) | público |
 | CEMADEN / INMET | chuva, alertas de desastre | público |
 | NOAA CPC — ONI | índice El Niño / La Niña, série desde 1950 | público |
 
@@ -736,6 +867,7 @@ ana/         cliente da API da ANA e cruzamentos (piloto RMSP)
 clima/       bacia, série ONI, chuva e extremos por município
 saude/       internações do SIH, óbitos do SIM, e os modelos
 saneamento/  indicadores do SINISA e o saneamento domiciliar do Censo
+sosma/       Observando os Rios: pontos, série histórica e a unidade de análise
 dados_ibge/  população, PIB, área, estrutura etária e rebanho
 dados/       saídas derivadas, versionadas (os dumps brutos não são)
 ```
@@ -834,6 +966,21 @@ python saude/mortalidade.py            # o teste principal
 python saude/sih_bp3.py                # internação, para comparar as duas bases
 python saude/internacao.py
 ```
+
+A camada do Observando os Rios é nacional e não usa `SANEA_ESCOPO`:
+
+```bash
+python sosma/observando_rios.py        # 1.406 pontos do mapa + o teste do elo do meio
+python sosma/historico.py --coleta     # série de cada ponto (~46 min, retomável)
+python sosma/historico.py --parse
+python sosma/geo.py                    # qual é a unidade: município, bacia ou rio
+```
+
+A coleta faz uma requisição por grupo, com 2 segundos de intervalo e sem modo paralelo, e
+o cache por ponto é o que a torna retomável — interromper e repetir não rebaixa nada. Sem
+os parâmetros `de`/`ate` a página devolve uma janela móvel de 12 meses, o que descarta a
+maior parte da série sem avisar. As saídas ficam em `dados/bruto/sosma/`, e não em
+`dados/`, porque são dado de terceiro: usar para análise é uma coisa, republicar é outra.
 
 Só dois passos precisam de coisa externa. O `sinisa_bp3.py` lê as planilhas do
 Ministério das Cidades, que não são versionadas por tamanho — ajuste `RAIZ_SINISA` para
